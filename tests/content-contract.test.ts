@@ -1,0 +1,67 @@
+// Runs every real project entry through the same checks the build runs (spec
+// 0002, Build time enforcement), so CI reports the same problems as
+// `npm run build`.
+import { existsSync, readdirSync, readFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
+import type { ImageFunction } from 'astro/content/config';
+import { parseFrontmatter } from 'astro/markdown';
+import { z } from 'astro/zod';
+import { describe, expect, it } from 'vitest';
+import { collectionProblems, PROJECTS_BASE, type EntryFacts } from '../src/content.config';
+import { projectSchema } from '../src/lib/project-schema';
+
+const root = fileURLToPath(new URL('../', import.meta.url));
+const base = new URL(`../${PROJECTS_BASE}/`, import.meta.url);
+
+// The content layer hands `image()` the path string, as this stub does.
+const schema = projectSchema((() => z.string()) as unknown as ImageFunction);
+
+const entries = (existsSync(base) ? readdirSync(base, { withFileTypes: true }) : [])
+	.filter((item) => item.isDirectory() && existsSync(new URL(`${item.name}/index.md`, base)))
+	.map((item) => {
+		const filePath = `${PROJECTS_BASE.replace(/^\.\//, '')}/${item.name}/index.md`;
+		const { frontmatter, content } = parseFrontmatter(
+			readFileSync(new URL(`${item.name}/index.md`, base), 'utf8'),
+		);
+		return { id: item.name, filePath, frontmatter, body: content.trim() };
+	});
+
+describe('real project entries (spec 0002)', () => {
+	it('finds the entries on disk', () => {
+		expect(entries.length).toBeGreaterThan(0);
+	});
+
+	// covers: AC-1, AC-2
+	it.each(entries)('$filePath matches the schema', ({ frontmatter }) => {
+		const result = schema.safeParse(frontmatter);
+
+		expect(result.success ? [] : result.error.issues).toEqual([]);
+	});
+
+	// covers: AC-3, AC-4, AC-5, AC-8, AC-12, AC-13
+	it('pass every build time check', async () => {
+		const facts: readonly EntryFacts[] = entries.map(({ id, filePath, frontmatter, body }) => ({
+			id,
+			filePath,
+			body,
+			draft: frontmatter.draft === true,
+			order: Number(frontmatter.order),
+			coverField: String(frontmatter.cover ?? ''),
+		}));
+
+		expect(await collectionProblems(facts, root)).toEqual([]);
+	});
+
+	// covers: AC-14
+	it('keeps the example entry as a complete draft template', () => {
+		const example = entries.find(({ id }) => id === 'example-project');
+
+		expect(example?.frontmatter).toMatchObject({ draft: true, order: 1 });
+		const parsed = schema.parse(example?.frontmatter);
+		expect(parsed).toHaveProperty('client.name');
+		expect(parsed).toHaveProperty('team');
+		expect(parsed).toHaveProperty('end');
+		expect(parsed.metrics.length).toBeGreaterThan(0);
+		expect(parsed.links.length).toBeGreaterThan(0);
+	});
+});

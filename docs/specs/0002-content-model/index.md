@@ -298,8 +298,8 @@ Skateboard: build the thinnest whole model end to end (schema, checks, helpers, 
 4. [x] Create `src/content.config.ts`: the `projects` collection with the `glob()` wrapper loader as described under Build time enforcement, and `schema: ({ image }) => projectSchema(image)`, satisfies **AC-2**, **AC-3**, **AC-4**, **AC-8**, **AC-10**, **AC-11**, **AC-12**, **AC-13**
 
 **Milestone 3: helpers, example entry, authoring guide and proof**
-5. Create `src/lib/projects.ts` (`Project`, `ProjectLink`, `visibleProjects`, `sortProjects`, `featuredProjects`, `projectPath`, `formatTimeframe`, the label helpers) plus `projects.test.ts`, satisfies **AC-6**, **AC-7**, **AC-8**, **AC-9**, **AC-10**
-6. Add `src/content/projects/example-project/`, a complete entry with `draft: true` and `order: 1`, a 1200 by 630 placeholder `cover.png` and one inline image. Add `tests/content-contract.test.ts`, which runs every real entry through the checks. Write `docs/specs/0002-content-model/authoring.md`, covering:
+5. [x] Create `src/lib/projects.ts` (`Project`, `ProjectLink`, `visibleProjects`, `sortProjects`, `featuredProjects`, `projectPath`, `formatTimeframe`, the label helpers) plus `projects.test.ts`, satisfies **AC-6**, **AC-7**, **AC-8**, **AC-9**, **AC-10**
+6. [x] Add `src/content/projects/example-project/`, a complete entry with `draft: true` and `order: 1`, a 1200 by 630 placeholder `cover.png` and one inline image. Add `tests/content-contract.test.ts`, which runs every real entry through the checks. Write `docs/specs/0002-content-model/authoring.md`, covering:
    - how to copy the folder;
    - every field with an example;
    - the body and image rules;
