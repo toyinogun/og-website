@@ -1,0 +1,16 @@
+---
+// Styles rendered Markdown in the reading column (design.md, Prose). Code
+// blocks come from Shiki with both themes built in, so they follow the toggle.
+
+/** Props for `Prose`. */
+interface Props {
+	/** Extra layout classes; never colour. */
+	class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<div class:list={['prose', className]}>
+	<slot />
+</div>

@@ -54,6 +54,15 @@ export default defineConfig({
 		},
 	],
 
+	// Code blocks carry both themes through light-dark(), so they switch with
+	// the page theme and the toggle (spec 0003, AC-15).
+	markdown: {
+		shikiConfig: {
+			themes: { light: 'github-light', dark: 'github-dark' },
+			defaultColor: 'light-dark()',
+		},
+	},
+
 	vite: {
 		plugins: [tailwindcss()],
 	},

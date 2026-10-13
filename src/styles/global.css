@@ -1,4 +1,5 @@
 @import 'tailwindcss';
+@plugin '@tailwindcss/typography';
 
 /*
  * Design tokens (spec 0003). The values mirror the token tables in design.md
@@ -144,5 +145,130 @@
 	:focus-visible {
 		outline: 2px solid var(--color-accent);
 		outline-offset: 3px;
+	}
+}
+
+/*
+ * Prose (design.md, Prose): the typography plugin, its colour variables mapped
+ * to the tokens so `prose-invert` is never needed, and the overrides. Nested
+ * rules here outrank the plugin's own single class selectors.
+ */
+@utility prose {
+	--tw-prose-body: var(--color-text);
+	--tw-prose-headings: var(--color-text);
+	--tw-prose-bold: var(--color-text);
+	--tw-prose-code: var(--color-text);
+	--tw-prose-kbd: var(--color-text);
+	--tw-prose-lead: var(--color-muted);
+	--tw-prose-counters: var(--color-muted);
+	--tw-prose-bullets: var(--color-muted);
+	--tw-prose-quotes: var(--color-muted);
+	--tw-prose-captions: var(--color-muted);
+	--tw-prose-links: var(--color-accent);
+	--tw-prose-hr: var(--color-line);
+	--tw-prose-quote-borders: var(--color-line);
+	--tw-prose-th-borders: var(--color-line);
+	--tw-prose-td-borders: var(--color-line);
+	--tw-prose-kbd-shadows: var(--color-line);
+
+	max-width: var(--container-measure);
+	font-size: var(--text-base);
+	line-height: var(--text-base--line-height);
+	overflow-wrap: break-word;
+
+	& :where(h1, h2, h3, h4) {
+		font-family: var(--font-serif);
+		font-weight: 600;
+	}
+
+	& h1 {
+		font-size: var(--text-3xl);
+		line-height: var(--text-3xl--line-height);
+		font-weight: 600;
+	}
+
+	& h2 {
+		font-size: var(--text-2xl);
+		line-height: var(--text-2xl--line-height);
+		font-weight: 600;
+	}
+
+	& h3 {
+		font-size: var(--text-xl);
+		line-height: var(--text-xl--line-height);
+		font-weight: 600;
+	}
+
+	& h4 {
+		font-size: var(--text-lg);
+		line-height: var(--text-lg--line-height);
+		font-weight: 600;
+	}
+
+	& :where(h5, h6) {
+		font-family: var(--font-sans);
+		font-size: var(--text-base);
+		font-weight: 600;
+	}
+
+	& a {
+		font-weight: inherit;
+		text-decoration-thickness: 1px;
+		text-underline-offset: 0.2em;
+		transition-property: color, text-decoration-color, text-decoration-thickness;
+		transition-duration: var(--duration-fast);
+	}
+
+	& a:hover {
+		color: var(--color-accent-strong);
+		text-decoration-thickness: 2px;
+	}
+
+	& blockquote {
+		border-inline-start-width: 2px;
+		border-inline-start-color: var(--color-line);
+		color: var(--color-muted);
+		font-style: normal;
+		font-weight: inherit;
+	}
+
+	& blockquote p:first-of-type::before,
+	& blockquote p:last-of-type::after {
+		content: none;
+	}
+
+	& :not(pre) > code {
+		background-color: var(--color-surface);
+		border-radius: var(--radius-sm);
+		padding: 0.1em 0.35em;
+		font-size: 0.9em;
+	}
+
+	& :not(pre) > code::before,
+	& :not(pre) > code::after {
+		content: none;
+	}
+
+	& pre {
+		border-radius: var(--radius-md);
+		overflow-x: auto;
+		font-size: 0.9em;
+	}
+
+	& table {
+		display: block;
+		overflow-x: auto;
+	}
+
+	& img {
+		max-width: 100%;
+		height: auto;
+		border-radius: var(--radius-md);
+	}
+
+	& figcaption {
+		font-size: var(--text-sm);
+		line-height: var(--text-sm--line-height);
+		color: var(--color-muted);
 	}
 }

@@ -71,7 +71,7 @@ The visual language, layout primitives and base components, including the light 
 - [x] Design it (spec): `/architect design system & UI foundation`
 - [ ] Build it: `/develop design system & UI foundation`
   - [x] The look, live on every page: fonts, tokens, theme script and toggle, base layout with skip link, header, footer, and the 404 page (AC-4 to AC-13, AC-17, AC-19)
-  - [ ] The building blocks for pages: Container, Section, Stack, Grid, Button and Prose with dual theme code highlighting (AC-14, AC-15)
+  - [x] The building blocks for pages: Container, Section, Stack, Grid, Button and Prose with dual theme code highlighting (AC-14, AC-15)
   - [ ] Polish and the checks: page transitions, favicon, dev only style guide, design contract and build tests, browser tests (AC-1 to AC-3, AC-16, AC-18)
 - [ ] Verify it: `/check verify design system & UI foundation`
 
