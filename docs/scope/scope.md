@@ -89,9 +89,12 @@ Domain: `toyintest.org` (spec 0001), live at https://toyintest.org since 2026-10
 
 The smallest site a real visitor would actually use and you would actually hand out: they land, understand who you are, see proof of your work, and can reach you. Four pages, finished. This is what the two weeks is for.
 
+Each page feature adds its own link to the header nav (`SITE.nav`) when its page ships; the nav stays empty until then (spec 0003).
+
 ### 6. Bio & project write ups
 The actual words. A bio, and a write up for each project worth showing. This sits first in the release because it is the critical path: everything on the work page and the home page is waiting on this text, and your editing pass has to fit in the two weeks too.
 **Done when:** a bio exists in your voice, each featured project has a complete write up matching the content model, you have edited and approved all of it, and the images you already have are in place.
+From spec 0003: also collect your links out (a label and URL for each, for example GitHub, LinkedIn, email), so the site footer stops being empty.
 - [ ] Build it: `/develop bio & project write ups`
 - [ ] Verify it: `/check verify bio & project write ups`
 
@@ -103,12 +106,14 @@ The page that decides whether a visitor keeps reading. It says who you are, what
 ### 8. Work listing
 The index of your work. This is the page both of your readers go to first to judge you, so it has to make each project easy to scan and easy to open.
 **Done when:** every featured project appears with a title, a one line outcome and an image, the order is deliberate rather than accidental, the empty and loading states look intentional, it works on a phone, and it carries its own title, description and share card.
+From spec 0003: design the project card and the tag chip on the design tokens.
 - [ ] Build it: `/develop work listing`
 - [ ] Verify it: `/check verify work listing`
 
 ### 9. Project detail page
 The case study itself, built on the structure decided in the content model. This is where a reader finds out how you think, which is the thing a resume cannot show.
 **Done when:** each project renders its full write up with images and links to live work or code, the structure reads well for both a hiring reader and a client reader, it works on a phone, and each page carries its own title, description and share card.
+From spec 0003: render the case study through `Prose`, and decide how figures inside the Markdown get optimised images.
 - [ ] Build it: `/develop project detail page`
 - [ ] Verify it: `/check verify project detail page`
 
@@ -163,6 +168,7 @@ Out of scope for the current build pass, kept so the plan stays honest. The firs
 - **Privacy note**: the contact form, and later the newsletter, collect names, email addresses and messages, so a short privacy note is the honest minimum once you are storing someone's email · needs a decision
 - **Speed target**: no stated Core Web Vitals number, so speed stays a hope rather than a constraint
 - **Error monitoring**: nothing will tell you when the contact form starts failing silently · needs a decision
+- **Content Security Policy**: none today; if one is added, it must allow the inline theme script by its hash (spec 0003), or the theme breaks
 - **Editing content without code**: a real convenience later, but a significant decision and cost for a site whose content changes a few times a year · needs a decision
 
 ## Legend
