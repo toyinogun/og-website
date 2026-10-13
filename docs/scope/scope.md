@@ -18,7 +18,7 @@ _These are recommendations to keep your build orderly, not requirements. Skip an
 | 1 | Stack & architecture | Foundation | in-progress |
 | 2 | Coding standards & tooling | Foundation | in-progress |
 | 3 | Content model | Foundation | in-progress |
-| 4 | Design system & UI foundation | Foundation | planned |
+| 4 | Design system & UI foundation | Foundation | in-progress |
 | 5 | Live on your domain | Foundation | done |
 | 6 | Bio & project write ups | Release 1 | planned |
 | 7 | Home page | Release 1 | planned |
@@ -65,10 +65,17 @@ The shape of a project entry and the structure of a case study: what a write up 
 
 spec [0002](../specs/0002-content-model/index.md) · decided: one typed `projects` collection, one folder per project, 19 strict fields, case study under Problem, Approach, Outcome, checks enforced in the build and in the tests
 
-### 4. Design system & UI foundation · needs a decision
+### 4. Design system & UI foundation
 The visual language, layout primitives and base components, including the light and dark theme you asked for. Theme belongs here rather than in its own feature, because building it into the components costs very little and retrofitting it means rebuilding them.
 **Done when:** `design.md` covers type, colour, spacing and the base components, light and dark both work, and the components handle focus and keyboard use.
-- [ ] Design it (spec): `/architect design system & UI foundation`
+- [x] Design it (spec): `/architect design system & UI foundation`
+- [ ] Build it: `/develop design system & UI foundation`
+  - [ ] The look, live on every page: fonts, tokens, theme script and toggle, base layout with skip link, header, footer, and the 404 page (AC-4 to AC-13, AC-17, AC-19)
+  - [ ] The building blocks for pages: Container, Section, Stack, Grid, Button and Prose with dual theme code highlighting (AC-14, AC-15)
+  - [ ] Polish and the checks: page transitions, favicon, dev only style guide, design contract and build tests, browser tests (AC-1 to AC-3, AC-16, AC-18)
+- [ ] Verify it: `/check verify design system & UI foundation`
+
+spec [0003](../specs/0003-design-system/index.md) · decided: quiet editorial look in [`design.md`](../../design.md), colour tokens holding both themes through `light-dark()`, device theme plus a remembered toggle, Source Serif 4 and Inter self hosted, typed layout components, a 404 page
 
 ### 5. Live on your domain
 Get one real page deployed on the domain you own, with the build running automatically. This is the thin end to end slice that proves the stack, the host and the domain all work together, and doing it now means launch day is not the first time you find out.
