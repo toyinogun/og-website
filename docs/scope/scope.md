@@ -40,7 +40,7 @@ Decide the framework, language, hosting and content tooling, then scaffold a run
 - [x] Decide the stack (spec): `/architect stack & architecture`
 - [x] Scaffold from the decision: `/develop scaffold`
 - [ ] Confirm the hosting cost is zero: record the account, plan, Workers Builds allowance and exhaustion behaviour from the Cloudflare dashboard, into spec 1's Follow-up
-- [ ] Verify it: `/check verify scaffold`
+- [x] Verify it: `/check verify scaffold`
 - [ ] Test it: `/test scaffold`
 
 spec [0001](../specs/0001-stack-architecture/index.md) · decided: Astro static on Cloudflare Workers, TypeScript strict, Tailwind, Markdown content collections, Workers Builds · code in the repository root (`astro.config.mjs`, `wrangler.jsonc`, `tsconfig.json`, `src/`)

@@ -4,23 +4,23 @@ _Spec 0001 is a decision spec, so it carries no numbered acceptance criteria. Th
 
 ## Commands
 
-- [ ] `npm ci` → installs from `package-lock.json` with no resolution step and no error → AC-6
-- [ ] `npm run build` → `astro check` reports 0 errors, then the build prints `output: "static"` and `mode: "static"` and completes → AC-2, AC-3
-- [ ] `npx astro check` on its own → 0 errors, 0 warnings → AC-2
-- [ ] `ls dist` after a build → `index.html`, `favicon.ico`, `favicon.svg` and a hashed file under `dist/_astro/` → AC-2
-- [ ] `test ! -e dist/_worker.js` → true, there is no Worker bundle, so requests stay free static asset requests → AC-3
-- [ ] `grep -r "@astrojs/cloudflare" package.json astro.config.mjs` → no match, the adapter is deliberately absent → AC-3
-- [ ] `npx wrangler deploy --dry-run` → reads the files from `./dist`, reports `No bindings found`, and exits without deploying → AC-4
-- [ ] `grep canonical dist/index.html` → `https://toyintest.org/`, which proves Astro's `site` is set → AC-5
-- [ ] `cat .nvmrc` → the Node LTS pinned at scaffold time (`24.21.0`), matching `node --version` → AC-7
-- [ ] `grep -o "tailwindcss v[0-9.]*" dist/_astro/*.css` → a Tailwind version banner, so the stylesheet really compiled → AC-8
+- [x] `npm ci` → installs from `package-lock.json` with no resolution step and no error → AC-6
+- [x] `npm run build` → `astro check` reports 0 errors, then the build prints `output: "static"` and `mode: "static"` and completes → AC-2, AC-3
+- [x] `npx astro check` on its own → 0 errors, 0 warnings → AC-2
+- [x] `ls dist` after a build → `index.html`, `favicon.ico`, `favicon.svg` and a hashed file under `dist/_astro/` → AC-2
+- [x] `test ! -e dist/_worker.js` → true, there is no Worker bundle, so requests stay free static asset requests → AC-3
+- [x] `grep -r "@astrojs/cloudflare" package.json astro.config.mjs` → no match, the adapter is deliberately absent → AC-3
+- [x] `npx wrangler deploy --dry-run` → reads the files from `./dist`, reports `No bindings found`, and exits without deploying → AC-4
+- [x] `grep canonical dist/index.html` → `https://toyintest.org/`, which proves Astro's `site` is set → AC-5
+- [x] `cat .nvmrc` → the Node LTS pinned at scaffold time (`24.21.0`), matching `node --version` → AC-7
+- [x] `grep -o "tailwindcss v[0-9.]*" dist/_astro/*.css` → a Tailwind version banner, so the stylesheet really compiled → AC-8
 
 ## UI / manual
 
-- [ ] `npx astro dev --background`, then open `http://localhost:4321/` → HTTP 200, the page titled `Toyin Ogunseinde` renders, no console error → AC-1
-- [ ] While the dev server runs, edit the heading in `src/pages/index.astro` → the browser updates without a manual reload → AC-1
-- [ ] `npx astro dev stop` → the server stops cleanly → AC-1
-- [ ] Open `dist/index.html` in a browser after a build → the same page renders from the built files alone → AC-2, AC-3
+- [x] `npx astro dev --background`, then open `http://localhost:4321/` → HTTP 200, the page titled `Toyin Ogunseinde` renders, no console error → AC-1
+- [x] While the dev server runs, edit the heading in `src/pages/index.astro` → the browser updates without a manual reload → AC-1
+- [x] `npx astro dev stop` → the server stops cleanly → AC-1
+- [x] Open `dist/index.html` in a browser after a build → the same page renders from the built files alone → AC-2, AC-3
 
 ## Acceptance-criteria coverage
 
