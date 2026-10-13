@@ -290,8 +290,8 @@ No environment variables, secrets or services. One new runtime dependency, `mdas
 Skateboard: build the thinnest whole model end to end (schema, checks, helpers, one example entry) in one pass, so features 6 to 9 can rely on all of it at once. Nothing is rendered here; pages belong to features 7 to 9.
 
 **Milestone 1: schema and vocabulary**
-1. Create `src/lib/vocabulary.ts` with the four maps, the seed `STACK` and `SERVICES` values the example needs, the label helpers and doc comments, plus `vocabulary.test.ts`, satisfies **AC-9**
-2. Create `src/lib/project-schema.ts` exporting `projectSchema(image)` and `ProjectData`. It is strict at every level, trims before every length check, takes its enums from the vocabulary keys, refines `end` not before `start`, and checks the cover name before `image()`. Add `project-schema.test.ts` driving it with a stub `image`, including typo keys at each level and text that is only spaces, satisfies **AC-1**, **AC-2**
+1. [x] Create `src/lib/vocabulary.ts` with the four maps, the seed `STACK` and `SERVICES` values the example needs, the label helpers and doc comments, plus `vocabulary.test.ts`, satisfies **AC-9**
+2. [x] Create `src/lib/project-schema.ts` exporting `projectSchema(image)` and `ProjectData`. It is strict at every level, trims before every length check, takes its enums from the vocabulary keys, refines `end` not before `start`, and checks the cover name before `image()`. Add `project-schema.test.ts` driving it with a stub `image`, including typo keys at each level and text that is only spaces, satisfies **AC-1**, **AC-2**
 
 **Milestone 2: checks in the build**
 3. Add `mdast-util-from-markdown` to `dependencies`. Create `src/lib/project-checks.ts` (`checkBody`, `checkImages`, `checkCover`, `findDuplicateOrders`, `checkSlug`, the `Problem` type) plus `project-checks.test.ts` with a passing and a failing fixture for every rule listed under Case study body, satisfies **AC-3**, **AC-4**, **AC-5**, **AC-8**, **AC-12**, **AC-13**
