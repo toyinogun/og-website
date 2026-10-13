@@ -1,0 +1,9 @@
+{
+  "tool": "vitest",
+  "gate": null,
+  "additionalTools": [],
+  "e2eTool": "playwright",
+  "testDir": "beside the source, except src/pages/ (Astro routes every file there), which goes in tests/; repo contract tests in tests/; browser flows in e2e/",
+  "filePattern": "*.test.ts (unit), *.spec.ts (e2e)",
+  "packageManager": "npm"
+}
