@@ -41,10 +41,10 @@ _Spec 0001 carries no numbered acceptance criteria for this feature, so these AC
 
 ## Commands
 
-- [ ] `curl -sI https://toyintest.org/` → `HTTP/2 200`, `server: cloudflare`, served over a valid certificate → AC-1
-- [ ] `curl -s https://toyintest.org/ | grep -o '<title>[^<]*'` → `<title>Toyin Ogunseinde` → AC-1
-- [ ] `curl -s https://toyintest.org/ | grep -o 'rel="canonical" href="[^"]*'` → `https://toyintest.org/` → AC-1
-- [ ] `curl -sI http://toyintest.org/` → a redirect to `https://toyintest.org/` → AC-1
+- [x] `curl -sI https://toyintest.org/` → `HTTP/2 200`, `server: cloudflare`, served over a valid certificate → AC-1
+- [x] `curl -s https://toyintest.org/ | grep -o '<title>[^<]*'` → `<title>Toyin Ogunseinde` → AC-1
+- [x] `curl -s https://toyintest.org/ | grep -o 'rel="canonical" href="[^"]*'` → `https://toyintest.org/` → AC-1
+- [x] `curl -sI http://toyintest.org/` → a redirect to `https://toyintest.org/` → AC-1
 - [ ] `curl -sI 'https://www.toyintest.org/some/path?x=1'` → `301` with `location: https://toyintest.org/some/path?x=1` → AC-4
 - [ ] Push a small visible change to `main` → a new Workers Builds run starts, passes `astro check` and `astro build`, runs `wrangler deploy`, and the change shows on `https://toyintest.org/` within minutes → AC-2
 - [ ] After that second deploy, `toyintest.org` is still listed as a Custom Domain on the `og-website` Worker and still serves → AC-2
@@ -53,7 +53,7 @@ _Spec 0001 carries no numbered acceptance criteria for this feature, so these AC
 
 ## UI / manual
 
-- [ ] Open `https://toyintest.org/` on a desktop and a phone → the holding page renders with no browser security warning and no console error → AC-1
+- [x] Open `https://toyintest.org/` on a desktop and a phone → the holding page renders with no browser security warning and no console error → AC-1
 - [ ] Cloudflare dashboard, Billing and Workers plan pages → the account is on the free plan, no paid add on is active, and Workers Builds usage sits within the free allowance → AC-3
 
 ## Acceptance-criteria coverage
