@@ -73,7 +73,7 @@ The visual language, layout primitives and base components, including the light 
   - [x] The look, live on every page: fonts, tokens, theme script and toggle, base layout with skip link, header, footer, and the 404 page (AC-4 to AC-13, AC-17, AC-19)
   - [x] The building blocks for pages: Container, Section, Stack, Grid, Button and Prose with dual theme code highlighting (AC-14, AC-15)
   - [x] Polish and the checks: page transitions, favicon, dev only style guide, design contract and build tests, browser tests (AC-1 to AC-3, AC-16, AC-18)
-- [ ] Verify it: `/check verify design system & UI foundation`
+- [x] Verify it: `/check verify design system & UI foundation`
 
 spec [0003](../specs/0003-design-system/index.md) · decided: quiet editorial look in [`design.md`](../../design.md), colour tokens holding both themes through `light-dark()`, device theme plus a remembered toggle, Source Serif 4 and Inter self hosted, typed layout components, a 404 page · code in `src/styles/global.css`, `src/layouts/BaseLayout.astro`, `src/components/`, `src/lib/` (`theme.ts`, `site.ts`, `color.ts`, `design-tokens.ts`), `src/pages/404.astro`, `src/dev/` (style guide, dev only)
 
