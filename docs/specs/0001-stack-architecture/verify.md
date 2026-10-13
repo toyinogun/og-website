@@ -54,7 +54,7 @@ _Spec 0001 carries no numbered acceptance criteria for this feature, so these AC
 ## UI / manual
 
 - [x] Open `https://toyintest.org/` on a desktop and a phone → the holding page renders with no browser security warning and no console error → AC-1
-- [ ] Cloudflare dashboard, Billing and Workers plan pages → the account is on the free plan, no paid add on is active, and Workers Builds usage sits within the free allowance → AC-3
+- [x] Cloudflare dashboard, Billing and Workers plan pages → the account is on the free plan, no paid add on is active, and Workers Builds usage sits within the free allowance → AC-3 (read by you from the dashboard, 2026-10-13: free plan, no add ons, 0 build minutes used)
 
 ## Acceptance-criteria coverage
 
