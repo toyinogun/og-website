@@ -290,16 +290,16 @@ No environment variables, secrets or services. One new runtime dependency, `mdas
 Skateboard: build the thinnest whole model end to end (schema, checks, helpers, one example entry) in one pass, so features 6 to 9 can rely on all of it at once. Nothing is rendered here; pages belong to features 7 to 9.
 
 **Milestone 1: schema and vocabulary**
-1. Create `src/lib/vocabulary.ts` with the four maps, the seed `STACK` and `SERVICES` values the example needs, the label helpers and doc comments, plus `vocabulary.test.ts`, satisfies **AC-9**
-2. Create `src/lib/project-schema.ts` exporting `projectSchema(image)` and `ProjectData`. It is strict at every level, trims before every length check, takes its enums from the vocabulary keys, refines `end` not before `start`, and checks the cover name before `image()`. Add `project-schema.test.ts` driving it with a stub `image`, including typo keys at each level and text that is only spaces, satisfies **AC-1**, **AC-2**
+1. [x] Create `src/lib/vocabulary.ts` with the four maps, the seed `STACK` and `SERVICES` values the example needs, the label helpers and doc comments, plus `vocabulary.test.ts`, satisfies **AC-9**
+2. [x] Create `src/lib/project-schema.ts` exporting `projectSchema(image)` and `ProjectData`. It is strict at every level, trims before every length check, takes its enums from the vocabulary keys, refines `end` not before `start`, and checks the cover name before `image()`. Add `project-schema.test.ts` driving it with a stub `image`, including typo keys at each level and text that is only spaces, satisfies **AC-1**, **AC-2**
 
 **Milestone 2: checks in the build**
-3. Add `mdast-util-from-markdown` to `dependencies`. Create `src/lib/project-checks.ts` (`checkBody`, `checkImages`, `checkCover`, `findDuplicateOrders`, `checkSlug`, the `Problem` type) plus `project-checks.test.ts` with a passing and a failing fixture for every rule listed under Case study body, satisfies **AC-3**, **AC-4**, **AC-5**, **AC-8**, **AC-12**, **AC-13**
-4. Create `src/content.config.ts`: the `projects` collection with the `glob()` wrapper loader as described under Build time enforcement, and `schema: ({ image }) => projectSchema(image)`, satisfies **AC-2**, **AC-3**, **AC-4**, **AC-8**, **AC-10**, **AC-11**, **AC-12**, **AC-13**
+3. [x] Add `mdast-util-from-markdown` to `dependencies`. Create `src/lib/project-checks.ts` (`checkBody`, `checkImages`, `checkCover`, `findDuplicateOrders`, `checkSlug`, the `Problem` type) plus `project-checks.test.ts` with a passing and a failing fixture for every rule listed under Case study body, satisfies **AC-3**, **AC-4**, **AC-5**, **AC-8**, **AC-12**, **AC-13**
+4. [x] Create `src/content.config.ts`: the `projects` collection with the `glob()` wrapper loader as described under Build time enforcement, and `schema: ({ image }) => projectSchema(image)`, satisfies **AC-2**, **AC-3**, **AC-4**, **AC-8**, **AC-10**, **AC-11**, **AC-12**, **AC-13**
 
 **Milestone 3: helpers, example entry, authoring guide and proof**
-5. Create `src/lib/projects.ts` (`Project`, `ProjectLink`, `visibleProjects`, `sortProjects`, `featuredProjects`, `projectPath`, `formatTimeframe`, the label helpers) plus `projects.test.ts`, satisfies **AC-6**, **AC-7**, **AC-8**, **AC-9**, **AC-10**
-6. Add `src/content/projects/example-project/`, a complete entry with `draft: true` and `order: 1`, a 1200 by 630 placeholder `cover.png` and one inline image. Add `tests/content-contract.test.ts`, which runs every real entry through the checks. Write `docs/specs/0002-content-model/authoring.md`, covering:
+5. [x] Create `src/lib/projects.ts` (`Project`, `ProjectLink`, `visibleProjects`, `sortProjects`, `featuredProjects`, `projectPath`, `formatTimeframe`, the label helpers) plus `projects.test.ts`, satisfies **AC-6**, **AC-7**, **AC-8**, **AC-9**, **AC-10**
+6. [x] Add `src/content/projects/example-project/`, a complete entry with `draft: true` and `order: 1`, a 1200 by 630 placeholder `cover.png` and one inline image. Add `tests/content-contract.test.ts`, which runs every real entry through the checks. Write `docs/specs/0002-content-model/authoring.md`, covering:
    - how to copy the folder;
    - every field with an example;
    - the body and image rules;
@@ -309,7 +309,7 @@ Skateboard: build the thinnest whole model end to end (schema, checks, helpers, 
    - that the first real entry replaces the example, which also frees `order: 1`.
 
    Satisfies **AC-1**, **AC-5**, **AC-14**
-7. Run `npm run build` and `npm test` clean. Then prove enforcement with real builds. Make each change below on its own, confirm the result, then revert it.
+7. [x] Run `npm run build` and `npm test` clean. Then prove enforcement with real builds. Make each change below on its own, confirm the result, then revert it.
 
    These builds must **fail**, naming the file:
    - a published entry missing `## Approach`;
