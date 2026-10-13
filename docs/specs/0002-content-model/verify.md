@@ -26,27 +26,27 @@ These builds must succeed:
 
 - [x] `npm run build` → exit 0 with the example draft entry → AC-1, AC-10
 - [x] `npm test` → 8 files, 174 tests pass, including `src/lib/*.test.ts` and `tests/content-contract.test.ts` → AC-1, AC-2, AC-3, AC-4, AC-5, AC-6, AC-7, AC-8, AC-9, AC-10, AC-12, AC-13, AC-14
-- [ ] A folder named `Example-Project` (not kebab case) → `npm run build` exits 1 with a `slug` problem naming the file → AC-8
-- [ ] An entry with only the required fields → the content store (`getCollection('projects')`) holds `metrics: []`, `links: []`, `featured: false`, `draft: false`, and no `team`, `end` or `client.name` keys → AC-1
-- [ ] Each AC-2 rule broken once in a real entry (empty after trimming, over length, unknown key at the top level, in a metric and in a link, unknown `kind`, stack, type of work and link kind, `http://` link, 4 metrics, repeated stack key, month `2024-3`, `end` before `start`, `order: 0` and `order: 1.5`) → each build exits 1 naming the file and the field → AC-2
-- [ ] A published body starting with a paragraph, with sections out of order, with a repeated section, with a `#` heading and with a `===` heading → each build exits 1 with the matching `body-*` rule → AC-3
-- [ ] The same broken section rules in a draft → the build passes → AC-3
-- [ ] Body images with `../`, a leading `/`, an `https://` address, a `.gif`, a reference style image with empty alt, and raw `<IMG>` → each build exits 1 with `image-path`, `image-alt` or `raw-html` → AC-13
+- [x] A folder named `Example-Project` (not kebab case) → `npm run build` exits 1 with a `slug` problem naming the file → AC-8
+- [x] An entry with only the required fields → the content store (`getCollection('projects')`) holds `metrics: []`, `links: []`, `featured: false`, `draft: false`, and no `team`, `end` or `client.name` keys → AC-1
+- [x] Each AC-2 rule broken once in a real entry (empty after trimming, over length, unknown key at the top level, in a metric and in a link, unknown `kind`, stack, type of work and link kind, `http://` link, 4 metrics, repeated stack key, month `2024-3`, `end` before `start`, `order: 0` and `order: 1.5`) → each build exits 1 naming the file and the field → AC-2
+- [x] A published body starting with a paragraph, with sections out of order, with a repeated section, with a `#` heading and with a `===` heading → each build exits 1 with the matching `body-*` rule → AC-3
+- [x] The same broken section rules in a draft → the build passes → AC-3
+- [x] Body images with `../`, a leading `/`, an `https://` address, a `.gif`, a reference style image with empty alt, and raw `<IMG>` → each build exits 1 with `image-path`, `image-alt` or `raw-html` → AC-13
 
 ## Pages through the helpers
 
 Run through a throwaway page that calls `getCollection('projects')` and the helpers the way features 7 to 9 will, with one published entry added beside the draft example:
 
-- [ ] Dev server (`astro dev`): `visibleProjects(…, { includeDrafts: import.meta.env.DEV })` keeps the draft, and `featuredProjects` previews the featured draft → AC-6
-- [ ] Production build: the same page lists only the published entry, and `featuredProjects` never returns the draft → AC-6, AC-10
-- [ ] `sortProjects` returns lowest `order` first; `projectPath('example-project')` is `/projects/example-project` → AC-6, AC-8
-- [ ] `formatTimeframe` gives `Mar 2024 to Jan 2025`, `Mar 2024 to present` and `Mar 2024`, the same under `LANG=de_DE.UTF-8` → AC-7
-- [ ] `kindLabel`, `stackLabel`, `serviceLabel` return the `vocabulary.ts` display names; `linkLabel` returns a link's own label, else the kind's default → AC-9
-- [ ] The cover reaches the page as an Astro image object (`src`, `width: 1200`, `height: 630`, `format: png`) through `image()` → AC-11
+- [x] Dev server (`astro dev`): `visibleProjects(…, { includeDrafts: import.meta.env.DEV })` keeps the draft, and `featuredProjects` previews the featured draft → AC-6
+- [x] Production build: the same page lists only the published entry, and `featuredProjects` never returns the draft → AC-6, AC-10
+- [x] `sortProjects` returns lowest `order` first; `projectPath('example-project')` is `/projects/example-project` → AC-6, AC-8
+- [x] `formatTimeframe` gives `Mar 2024 to Jan 2025`, `Mar 2024 to present` and `Mar 2024`, the same under `LANG=de_DE.UTF-8` → AC-7
+- [x] `kindLabel`, `stackLabel`, `serviceLabel` return the `vocabulary.ts` display names; `linkLabel` returns a link's own label, else the kind's default → AC-9
+- [x] The cover reaches the page as an Astro image object (`src`, `width: 1200`, `height: 630`, `format: png`) through `image()` → AC-11
 
 ## Authoring
 
-- [ ] `src/content/projects/example-project/` is a complete draft entry using every field, and `docs/specs/0002-content-model/authoring.md` covers copying the folder, every field with an example, the body and image rules, the three security notes, the dev restart caveat, adding a vocabulary value, and replacing the example → AC-14
+- [x] `src/content/projects/example-project/` is a complete draft entry using every field, and `docs/specs/0002-content-model/authoring.md` covers copying the folder, every field with an example, the body and image rules, the three security notes, the dev restart caveat, adding a vocabulary value, and replacing the example → AC-14
 
 ## Acceptance criteria coverage
 
@@ -54,3 +54,11 @@ Run through a throwaway page that calls `getCollection('projects')` and the help
 - AC-4: build proof (duplicate order) · AC-5: `npm test` · AC-6: Pages · AC-7: Pages · AC-8: Commands (slug), Pages (path)
 - AC-9: Pages · AC-10: build proof (no entries, only drafts), Pages (production) · AC-11: Pages (cover image object) · AC-12: build proof (cover)
 - AC-13: build proof (missing file, empty alt in a draft), Commands (image rules) · AC-14: Authoring
+
+## Verify run · 2026-10-13 · commit `f0efa9e` · PASS
+
+Run by `/check verify content model` in a throwaway git worktree, so the shared checkout was never touched. Two published entries were added beside the draft example (`minimal-sample` with only the required fields, order 2; `featured-sample` with a `.webp` cover, `end` equal to `start`, featured, order 3), plus a scratch `verify-scratch.json` endpoint calling `getCollection('projects')` and the helpers with `includeDrafts: import.meta.env.DEV`. All of it was deleted with the worktree.
+
+- Production build (`LANG=de_DE.UTF-8 npm run build`, exit 0): visible `[minimal-sample, featured-sample]`, featured `[featured-sample]`, paths `/projects/minimal-sample`, `/projects/featured-sample`; timeframes `Mar 2024 to Jan 2025`, `Mar 2024 to present`, `Mar 2024`; `minimal-sample` data has no `team`, `end` or `client.name`, and `metrics: []`, `links: []`, `featured: false`, `draft: false`; covers arrive as `{ src: /_astro/cover.….png, width: 1200, height: 630, format: png }` and `{ …webp, width: 1600, height: 900 }`; labels `Personal project`, `Client work`, `Open source`, `TypeScript`, `API design`, links `Code`, `See the site`, `Article`.
+- Dev server (`astro dev --background --port 4399`, `GET /verify-scratch.json`): visible `[example-project, minimal-sample, featured-sample]`, featured `[example-project, featured-sample]`, so the featured draft previews in dev only.
+- Rule matrix, one real build per change, 31 builds: all 17 AC-2 cases exit 1 naming the file (`Location: …/minimal-sample/index.md`) and the field (for example `links.0.url: must start with https://`, `metrics.0: Unrecognized key: "unit"`, `role: Required`, `order: Expected type "int"`); the 5 AC-3 published cases exit 1 with the matching `body-*` rule and the draft case exits 0; the 6 AC-13 cases exit 1 with `image-path`, `image-alt` or `raw-html`; the folder `Example-Project` exits 1 with `slug`; the reverted baseline exits 0.

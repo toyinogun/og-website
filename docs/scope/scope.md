@@ -61,7 +61,7 @@ The shape of a project entry and the structure of a case study: what a write up 
   - [x] Schema and vocabulary: the fixed tag lists and the strict project schema (AC-1, AC-2, AC-9)
   - [x] Checks in the build: body, image, cover, order and slug checks, run by the collection loader (AC-3, AC-4, AC-5, AC-8, AC-11, AC-12, AC-13)
   - [x] Helpers, example entry, authoring guide and the real build proof (AC-1, AC-5, AC-6, AC-7, AC-10, AC-14)
-- [ ] Verify it: `/check verify content model`
+- [x] Verify it: `/check verify content model`
 
 spec [0002](../specs/0002-content-model/index.md) · decided: one typed `projects` collection, one folder per project, 19 strict fields, case study under Problem, Approach, Outcome, checks enforced in the build and in the tests · code in `src/content.config.ts`, `src/lib/` (`vocabulary.ts`, `project-schema.ts`, `project-checks.ts`, `projects.ts`), `src/content/projects/`, `tests/content-contract.test.ts`
 
