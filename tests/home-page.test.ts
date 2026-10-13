@@ -30,10 +30,19 @@ describe('home page (placeholder)', () => {
 		expect(headings[0]).toContain('Toyin Ogunseinde');
 	});
 
-	it('puts its content in a main landmark', async () => {
+	// covers: AC-8 (spec 0003)
+	it('leaves the one main landmark to the base layout', async () => {
 		const html = await render();
 
-		expect(html).toMatch(/<main[\s>]/);
+		expect(html.match(/<main[\s>]/g)).toHaveLength(1);
+		expect(html).toContain('<main id="main" tabindex="-1"');
+	});
+
+	// covers: AC-2 (spec 0003)
+	it('uses no opacity styling for its text', async () => {
+		const html = await render();
+
+		expect(html).not.toMatch(/\bopacity-/);
 	});
 
 	it('gives search engines a description', async () => {

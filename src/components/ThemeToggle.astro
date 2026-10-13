@@ -1,0 +1,85 @@
+---
+// The header's light and dark switch (spec 0003, AC-6). Hidden until its
+// script runs, so it never shows when JavaScript is off. The pin is the
+// `data-theme` attribute itself: the script keeps no state of its own.
+// Sun and moon icons from Lucide (https://lucide.dev), ISC licence.
+---
+
+<button
+	type="button"
+	class="group inline-flex size-10 cursor-pointer items-center justify-center rounded-sm text-muted transition-colors duration-(--duration-fast) hover:text-text"
+	aria-label="Dark theme"
+	aria-pressed="false"
+	data-theme-toggle
+	hidden
+>
+	<svg
+		class="block size-5 group-aria-pressed:hidden"
+		data-icon="sun"
+		xmlns="http://www.w3.org/2000/svg"
+		viewBox="0 0 24 24"
+		fill="none"
+		stroke="currentColor"
+		stroke-width="2"
+		stroke-linecap="round"
+		stroke-linejoin="round"
+		aria-hidden="true"
+	>
+		<circle cx="12" cy="12" r="4"></circle>
+		<path d="M12 2v2"></path>
+		<path d="M12 20v2"></path>
+		<path d="m4.93 4.93 1.41 1.41"></path>
+		<path d="m17.66 17.66 1.41 1.41"></path>
+		<path d="M2 12h2"></path>
+		<path d="M20 12h2"></path>
+		<path d="m6.34 17.66-1.41 1.41"></path>
+		<path d="m19.07 4.93-1.41 1.41"></path>
+	</svg>
+	<svg
+		class="hidden size-5 group-aria-pressed:block"
+		data-icon="moon"
+		xmlns="http://www.w3.org/2000/svg"
+		viewBox="0 0 24 24"
+		fill="none"
+		stroke="currentColor"
+		stroke-width="2"
+		stroke-linecap="round"
+		stroke-linejoin="round"
+		aria-hidden="true"
+	>
+		<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
+	</svg>
+</button>
+
+<script>
+	import { effectiveTheme, nextTheme, parseStoredTheme, THEME_STORAGE_KEY } from '../lib/theme';
+
+	const root = document.documentElement;
+	const media = window.matchMedia('(prefers-color-scheme: dark)');
+	const button = document.querySelector<HTMLButtonElement>('[data-theme-toggle]');
+
+	const current = () =>
+		effectiveTheme(parseStoredTheme(root.getAttribute('data-theme')), media.matches);
+
+	const render = (toggle: HTMLButtonElement) =>
+		toggle.setAttribute('aria-pressed', String(current() === 'dark'));
+
+	if (button) {
+		button.hidden = false;
+		render(button);
+
+		button.addEventListener('click', () => {
+			const theme = nextTheme(current());
+			root.setAttribute('data-theme', theme);
+			try {
+				localStorage.setItem(THEME_STORAGE_KEY, theme);
+			} catch {
+				// Storage is blocked or full: the attribute still pins this page.
+			}
+			render(button);
+		});
+
+		// While unpinned the page follows the device; keep the button in step.
+		media.addEventListener('change', () => render(button));
+	}
+</script>

@@ -1,0 +1,59 @@
+---
+// Wordmark, nav and theme toggle (design.md, Component values: Header).
+// One row from `sm` up; below it, the nav drops to a second row. No nav
+// element and no second row while the nav is empty.
+import { isCurrentPath, SITE, type NavItem } from '../lib/site';
+import Container from './Container.astro';
+import ThemeToggle from './ThemeToggle.astro';
+
+/** Props for `SiteHeader`. */
+interface Props {
+	/** The nav entries in screen order; the layout passes `SITE.nav`. */
+	nav: readonly NavItem[];
+}
+
+const { nav } = Astro.props;
+const pathname = Astro.url.pathname;
+---
+
+<header class="border-b border-line [view-transition-name:site-header]">
+	<Container
+		class:list={[
+			'grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-6 gap-y-3 py-5',
+			nav.length > 0 && 'sm:grid-cols-[minmax(0,1fr)_auto_auto]',
+		]}
+	>
+		<a
+			href="/"
+			class="font-serif text-lg font-semibold text-text no-underline hover:text-text"
+			data-wordmark
+		>
+			{SITE.name}
+		</a>
+		{
+			nav.length > 0 && (
+				<nav
+					aria-label="Main"
+					class="col-span-2 row-start-2 sm:col-span-1 sm:col-start-2 sm:row-start-1"
+				>
+					<ul class="flex flex-wrap gap-x-5 gap-y-2">
+						{nav.map((item) => (
+							<li>
+								<a
+									href={item.href}
+									aria-current={isCurrentPath(pathname, item.href) ? 'page' : undefined}
+									class="text-base text-muted no-underline transition-colors duration-(--duration-fast) hover:text-text aria-[current=page]:font-semibold aria-[current=page]:text-text aria-[current=page]:underline aria-[current=page]:decoration-accent aria-[current=page]:decoration-2"
+								>
+									{item.label}
+								</a>
+							</li>
+						))}
+					</ul>
+				</nav>
+			)
+		}
+		<div class:list={['col-start-2 row-start-1', nav.length > 0 && 'sm:col-start-3']}>
+			<ThemeToggle />
+		</div>
+	</Container>
+</header>

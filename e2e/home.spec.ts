@@ -34,10 +34,11 @@ test.describe('home page from the static build', () => {
 	test('applies the compiled Tailwind styles', async ({ page }) => {
 		await page.goto('/');
 
-		const main = page.getByRole('main');
-		// max-w-2xl is 42rem, i.e. 672px at the default 16px root size.
-		await expect(main).toHaveCSS('max-width', '672px');
-		await expect(main).toHaveCSS('display', 'flex');
+		// The content sits in a measure width Container: 42rem, i.e. 672px at
+		// the default 16px root size.
+		const column = page.getByRole('main').locator('> div').first();
+		await expect(column).toHaveCSS('max-width', '672px');
+		await expect(page.locator('body')).toHaveCSS('display', 'flex');
 	});
 
 	// covers: AC-3

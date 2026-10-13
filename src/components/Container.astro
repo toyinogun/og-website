@@ -1,0 +1,26 @@
+---
+// Centres content at the page or reading width, with the page gutter inside
+// the max width (design.md, Space and layout). Never nested.
+
+/** Props for `Container`. */
+interface Props {
+	/** `page` is 72rem, `measure` the 42rem reading column. Defaults to `page`. */
+	width?: 'page' | 'measure';
+	/** The element to render. Defaults to `div`. */
+	as?: 'div' | 'article' | 'header' | 'footer';
+	/** Extra layout classes; never colour. */
+	class?: string;
+}
+
+const { width = 'page', as: Tag = 'div', class: className } = Astro.props;
+---
+
+<Tag
+	class:list={[
+		'mx-auto w-full px-5 md:px-8',
+		width === 'page' ? 'max-w-page' : 'max-w-measure',
+		className,
+	]}
+>
+	<slot />
+</Tag>
