@@ -15,10 +15,10 @@ _These are recommendations to keep your build orderly, not requirements. Skip an
 
 | # | Feature | Phase | Status |
 |---|---------|-------|--------|
-| 1 | Stack & architecture | Foundation | in-progress |
-| 2 | Coding standards & tooling | Foundation | in-progress |
-| 3 | Content model | Foundation | planned |
-| 4 | Design system & UI foundation | Foundation | planned |
+| 1 | Stack & architecture | Foundation | done |
+| 2 | Coding standards & tooling | Foundation | done |
+| 3 | Content model | Foundation | in-progress |
+| 4 | Design system & UI foundation | Foundation | in-progress |
 | 5 | Live on your domain | Foundation | done |
 | 6 | Bio & project write ups | Release 1 | planned |
 | 7 | Home page | Release 1 | planned |
@@ -39,7 +39,7 @@ Decide the framework, language, hosting and content tooling, then scaffold a run
 **Done when:** the stack and the hosting choice are recorded in a spec, the scaffold boots locally, the production build passes, and the hosting choice is confirmed to cost nothing at this traffic level.
 - [x] Decide the stack (spec): `/architect stack & architecture`
 - [x] Scaffold from the decision: `/develop scaffold`
-- [ ] Confirm the hosting cost is zero: record the account, plan, Workers Builds allowance and exhaustion behaviour from the Cloudflare dashboard, into spec 1's Follow-up
+- [x] Confirm the hosting cost is zero: record the account, plan, Workers Builds allowance and exhaustion behaviour from the Cloudflare dashboard, into spec 1's Follow-up
 - [x] Verify it: `/check verify scaffold`
 - [x] Test it: `/test scaffold`
 
@@ -48,20 +48,34 @@ spec [0001](../specs/0001-stack-architecture/index.md) · decided: Astro static 
 ### 2. Coding standards & tooling
 Capture the conventions and tooling choices from the real scaffolded project, then install them. Doing this early means every later page is written to the same rules.
 **Done when:** root `AGENTS.md` reflects the real stack and conventions, and lint, format and the type check all run clean.
-- [ ] Capture conventions and tooling choices: `/audit`
+- [x] Capture conventions and tooling choices: `/audit`
 - [x] Install the tooling: `/develop tooling`
 
 code in the repository root (`eslint.config.js`, `.prettierrc.json`, `.prettierignore`, `.husky/pre-commit`, `.github/workflows/ci.yml`, `package.json` scripts and `lint-staged`)
 
-### 3. Content model · needs a decision
+### 3. Content model
 The shape of a project entry and the structure of a case study: what a write up contains, in what order, and which fields the pages can rely on. This is the data model of a content site, and it is the most expensive thing here to get wrong, because changing it later means rewriting every write up and every page that reads one.
 **Done when:** the fields of a project entry are fixed and written down, a case study has a defined structure that works for a hiring reader and a client reader, and the model covers images, links, tags and ordering without a later rewrite.
-- [ ] Design it (spec): `/architect content model`
+- [x] Design it (spec): `/architect content model`
+- [ ] Build it: `/develop content model`
+  - [ ] Schema and vocabulary: the fixed tag lists and the strict project schema (AC-1, AC-2, AC-9)
+  - [ ] Checks in the build: body, image, cover, order and slug checks, run by the collection loader (AC-3, AC-4, AC-5, AC-8, AC-11, AC-12, AC-13)
+  - [ ] Helpers, example entry, authoring guide and the real build proof (AC-1, AC-5, AC-6, AC-7, AC-10, AC-14)
+- [ ] Verify it: `/check verify content model`
 
-### 4. Design system & UI foundation · needs a decision
+spec [0002](../specs/0002-content-model/index.md) · decided: one typed `projects` collection, one folder per project, 19 strict fields, case study under Problem, Approach, Outcome, checks enforced in the build and in the tests
+
+### 4. Design system & UI foundation
 The visual language, layout primitives and base components, including the light and dark theme you asked for. Theme belongs here rather than in its own feature, because building it into the components costs very little and retrofitting it means rebuilding them.
-**Done when:** `design.md` covers type, colour, spacing and the base components, light and dark both work, and the components handle focus and keyboard use.
-- [ ] Design it (spec): `/architect design system & UI foundation`
+**Done when:** `design.md` covers type, colour, spacing and the base components, light and dark both work, and the components handle focus and keyboard use to WCAG 2.2 AA (your target, set 2026-10-13).
+- [x] Design it (spec): `/architect design system & UI foundation`
+- [ ] Build it: `/develop design system & UI foundation`
+  - [ ] The look, live on every page: fonts, tokens, theme script and toggle, base layout with skip link, header, footer, and the 404 page (AC-4 to AC-13, AC-17, AC-19)
+  - [ ] The building blocks for pages: Container, Section, Stack, Grid, Button and Prose with dual theme code highlighting (AC-14, AC-15)
+  - [ ] Polish and the checks: page transitions, favicon, dev only style guide, design contract and build tests, browser tests (AC-1 to AC-3, AC-16, AC-18)
+- [ ] Verify it: `/check verify design system & UI foundation`
+
+spec [0003](../specs/0003-design-system/index.md) · decided: quiet editorial look in [`design.md`](../../design.md), colour tokens holding both themes through `light-dark()`, device theme plus a remembered toggle, Source Serif 4 and Inter self hosted, typed layout components, a 404 page
 
 ### 5. Live on your domain
 Get one real page deployed on the domain you own, with the build running automatically. This is the thin end to end slice that proves the stack, the host and the domain all work together, and doing it now means launch day is not the first time you find out.
@@ -144,10 +158,9 @@ Collecting email addresses so you can send something later. Flagged because it m
 - [ ] Design it (spec): `/architect newsletter signup`
 
 ## Deferred
-Out of scope for the current build pass, kept so the plan stays honest. The first four are things you chose not to include; they are listed here with the consequence so the choice stays visible rather than quietly disappearing.
+Out of scope for the current build pass, kept so the plan stays honest. The first three are things you chose not to include (the accessibility target left this list on 2026-10-13 when you set WCAG 2.2 AA in spec 0003); they are listed here with the consequence so the choice stays visible rather than quietly disappearing.
 - **Visitor analytics**: without it there is no way to tell whether anyone reaches the contact form, which is the one number that says whether this site is doing its job · needs a decision
 - **Privacy note**: the contact form, and later the newsletter, collect names, email addresses and messages, so a short privacy note is the honest minimum once you are storing someone's email · needs a decision
-- **Accessibility target**: not committing to one means the base components get built without it, and adding it later means rebuilding them
 - **Speed target**: no stated Core Web Vitals number, so speed stays a hope rather than a constraint
 - **Error monitoring**: nothing will tell you when the contact form starts failing silently · needs a decision
 - **Editing content without code**: a real convenience later, but a significant decision and cost for a site whose content changes a few times a year · needs a decision
