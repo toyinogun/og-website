@@ -57,13 +57,13 @@ code in the repository root (`eslint.config.js`, `.prettierrc.json`, `.prettieri
 The shape of a project entry and the structure of a case study: what a write up contains, in what order, and which fields the pages can rely on. This is the data model of a content site, and it is the most expensive thing here to get wrong, because changing it later means rewriting every write up and every page that reads one.
 **Done when:** the fields of a project entry are fixed and written down, a case study has a defined structure that works for a hiring reader and a client reader, and the model covers images, links, tags and ordering without a later rewrite.
 - [x] Design it (spec): `/architect content model`
-- [ ] Build it: `/develop content model`
-  - [ ] Schema and vocabulary: the fixed tag lists and the strict project schema (AC-1, AC-2, AC-9)
-  - [ ] Checks in the build: body, image, cover, order and slug checks, run by the collection loader (AC-3, AC-4, AC-5, AC-8, AC-11, AC-12, AC-13)
-  - [ ] Helpers, example entry, authoring guide and the real build proof (AC-1, AC-5, AC-6, AC-7, AC-10, AC-14)
+- [x] Build it: `/develop content model`
+  - [x] Schema and vocabulary: the fixed tag lists and the strict project schema (AC-1, AC-2, AC-9)
+  - [x] Checks in the build: body, image, cover, order and slug checks, run by the collection loader (AC-3, AC-4, AC-5, AC-8, AC-11, AC-12, AC-13)
+  - [x] Helpers, example entry, authoring guide and the real build proof (AC-1, AC-5, AC-6, AC-7, AC-10, AC-14)
 - [ ] Verify it: `/check verify content model`
 
-spec [0002](../specs/0002-content-model/index.md) · decided: one typed `projects` collection, one folder per project, 19 strict fields, case study under Problem, Approach, Outcome, checks enforced in the build and in the tests
+spec [0002](../specs/0002-content-model/index.md) · decided: one typed `projects` collection, one folder per project, 19 strict fields, case study under Problem, Approach, Outcome, checks enforced in the build and in the tests · code in `src/content.config.ts`, `src/lib/` (`vocabulary.ts`, `project-schema.ts`, `project-checks.ts`, `projects.ts`), `src/content/projects/`, `tests/content-contract.test.ts`
 
 ### 4. Design system & UI foundation
 The visual language, layout primitives and base components, including the light and dark theme you asked for. Theme belongs here rather than in its own feature, because building it into the components costs very little and retrofitting it means rebuilding them.
