@@ -45,7 +45,7 @@ _Spec 0001 carries no numbered acceptance criteria for this feature, so these AC
 - [x] `curl -s https://toyintest.org/ | grep -o '<title>[^<]*'` → `<title>Toyin Ogunseinde` → AC-1
 - [x] `curl -s https://toyintest.org/ | grep -o 'rel="canonical" href="[^"]*'` → `https://toyintest.org/` → AC-1
 - [x] `curl -sI http://toyintest.org/` → a redirect to `https://toyintest.org/` → AC-1
-- [ ] `curl -sI 'https://www.toyintest.org/some/path?x=1'` → `301` with `location: https://toyintest.org/some/path?x=1` → AC-4
+- [x] `curl -sI 'https://www.toyintest.org/some/path?x=1'` → `301` with `location: https://toyintest.org/some/path?x=1` → AC-4 (2026-10-13: steady 301 with path and query kept over two minutes; `http://www` first upgrades to `https://www`, then redirects)
 - [x] Push a small visible change to `main` → a new Workers Builds run starts, passes `astro check` and `astro build`, runs `wrangler deploy`, and the change shows on `https://toyintest.org/` within minutes → AC-2 (2026-10-13: the second push was the docs only merge `3025a1f`, so nothing visible changed; proven by a green `Workers Builds: og-website` check and a new deployed version `c65d6815`)
 - [x] After that second deploy, `toyintest.org` is still listed as a Custom Domain on the `og-website` Worker and still serves → AC-2 (2026-10-13: still serves HTTP 200 after the redeploy; the dashboard listing itself was not read)
 - [ ] Push a commit that fails `astro check` on a throwaway branch merged nowhere, or read the build log of a failed build if one occurs → the build stops before deploy, and the live site keeps serving the last good version → AC-2
