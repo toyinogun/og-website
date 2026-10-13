@@ -19,7 +19,7 @@ _These are recommendations to keep your build orderly, not requirements. Skip an
 | 2 | Coding standards & tooling | Foundation | in-progress |
 | 3 | Content model | Foundation | planned |
 | 4 | Design system & UI foundation | Foundation | planned |
-| 5 | Live on your domain | Foundation | in-progress |
+| 5 | Live on your domain | Foundation | done |
 | 6 | Bio & project write ups | Release 1 | planned |
 | 7 | Home page | Release 1 | planned |
 | 8 | Work listing | Release 1 | planned |
@@ -69,7 +69,7 @@ Get one real page deployed on the domain you own, with the build running automat
 - [x] Build it: `/develop live on your domain`
 - [x] Verify it: `/check verify live on your domain`
 
-Open detail: tell the Engineer which domain you own when this one starts.
+Domain: `toyintest.org` (spec 0001), live at https://toyintest.org since 2026-10-13. Config in `wrangler.jsonc`; verify steps in `docs/specs/0001-stack-architecture/verify.md`.
 
 ## Release 1: the thinnest usable whole site
 
