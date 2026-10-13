@@ -13,8 +13,14 @@ export default defineConfig({
 		baseURL: 'http://localhost:4322',
 	},
 	projects: [
-		{ name: 'desktop', use: { ...devices['Desktop Chrome'], viewport: { width: 1280, height: 800 } } },
-		{ name: 'mobile', use: { ...devices['Desktop Chrome'], viewport: { width: 375, height: 740 } } },
+		{
+			name: 'desktop',
+			use: { ...devices['Desktop Chrome'], viewport: { width: 1280, height: 800 } },
+		},
+		{
+			name: 'mobile',
+			use: { ...devices['Desktop Chrome'], viewport: { width: 375, height: 740 } },
+		},
 	],
 	webServer: {
 		// `--ignore-lock` keeps preview in the foreground: Astro otherwise detaches

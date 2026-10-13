@@ -8,7 +8,11 @@ import astroConfig from '../astro.config.mjs';
 const root = new URL('../', import.meta.url);
 const read = (path: string) => readFileSync(new URL(path, root), 'utf8');
 const readJsonc = (path: string) =>
-	JSON.parse(read(path).replace(/^\s*\/\/.*$/gm, '').replace(/,(\s*[}\]])/g, '$1'));
+	JSON.parse(
+		read(path)
+			.replace(/^\s*\/\/.*$/gm, '')
+			.replace(/,(\s*[}\]])/g, '$1'),
+	);
 
 const pkg = JSON.parse(read('package.json'));
 const wrangler = readJsonc('wrangler.jsonc');

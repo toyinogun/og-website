@@ -6,7 +6,9 @@ import Index from '../src/pages/index.astro';
 
 describe('home page (placeholder)', () => {
 	async function render() {
-		const container = await AstroContainer.create({ astroConfig: { site: 'https://toyintest.org' } });
+		const container = await AstroContainer.create({
+			astroConfig: { site: 'https://toyintest.org' },
+		});
 		return container.renderToString(Index, {
 			request: new Request('http://localhost:4321/'),
 		});

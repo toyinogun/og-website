@@ -24,7 +24,10 @@ test.describe('home page from the static build', () => {
 	test('points the canonical URL at the production origin', async ({ page }) => {
 		await page.goto('/');
 
-		await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', 'https://toyintest.org/');
+		await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
+			'href',
+			'https://toyintest.org/',
+		);
 	});
 
 	// covers: AC-8

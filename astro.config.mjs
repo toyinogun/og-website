@@ -8,9 +8,9 @@ import tailwindcss from '@tailwindcss/vite';
 // an adapter would turn free static asset requests into metered Worker
 // invocations (spec 0001, "Build and deployment contract").
 export default defineConfig({
-  site: 'https://toyintest.org',
+	site: 'https://toyintest.org',
 
-  vite: {
-    plugins: [tailwindcss()],
-  },
+	vite: {
+		plugins: [tailwindcss()],
+	},
 });
