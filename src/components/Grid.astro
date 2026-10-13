@@ -1,0 +1,30 @@
+---
+// Up to three columns: one on phones, `min(cols, 2)` from md, `cols` from lg
+// (design.md, Space and layout; grid gaps md 1.5rem, lg 3rem).
+
+/** Props for `Grid`. */
+interface Props {
+	/** Columns from `lg` up. Defaults to 2. */
+	cols?: 1 | 2 | 3;
+	/** Space between cells. Defaults to `md`. */
+	gap?: 'md' | 'lg';
+	/** The element to render. Defaults to `div`. */
+	as?: 'div' | 'ul';
+	/** Extra layout classes; never colour. */
+	class?: string;
+}
+
+const COLUMNS = {
+	1: 'grid-cols-1',
+	2: 'grid-cols-1 md:grid-cols-2',
+	3: 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3',
+} as const;
+
+const GAPS = { md: 'gap-6', lg: 'gap-12' } as const;
+
+const { cols = 2, gap = 'md', as: Tag = 'div', class: className } = Astro.props;
+---
+
+<Tag class:list={['grid', COLUMNS[cols], GAPS[gap], className]}>
+	<slot />
+</Tag>

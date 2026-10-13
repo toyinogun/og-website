@@ -8,5 +8,7 @@
 	"compatibility_date": "2026-10-13",
 	"assets": {
 		"directory": "./dist",
+		// Unknown paths get dist/404.html with status 404 (spec 0003, AC-19).
+		"not_found_handling": "404-page",
 	},
 }

@@ -1,1 +1,313 @@
 @import 'tailwindcss';
+@plugin '@tailwindcss/typography';
+
+/*
+ * Design tokens (spec 0003). The values mirror the token tables in design.md
+ * exactly; tests/design-contract.test.ts fails on any drift. Every colour holds
+ * its light and its dark value through light-dark(), so a component that uses
+ * a token works in both themes with no extra code.
+ */
+
+/* For future non colour edge cases only. Components never use `dark:` for colour. */
+@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
+
+@theme static {
+	--color-*: initial;
+	--text-*: initial;
+
+	--color-bg: light-dark(oklch(98.5% 0.006 85), oklch(17% 0.006 65));
+	--color-surface: light-dark(oklch(96.5% 0.008 85), oklch(21% 0.007 65));
+	--color-text: light-dark(oklch(23% 0.012 65), oklch(93% 0.01 85));
+	--color-muted: light-dark(oklch(47% 0.012 65), oklch(72% 0.01 80));
+	--color-line: light-dark(oklch(89% 0.01 80), oklch(32% 0.008 65));
+	--color-accent: light-dark(oklch(46% 0.13 258), oklch(76% 0.1 255));
+	--color-accent-strong: light-dark(oklch(39% 0.13 258), oklch(84% 0.08 255));
+	--color-on-accent: light-dark(oklch(98.5% 0.006 85), oklch(17% 0.006 65));
+
+	--text-sm: 0.9375rem;
+	--text-sm--line-height: 1.5;
+	--text-base: 1.125rem;
+	--text-base--line-height: 1.65;
+	--text-lg: 1.25rem;
+	--text-lg--line-height: 1.6;
+	--text-xl: 1.5rem;
+	--text-xl--line-height: 1.35;
+	--text-2xl: 1.875rem;
+	--text-2xl--line-height: 1.25;
+	--text-3xl: 2.5rem;
+	--text-3xl--line-height: 1.15;
+	--text-display: clamp(2.5rem, 1.75rem + 3vw, 4rem);
+	--text-display--line-height: 1.05;
+
+	--font-sans: var(--font-inter);
+	--font-serif: var(--font-source-serif);
+	--font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+	--container-page: 72rem;
+	--container-measure: 42rem;
+
+	--radius-sm: 0.375rem;
+	--radius-md: 0.75rem;
+}
+
+/* With no attribute the tokens follow the device; `data-theme` pins one theme. */
+:root {
+	color-scheme: light dark;
+	--duration-fast: 150ms;
+	--duration-page: 200ms;
+}
+
+:root[data-theme='light'] {
+	color-scheme: light;
+}
+
+:root[data-theme='dark'] {
+	color-scheme: dark;
+}
+
+@layer base {
+	html {
+		background-color: var(--color-bg);
+		color: var(--color-text);
+	}
+
+	body {
+		font-family: var(--font-sans);
+		font-size: var(--text-base);
+		line-height: var(--text-base--line-height);
+		-webkit-font-smoothing: antialiased;
+	}
+
+	h1,
+	h2,
+	h3,
+	h4 {
+		font-family: var(--font-serif);
+		font-weight: 600;
+	}
+
+	h1 {
+		font-size: var(--text-3xl);
+		line-height: var(--text-3xl--line-height);
+		letter-spacing: -0.01em;
+	}
+
+	h2 {
+		font-size: var(--text-2xl);
+		line-height: var(--text-2xl--line-height);
+		letter-spacing: -0.01em;
+	}
+
+	h3 {
+		font-size: var(--text-xl);
+		line-height: var(--text-xl--line-height);
+	}
+
+	h4 {
+		font-size: var(--text-lg);
+		line-height: var(--text-lg--line-height);
+	}
+
+	h5,
+	h6 {
+		font-size: var(--text-base);
+		font-weight: 600;
+	}
+
+	strong,
+	b {
+		font-weight: 600;
+	}
+
+	code,
+	kbd,
+	pre,
+	samp {
+		font-family: var(--font-mono);
+	}
+
+	/* Links in text: accent, a 1px underline that thickens on hover. */
+	a {
+		color: var(--color-accent);
+		text-decoration-line: underline;
+		text-decoration-thickness: 1px;
+		text-underline-offset: 0.2em;
+		transition-property: color, text-decoration-color, text-decoration-thickness;
+		transition-duration: var(--duration-fast);
+	}
+
+	a:hover {
+		color: var(--color-accent-strong);
+		text-decoration-thickness: 2px;
+	}
+
+	/* The one focus ring, everywhere (design.md, Component values). */
+	:focus-visible {
+		outline: 2px solid var(--color-accent);
+		outline-offset: 3px;
+	}
+}
+
+/*
+ * Prose (design.md, Prose): the typography plugin, its colour variables mapped
+ * to the tokens so `prose-invert` is never needed, and the overrides. Nested
+ * rules here outrank the plugin's own single class selectors.
+ */
+@utility prose {
+	--tw-prose-body: var(--color-text);
+	--tw-prose-headings: var(--color-text);
+	--tw-prose-bold: var(--color-text);
+	--tw-prose-code: var(--color-text);
+	--tw-prose-kbd: var(--color-text);
+	--tw-prose-lead: var(--color-muted);
+	--tw-prose-counters: var(--color-muted);
+	--tw-prose-bullets: var(--color-muted);
+	--tw-prose-quotes: var(--color-muted);
+	--tw-prose-captions: var(--color-muted);
+	--tw-prose-links: var(--color-accent);
+	--tw-prose-hr: var(--color-line);
+	--tw-prose-quote-borders: var(--color-line);
+	--tw-prose-th-borders: var(--color-line);
+	--tw-prose-td-borders: var(--color-line);
+	--tw-prose-kbd-shadows: var(--color-line);
+
+	max-width: var(--container-measure);
+	font-size: var(--text-base);
+	line-height: var(--text-base--line-height);
+	overflow-wrap: break-word;
+
+	& :where(h1, h2, h3, h4) {
+		font-family: var(--font-serif);
+		font-weight: 600;
+	}
+
+	& h1 {
+		font-size: var(--text-3xl);
+		line-height: var(--text-3xl--line-height);
+		font-weight: 600;
+	}
+
+	& h2 {
+		font-size: var(--text-2xl);
+		line-height: var(--text-2xl--line-height);
+		font-weight: 600;
+	}
+
+	& h3 {
+		font-size: var(--text-xl);
+		line-height: var(--text-xl--line-height);
+		font-weight: 600;
+	}
+
+	& h4 {
+		font-size: var(--text-lg);
+		line-height: var(--text-lg--line-height);
+		font-weight: 600;
+	}
+
+	& :where(h5, h6) {
+		font-family: var(--font-sans);
+		font-size: var(--text-base);
+		font-weight: 600;
+	}
+
+	& a {
+		font-weight: inherit;
+		text-decoration-thickness: 1px;
+		text-underline-offset: 0.2em;
+		transition-property: color, text-decoration-color, text-decoration-thickness;
+		transition-duration: var(--duration-fast);
+	}
+
+	& a:hover {
+		color: var(--color-accent-strong);
+		text-decoration-thickness: 2px;
+	}
+
+	& blockquote {
+		border-inline-start-width: 2px;
+		border-inline-start-color: var(--color-line);
+		color: var(--color-muted);
+		font-style: normal;
+		font-weight: inherit;
+	}
+
+	& blockquote p:first-of-type::before,
+	& blockquote p:last-of-type::after {
+		content: none;
+	}
+
+	& :not(pre) > code {
+		background-color: var(--color-surface);
+		border-radius: var(--radius-sm);
+		padding: 0.1em 0.35em;
+		font-size: 0.9em;
+	}
+
+	& :not(pre) > code::before,
+	& :not(pre) > code::after {
+		content: none;
+	}
+
+	& pre {
+		border-radius: var(--radius-md);
+		overflow-x: auto;
+		font-size: 0.9em;
+	}
+
+	& table {
+		display: block;
+		overflow-x: auto;
+	}
+
+	& img {
+		max-width: 100%;
+		height: auto;
+		border-radius: var(--radius-md);
+	}
+
+	& figcaption {
+		font-size: var(--text-sm);
+		line-height: var(--text-sm--line-height);
+		color: var(--color-muted);
+	}
+}
+
+/*
+ * Page transitions (design.md, Motion): the browser's own cross document view
+ * transitions cross fade the page while the header swaps instantly. No
+ * Astro ClientRouter.
+ */
+@view-transition {
+	navigation: auto;
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+	animation-duration: var(--duration-page);
+}
+
+::view-transition-group(site-header),
+::view-transition-old(site-header),
+::view-transition-new(site-header) {
+	animation: none;
+}
+
+/* Reduced motion: no page transitions, no view transition animations, no transitions. */
+@media (prefers-reduced-motion: reduce) {
+	@view-transition {
+		navigation: none;
+	}
+
+	::view-transition-group(*),
+	::view-transition-old(*),
+	::view-transition-new(*) {
+		animation: none;
+	}
+
+	*,
+	*::before,
+	*::after {
+		transition: none;
+	}
+}

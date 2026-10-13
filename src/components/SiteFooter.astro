@@ -1,0 +1,38 @@
+---
+// Links out and the copyright line (design.md, Component values: Footer).
+import { copyrightLine, SITE, type OutLink } from '../lib/site';
+import Container from './Container.astro';
+
+/** Props for `SiteFooter`. */
+interface Props {
+	/** Links out in screen order; the layout passes `SITE.links`. */
+	links: readonly OutLink[];
+	/** The copyright year. Defaults to the build year. */
+	year?: number;
+}
+
+const { links, year = new Date().getFullYear() } = Astro.props;
+---
+
+<footer class="border-t border-line text-sm text-muted">
+	<Container class="flex flex-col gap-3 py-10">
+		{
+			links.length > 0 && (
+				<ul class="flex flex-wrap gap-x-4 gap-y-1">
+					{links.map((link) => (
+						<li>
+							<a
+								href={link.href}
+								rel={link.kind === 'profile' ? 'me' : undefined}
+								class="inline-flex min-h-6 items-center"
+							>
+								{link.label}
+							</a>
+						</li>
+					))}
+				</ul>
+			)
+		}
+		<p>{copyrightLine(SITE.name, year)}</p>
+	</Container>
+</footer>

@@ -1,11 +1,20 @@
 ---
-// The skeleton document every page sits in. Deliberately plain: feature 4
-// (design system and UI foundation) owns type, colour, spacing and the light
-// and dark theme, and feature 12 owns share cards and structured data.
+// The document every page sits in (spec 0003): theme script, fonts, skip
+// link, header, the one <main>, footer. Pages put their content straight into
+// the slot and never add their own <main>. Feature 12 owns share cards and
+// structured data.
+import { Font } from 'astro:assets';
+import SiteFooter from '../components/SiteFooter.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import { SITE } from '../lib/site';
+import { THEME_INIT_SCRIPT } from '../lib/theme';
 import '../styles/global.css';
 
+/** Props for `BaseLayout`. */
 interface Props {
+	/** The document title. */
 	title: string;
+	/** The meta description; omitted when empty. */
 	description?: string;
 }
 
@@ -18,14 +27,27 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<script is:inline set:html={THEME_INIT_SCRIPT} />
+		<Font cssVariable="--font-inter" preload={[{ style: 'normal' }]} />
+		<Font cssVariable="--font-source-serif" preload />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
+		<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 		<meta name="generator" content={Astro.generator} />
 		<title>{title}</title>
 		{description && <meta name="description" content={description} />}
 		<link rel="canonical" href={canonical} />
 	</head>
-	<body>
-		<slot />
+	<body class="flex min-h-dvh flex-col">
+		<a
+			href="#main"
+			class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:rounded-sm focus:bg-surface focus:px-4 focus:py-3 focus:text-text"
+		>
+			Skip to content
+		</a>
+		<SiteHeader nav={SITE.nav} />
+		<main id="main" tabindex="-1" class="flex-1">
+			<slot />
+		</main>
+		<SiteFooter links={SITE.links} />
 	</body>
 </html>

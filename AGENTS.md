@@ -21,6 +21,7 @@ npm ci                # Install
 npm run dev           # Dev server (agents: `astro dev --background`, see Development below)
 npm run build         # astro check (type gate), then astro build into dist/
 npm test              # Vitest unit and contract tests
+npm run test:build    # Vitest against dist/ (`tests/build/`); run `npm run build` first
 npm run test:e2e      # Playwright against the production build (desktop and mobile widths)
 ```
 
@@ -34,6 +35,8 @@ Stored in `docs/specs/`. Format: `docs/specs/NNNN-title/index.md`, with `rationa
 - Data is immutable: `const`, `readonly` props and arrays, never mutate in place. Prefer `map`, `filter`, `reduce` where it reads better than a loop.
 - Side effects (file reads, network, the future contact form handler) live at the edges, never inside helpers or components. Expected failures are explicit return values, not thrown exceptions.
 - Astro folder convention in `src/`: `pages/` (routes only), `layouts/`, `components/`, `content/`, `lib/` (pure TypeScript helpers), `styles/`.
+- Design system: build all UI to `design.md` (art direction and the maximalist product bar); token values live in CSS.
+- `src/dev/` holds dev server only pages (the style guide at `/styleguide`, injected in `astro.config.mjs` when `command === 'dev'`); the static build never emits them (spec 0003).
 - Keep every page pre rendered. Never add `@astrojs/cloudflare` or on demand rendering: it turns free static requests into metered Worker invocations (spec 0001).
 - Projects (spec 0002): one folder per project at `src/content/projects/<slug>/index.md`, written to `docs/specs/0002-content-model/authoring.md`; the build fails on any rule break. Pages get entries from `getCollection('projects')`, then filter and sort only through the helpers in `src/lib/projects.ts` (`visibleProjects` with `includeDrafts: import.meta.env.DEV`, `sortProjects`, `featuredProjects`), never on their own.
 - Naming: PascalCase `.astro` components, kebab case routes and content files, camelCase functions and variables.

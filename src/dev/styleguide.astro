@@ -1,0 +1,186 @@
+---
+// The style guide (design.md, Style guide): every token, every component with
+// each prop value and variant, and sample Markdown through Prose. Injected at
+// /styleguide on the dev server only by the `og-website:styleguide`
+// integration in astro.config.mjs; it lives outside src/pages/ so the
+// production build never sees it.
+import Button from '../components/Button.astro';
+import Container from '../components/Container.astro';
+import Grid from '../components/Grid.astro';
+import Prose from '../components/Prose.astro';
+import Section from '../components/Section.astro';
+import Stack from '../components/Stack.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { Content as Sample } from './sample.md';
+
+const COLOURS = [
+	{ token: '--color-bg', swatch: 'bg-bg' },
+	{ token: '--color-surface', swatch: 'bg-surface' },
+	{ token: '--color-text', swatch: 'bg-text' },
+	{ token: '--color-muted', swatch: 'bg-muted' },
+	{ token: '--color-line', swatch: 'bg-line' },
+	{ token: '--color-accent', swatch: 'bg-accent' },
+	{ token: '--color-accent-strong', swatch: 'bg-accent-strong' },
+	{ token: '--color-on-accent', swatch: 'bg-on-accent' },
+] as const;
+
+const SIZES = [
+	{ token: '--text-display', sample: 'text-display font-serif font-semibold' },
+	{ token: '--text-3xl', sample: 'text-3xl font-serif font-semibold' },
+	{ token: '--text-2xl', sample: 'text-2xl font-serif font-semibold' },
+	{ token: '--text-xl', sample: 'text-xl font-serif font-semibold' },
+	{ token: '--text-lg', sample: 'text-lg' },
+	{ token: '--text-base', sample: 'text-base' },
+	{ token: '--text-sm', sample: 'text-sm' },
+] as const;
+
+const STACK_GAPS = ['sm', 'md', 'lg', 'xl'] as const;
+const GRID_COLS = [1, 2, 3] as const;
+const GRID_GAPS = ['md', 'lg'] as const;
+---
+
+<BaseLayout title="Style guide" description="Every token and component, on the dev server only.">
+	<Container>
+		<Stack class="py-16 md:py-24">
+			<h1>Style guide</h1>
+			<p class="max-w-measure text-muted">
+				Every token and component from design.md, in the active theme. Switch the theme with the
+				toggle in the header. This page exists on the dev server only.
+			</p>
+		</Stack>
+
+		<Section heading="Colour" id="colour" class="border-t border-line">
+			<Grid cols={3} as="ul">
+				{
+					COLOURS.map(({ token, swatch }) => (
+						<li class="flex items-center gap-4">
+							<span class:list={['size-12 shrink-0 rounded-md border border-line', swatch]} />
+							<code class="text-sm">{token}</code>
+						</li>
+					))
+				}
+			</Grid>
+		</Section>
+
+		<Section heading="Type" id="type" class="border-t border-line">
+			<Stack gap="lg" as="ul">
+				{
+					SIZES.map(({ token, sample }) => (
+						<li>
+							<code class="text-sm text-muted">{token}</code>
+							<p class={sample}>Quiet editorial type</p>
+						</li>
+					))
+				}
+				<li>
+					<code class="text-sm text-muted">headings h1 to h6</code>
+					<div class="mt-3 flex flex-col gap-2">
+						<p class="font-serif text-3xl font-semibold">h1, inner pages</p>
+						<p class="font-serif text-2xl font-semibold">h2</p>
+						<p class="font-serif text-xl font-semibold">h3</p>
+						<p class="font-serif text-lg font-semibold">h4</p>
+						<p class="text-base font-semibold">h5 and h6</p>
+					</div>
+				</li>
+			</Stack>
+		</Section>
+
+		<Section heading="Button" id="button" class="border-t border-line">
+			<Stack>
+				<div class="flex flex-wrap gap-4">
+					<Button>Primary button</Button>
+					<Button variant="secondary">Secondary button</Button>
+					<Button type="submit">Submit button</Button>
+				</div>
+				<div class="flex flex-wrap gap-4">
+					<Button href="/">Primary link</Button>
+					<Button href="/" variant="secondary">Secondary link</Button>
+				</div>
+			</Stack>
+		</Section>
+
+		<Section heading="Links and focus" id="links" class="border-t border-line">
+			<p class="max-w-measure">
+				A <a href="/">link in text</a> is the accent with a thin underline; hover thickens it. Tab through
+				this page to see the focus ring on every control.
+			</p>
+		</Section>
+
+		<Section heading="Stack" id="stack" class="border-t border-line">
+			<Grid cols={2}>
+				{
+					STACK_GAPS.map((gap) => (
+						<div>
+							<code class="text-sm text-muted">gap="{gap}"</code>
+							<Stack gap={gap} class="mt-3">
+								<div class="h-6 rounded-sm border border-line bg-surface" />
+								<div class="h-6 rounded-sm border border-line bg-surface" />
+								<div class="h-6 rounded-sm border border-line bg-surface" />
+							</Stack>
+						</div>
+					))
+				}
+				<div>
+					<code class="text-sm text-muted">as="ul" and as="ol"</code>
+					<Stack gap="sm" as="ol" class="mt-3">
+						<li>First</li>
+						<li>Second</li>
+					</Stack>
+				</div>
+			</Grid>
+		</Section>
+
+		<Section heading="Grid" id="grid" class="border-t border-line">
+			<Stack gap="lg">
+				{
+					GRID_COLS.flatMap((cols) =>
+						GRID_GAPS.map((gap) => (
+							<div>
+								<code class="text-sm text-muted">
+									cols={cols} gap="{gap}"
+								</code>
+								<Grid cols={cols} gap={gap} class="mt-3">
+									{[1, 2, 3].map((cell) => (
+										<div class="rounded-md border border-line bg-surface p-4 text-sm">
+											Cell {cell}
+										</div>
+									))}
+								</Grid>
+							</div>
+						)),
+					)
+				}
+			</Stack>
+		</Section>
+
+		<Section heading="Section" id="section" class="border-t border-line">
+			<Stack>
+				<p class="text-muted">
+					This page is built from Sections: the rhythm above and below, and a heading that labels
+					each one. A Section can also use an h3 heading, or carry no heading at all:
+				</p>
+				<div class="rounded-md border border-line px-4">
+					<Section heading="An h3 Section" headingLevel={3} id="section-h3">
+						<p>Content of a nested Section with an h3 heading.</p>
+					</Section>
+				</div>
+				<div class="rounded-md border border-line px-4">
+					<Section>
+						<p>A Section with no heading.</p>
+					</Section>
+				</div>
+			</Stack>
+		</Section>
+	</Container>
+
+	<Container width="measure">
+		<Section heading="Container and Prose" id="prose" class="border-t border-line">
+			<p class="mb-6 text-sm text-muted">
+				A measure width Container holding Prose with the sample Markdown.
+			</p>
+			<Prose>
+				<Sample />
+			</Prose>
+		</Section>
+	</Container>
+</BaseLayout>

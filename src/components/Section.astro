@@ -1,0 +1,33 @@
+---
+// A <section> with the section rhythm (design.md: 4rem above and below on
+// phones, 6rem from md up) and an optional heading that labels it.
+
+/** Props every `Section` takes. */
+interface SectionBase {
+	/** The heading level when `heading` is given. Defaults to 2. */
+	headingLevel?: 2 | 3;
+	/** Extra layout classes; never colour. */
+	class?: string;
+}
+
+/**
+ * Props for `Section`. With a `heading`, `id` is required: the heading gets
+ * `id="<id>-heading"` and labels the section through `aria-labelledby`.
+ */
+type Props = SectionBase & ({ heading: string; id: string } | { heading?: undefined; id?: string });
+
+const { heading, headingLevel = 2, id, class: className } = Astro.props;
+const headingId = heading ? `${id}-heading` : undefined;
+const Heading = headingLevel === 3 ? 'h3' : 'h2';
+---
+
+<section id={id} aria-labelledby={headingId} class:list={['py-16 md:py-24', className]}>
+	{
+		heading && (
+			<Heading id={headingId} class="mb-6">
+				{heading}
+			</Heading>
+		)
+	}
+	<slot />
+</section>
