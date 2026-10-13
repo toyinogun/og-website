@@ -11,7 +11,7 @@ The visual language of toyintest.org. Decided in [spec 0003](docs/specs/0003-des
 3. **Opacity modifiers** (`bg-accent/10` and similar) are allowed only on decorative surfaces, never on text, borders of controls or anything a reader must see.
 4. **Every interactive element is reachable by keyboard and shows the focus ring** when focused from the keyboard. Never remove an outline without replacing it.
 5. **Motion is optional.** Everything still works, and nothing moves, when the visitor's device asks for reduced motion.
-6. **No accessibility standard is committed** (your decision, recorded in the scope). The contrast floor below is a design quality rule, not a compliance claim.
+6. **The site targets WCAG 2.2 level AA** (your decision, 2026-10-13). The contrast floor below is how the colour part of that is checked; every interactive control also gives at least a 24 by 24 pixel target, and an automated accessibility scan runs in the browser tests (spec 0003, AC-20).
 7. **Browser support:** browsers from 2024 on (Chrome 123, Safari 17.5, Firefox 120 and newer), because the tokens rely on `light-dark()`. Older browsers ignore the colour tokens and show their own default colours (black text on white), which stays readable. No fallback is built.
 
 ## Token tables

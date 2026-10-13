@@ -1,7 +1,7 @@
 # 0002. Project entry and case study content model
 
 **Date**: 2026-10-13
-**Status**: Proposed
+**Status**: Accepted
 
 ## Summary
 

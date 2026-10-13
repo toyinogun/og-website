@@ -39,7 +39,7 @@ Decide the framework, language, hosting and content tooling, then scaffold a run
 **Done when:** the stack and the hosting choice are recorded in a spec, the scaffold boots locally, the production build passes, and the hosting choice is confirmed to cost nothing at this traffic level.
 - [x] Decide the stack (spec): `/architect stack & architecture`
 - [x] Scaffold from the decision: `/develop scaffold`
-- [ ] Confirm the hosting cost is zero: record the account, plan, Workers Builds allowance and exhaustion behaviour from the Cloudflare dashboard, into spec 1's Follow-up
+- [x] Confirm the hosting cost is zero: record the account, plan, Workers Builds allowance and exhaustion behaviour from the Cloudflare dashboard, into spec 1's Follow-up
 - [x] Verify it: `/check verify scaffold`
 - [x] Test it: `/test scaffold`
 
@@ -48,7 +48,7 @@ spec [0001](../specs/0001-stack-architecture/index.md) · decided: Astro static 
 ### 2. Coding standards & tooling
 Capture the conventions and tooling choices from the real scaffolded project, then install them. Doing this early means every later page is written to the same rules.
 **Done when:** root `AGENTS.md` reflects the real stack and conventions, and lint, format and the type check all run clean.
-- [ ] Capture conventions and tooling choices: `/audit`
+- [x] Capture conventions and tooling choices: `/audit`
 - [x] Install the tooling: `/develop tooling`
 
 code in the repository root (`eslint.config.js`, `.prettierrc.json`, `.prettierignore`, `.husky/pre-commit`, `.github/workflows/ci.yml`, `package.json` scripts and `lint-staged`)
@@ -67,7 +67,7 @@ spec [0002](../specs/0002-content-model/index.md) · decided: one typed `project
 
 ### 4. Design system & UI foundation
 The visual language, layout primitives and base components, including the light and dark theme you asked for. Theme belongs here rather than in its own feature, because building it into the components costs very little and retrofitting it means rebuilding them.
-**Done when:** `design.md` covers type, colour, spacing and the base components, light and dark both work, and the components handle focus and keyboard use.
+**Done when:** `design.md` covers type, colour, spacing and the base components, light and dark both work, and the components handle focus and keyboard use to WCAG 2.2 AA (your target, set 2026-10-13).
 - [x] Design it (spec): `/architect design system & UI foundation`
 - [ ] Build it: `/develop design system & UI foundation`
   - [ ] The look, live on every page: fonts, tokens, theme script and toggle, base layout with skip link, header, footer, and the 404 page (AC-4 to AC-13, AC-17, AC-19)
@@ -158,10 +158,9 @@ Collecting email addresses so you can send something later. Flagged because it m
 - [ ] Design it (spec): `/architect newsletter signup`
 
 ## Deferred
-Out of scope for the current build pass, kept so the plan stays honest. The first four are things you chose not to include; they are listed here with the consequence so the choice stays visible rather than quietly disappearing.
+Out of scope for the current build pass, kept so the plan stays honest. The first three are things you chose not to include (the accessibility target left this list on 2026-10-13 when you set WCAG 2.2 AA in spec 0003); they are listed here with the consequence so the choice stays visible rather than quietly disappearing.
 - **Visitor analytics**: without it there is no way to tell whether anyone reaches the contact form, which is the one number that says whether this site is doing its job · needs a decision
 - **Privacy note**: the contact form, and later the newsletter, collect names, email addresses and messages, so a short privacy note is the honest minimum once you are storing someone's email · needs a decision
-- **Accessibility target**: not committing to one means the base components get built without it, and adding it later means rebuilding them
 - **Speed target**: no stated Core Web Vitals number, so speed stays a hope rather than a constraint
 - **Error monitoring**: nothing will tell you when the contact form starts failing silently · needs a decision
 - **Editing content without code**: a real convenience later, but a significant decision and cost for a site whose content changes a few times a year · needs a decision

@@ -68,7 +68,7 @@ Adopt an existing Tailwind component kit with built in themes.
 | 404 page | A simple page on the base layout, served by Cloudflare's `not_found_handling: "404-page"` | Mistyped links land in your design, and the navigation tests get a real second page (you agreed after the cross check) | Cloudflare's bare default 404: nothing to build, but a dead end in the wrong look |
 | Nav contents at launch of this feature | Empty, filled by each page feature | `main` deploys on every push; links to pages that do not exist yet would be live 404s | Showing all links now pointing at placeholders: looks complete but ships dead ends |
 | Style guide | Dev only route injected by a tiny integration | A static page under `src/pages/` would always ship; injecting it only for `astro dev` keeps it out of `dist/` | A `/styleguide` page with `noindex`: shippable, but public |
-| Contrast floor | 4.5 to 1 for text, 3 to 1 for the focus ring, tested | Keeps the warm muted greys honest without committing to an accessibility standard you did not ask for | No check: quicker, but muted text on paper is exactly where readability quietly fails |
+| Contrast floor | 4.5 to 1 for text, 3 to 1 for the focus ring, tested | Keeps the warm muted greys honest; it is also the colour half of the WCAG 2.2 AA target you set on 2026-10-13 (AC-20) | No check: quicker, but muted text on paper is exactly where readability quietly fails |
 
 ## Rationale
 
@@ -98,7 +98,7 @@ From the web check you asked for (October 2026): quiet developer portfolios such
 - semantic design tokens as the single source of colour
 - CSS `color-scheme` and `light-dark()` for theme
 - `:focus-visible` focus rings and a skip link as the first focusable element
-- WCAG relative luminance contrast formula (used as a design check, not a compliance claim)
+- WCAG relative luminance contrast formula, and WCAG 2.2 level AA as the site's target (added 2026-10-13, AC-20)
 - `prefers-reduced-motion` for all motion
 
 **Links** (checked during the design conversation):

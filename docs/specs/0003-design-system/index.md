@@ -1,7 +1,7 @@
 # 0003. Design system and UI foundation
 
 **Date**: 2026-10-13
-**Status**: Proposed
+**Status**: Accepted
 
 ## Summary
 
@@ -36,6 +36,7 @@ The site gets one quiet editorial look: warm paper and ink colours, one ink blue
 - **AC-17**: The header wordmark reads "Toyin Ogunseinde" in Source Serif 4 and links to `/`. `public/favicon.svg` is the monogram in `design.md` with its letters as paths (no `<text>` element), `public/apple-touch-icon.png` is 180 by 180, the layout links both, and Astro's default `favicon.ico` and its link are gone.
 - **AC-18**: On the dev server, `/styleguide` renders every colour token, every type size, every component with each prop value and variant, and the sample Markdown listed in `design.md`, in the active theme. `npm run build` produces no `styleguide` output in `dist/`.
 - **AC-19**: `src/pages/404.astro` renders on `BaseLayout` with the title "Page not found", the heading "This page does not exist", one line of help and a primary `Button` linking to `/`. `wrangler.jsonc` sets `assets.not_found_handling` to `"404-page"`, and requesting an unknown path from the production preview returns status 404 with this page.
+- **AC-20**: The site targets WCAG 2.2 level AA. An `@axe-core/playwright` scan with the tags `wcag2a`, `wcag2aa`, `wcag21a`, `wcag21aa` and `wcag22aa` reports zero violations on the home page and the 404 page in both themes, and on the home page with the skip link focused. Every link, button and toggle in the header, footer and `Button` has a rendered target of at least 24 by 24 CSS pixels, or the spacing exception in WCAG 2.2 success criterion 2.5.8 applies.
 
 ## Decision
 
@@ -142,6 +143,7 @@ Colour, type and spacing live as Tailwind 4 `@theme static` tokens in `global.cs
 - Drift: changing one value in `design.md` or `global.css` fails `npm test`, verifies **AC-1**
 - Layout: the eight widths on the home and 404 pages show no sideways scroll, verifies **AC-13**
 - Build: `dist/` has no `styleguide` output, the head order is right, exactly three font faces totalling at most 300 KB with two preloads, and the CSS holds the view transition rules, verifies **AC-5**, **AC-7**, **AC-16**, **AC-18**
+- Accessibility: the axe scan at WCAG 2.2 AA on the home and 404 pages in both themes finds nothing, and every header, footer and button target measures at least 24 by 24 pixels, verifies **AC-20**
 - Auth/permission: not applicable; a public static site with no protected surface.
 
 ## Build plan
@@ -166,7 +168,7 @@ Skateboard: the first milestone alone gives the live site its whole look (theme,
 11. Add the dev only style guide (`src/dev/styleguide.astro` and the named integration) with a container render test, satisfies **AC-18**
 12. Add `src/lib/color.ts` (`parseOklch`, `contrastRatio`) with tests, and `tests/design-contract.test.ts` (token drift, raw colour, `dark:` and opacity bans, contrast floor), satisfies **AC-1**, **AC-2**, **AC-3**
 13. Add `vitest.build.config.ts`, the `test:build` script, the two CI steps, and `tests/build/design-build.test.ts` (nav paths built, no style guide, head order, font faces and size, preloads, view transition rules), satisfies **AC-5**, **AC-7**, **AC-11**, **AC-16**, **AC-18**
-14. Add `e2e/design-system.spec.ts`: device theme with and without JavaScript, live device change, no flash, toggle and persistence across reload and the 404 page, each storage failure, keyboard order and focus ring, the width sweep, third party requests, reduced motion animations, the 404 status, satisfies **AC-4**, **AC-5**, **AC-6**, **AC-7**, **AC-9**, **AC-10**, **AC-13**, **AC-16**, **AC-19**
+14. Add `e2e/design-system.spec.ts`: device theme with and without JavaScript, live device change, no flash, toggle and persistence across reload and the 404 page, each storage failure, keyboard order and focus ring, the width sweep, third party requests, reduced motion animations, the 404 status, the WCAG 2.2 AA axe scan in both themes (add `@axe-core/playwright` as a dev dependency) and the 24 pixel target sizes, satisfies **AC-4**, **AC-5**, **AC-6**, **AC-7**, **AC-9**, **AC-10**, **AC-13**, **AC-16**, **AC-19**, **AC-20**
 
 ## Consequences
 
