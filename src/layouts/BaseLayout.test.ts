@@ -127,10 +127,12 @@ describe('BaseLayout', () => {
 		expect(html.match(/<link rel="preload"[^>]*as="font"/g)).toHaveLength(2);
 	});
 
-	it('links both favicons from public/', async () => {
+	// covers: AC-17
+	it('links the SVG favicon and the touch icon, and no favicon.ico', async () => {
 		const html = await render({ title: 'Home' });
 
-		expect(html).toContain('href="/favicon.svg"');
-		expect(html).toContain('href="/favicon.ico"');
+		expect(html).toContain('<link rel="icon" type="image/svg+xml" href="/favicon.svg"');
+		expect(html).toContain('<link rel="apple-touch-icon" href="/apple-touch-icon.png"');
+		expect(html).not.toContain('favicon.ico');
 	});
 });

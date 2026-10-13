@@ -63,6 +63,24 @@ export default defineConfig({
 		},
 	},
 
+	integrations: [
+		// The style guide at /styleguide, on the dev server only: the page lives
+		// outside src/pages/, so the static build never emits it (AC-18).
+		{
+			name: 'og-website:styleguide',
+			hooks: {
+				'astro:config:setup': ({ command, injectRoute }) => {
+					if (command === 'dev') {
+						injectRoute({
+							pattern: '/styleguide',
+							entrypoint: new URL('./src/dev/styleguide.astro', import.meta.url),
+						});
+					}
+				},
+			},
+		},
+	],
+
 	vite: {
 		plugins: [tailwindcss()],
 	},

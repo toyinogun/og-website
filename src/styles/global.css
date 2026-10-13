@@ -272,3 +272,42 @@
 		color: var(--color-muted);
 	}
 }
+
+/*
+ * Page transitions (design.md, Motion): the browser's own cross document view
+ * transitions cross fade the page while the header swaps instantly. No
+ * Astro ClientRouter.
+ */
+@view-transition {
+	navigation: auto;
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+	animation-duration: var(--duration-page);
+}
+
+::view-transition-group(site-header),
+::view-transition-old(site-header),
+::view-transition-new(site-header) {
+	animation: none;
+}
+
+/* Reduced motion: no page transitions, no view transition animations, no transitions. */
+@media (prefers-reduced-motion: reduce) {
+	@view-transition {
+		navigation: none;
+	}
+
+	::view-transition-group(*),
+	::view-transition-old(*),
+	::view-transition-new(*) {
+		animation: none;
+	}
+
+	*,
+	*::before,
+	*::after {
+		transition: none;
+	}
+}

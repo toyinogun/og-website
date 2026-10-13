@@ -54,9 +54,9 @@ test.describe('home page from the static build', () => {
 		expect(response.status()).toBe(404);
 	});
 
-	test('serves both favicons', async ({ request }) => {
+	test('serves the favicon and the touch icon', async ({ request }) => {
 		expect((await request.get('/favicon.svg')).status()).toBe(200);
-		expect((await request.get('/favicon.ico')).status()).toBe(200);
+		expect((await request.get('/apple-touch-icon.png')).status()).toBe(200);
 	});
 
 	test('fits the viewport with no horizontal scroll', async ({ page }) => {
