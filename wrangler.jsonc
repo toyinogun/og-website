@@ -1,0 +1,12 @@
+{
+	// Purely static site: no `main` entry point and no Worker script, so there is
+	// nothing to observe and no bindings to declare (spec 0001).
+	// `compatibility_date` is the scaffold date and stays put, so a future
+	// platform change cannot alter the site without a deliberate update.
+	"$schema": "./node_modules/wrangler/config-schema.json",
+	"name": "og-website",
+	"compatibility_date": "2026-10-13",
+	"assets": {
+		"directory": "./dist"
+	}
+}
