@@ -66,7 +66,7 @@ The visual language, layout primitives and base components, including the light 
 ### 5. Live on your domain
 Get one real page deployed on the domain you own, with the build running automatically. This is the thin end to end slice that proves the stack, the host and the domain all work together, and doing it now means launch day is not the first time you find out.
 **Done when:** a real page is reachable on your domain over HTTPS, a push rebuilds and redeploys it, and the running cost is still zero.
-- [ ] Build it: `/develop live on your domain`
+- [x] Build it: `/develop live on your domain`
 - [ ] Verify it: `/check verify live on your domain`
 
 Open detail: tell the Engineer which domain you own when this one starts.
