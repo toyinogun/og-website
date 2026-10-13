@@ -16,7 +16,7 @@ _These are recommendations to keep your build orderly, not requirements. Skip an
 | # | Feature | Phase | Status |
 |---|---------|-------|--------|
 | 1 | Stack & architecture | Foundation | in-progress |
-| 2 | Coding standards & tooling | Foundation | planned |
+| 2 | Coding standards & tooling | Foundation | in-progress |
 | 3 | Content model | Foundation | planned |
 | 4 | Design system & UI foundation | Foundation | planned |
 | 5 | Live on your domain | Foundation | planned |
@@ -49,7 +49,9 @@ spec [0001](../specs/0001-stack-architecture/index.md) · decided: Astro static 
 Capture the conventions and tooling choices from the real scaffolded project, then install them. Doing this early means every later page is written to the same rules.
 **Done when:** root `AGENTS.md` reflects the real stack and conventions, and lint, format and the type check all run clean.
 - [ ] Capture conventions and tooling choices: `/audit`
-- [ ] Install the tooling: `/develop tooling`
+- [x] Install the tooling: `/develop tooling`
+
+code in the repository root (`eslint.config.js`, `.prettierrc.json`, `.prettierignore`, `.husky/pre-commit`, `.github/workflows/ci.yml`, `package.json` scripts and `lint-staged`)
 
 ### 3. Content model · needs a decision
 The shape of a project entry and the structure of a case study: what a write up contains, in what order, and which fields the pages can rely on. This is the data model of a content site, and it is the most expensive thing here to get wrong, because changing it later means rewriting every write up and every page that reads one.
