@@ -19,7 +19,7 @@ _These are recommendations to keep your build orderly, not requirements. Skip an
 | 2 | Coding standards & tooling | Foundation | in-progress |
 | 3 | Content model | Foundation | planned |
 | 4 | Design system & UI foundation | Foundation | planned |
-| 5 | Live on your domain | Foundation | planned |
+| 5 | Live on your domain | Foundation | in-progress |
 | 6 | Bio & project write ups | Release 1 | planned |
 | 7 | Home page | Release 1 | planned |
 | 8 | Work listing | Release 1 | planned |

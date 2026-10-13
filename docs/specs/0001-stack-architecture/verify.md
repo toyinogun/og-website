@@ -34,3 +34,31 @@ _Spec 0001 is a decision spec, so it carries no numbered acceptance criteria. Th
 - AC-8 Tailwind is wired in and compiles · covered by the CSS banner step
 - **Not covered here**: the scope's fourth Done when clause, that the hosting choice is confirmed to cost nothing. It is a Cloudflare dashboard read, not a build check, and it has its own scope box plus the spec's `## Follow-up`.
 - **Not covered here**: the Workers Builds project settings (install, build and deploy commands, Node version) and the custom domain attachment. Both are account level authorization actions the spec assigns to you, not build steps.
+
+# Verify: Live on your domain (feature 5) · spec 0001 · updated 2026-10-13
+
+_Spec 0001 carries no numbered acceptance criteria for this feature, so these AC numbers come from the scope's **Done when** for feature 5 plus the spec's `## Deployment identity` and `## Domain attachment` rows. They need the Cloudflare dashboard steps done and the branch merged into `main` first. `/check verify` runs these; `/test` locks the durable ones._
+
+## Commands
+
+- [ ] `curl -sI https://toyintest.org/` → `HTTP/2 200`, `server: cloudflare`, served over a valid certificate → AC-1
+- [ ] `curl -s https://toyintest.org/ | grep -o '<title>[^<]*'` → `<title>Toyin Ogunseinde` → AC-1
+- [ ] `curl -s https://toyintest.org/ | grep -o 'rel="canonical" href="[^"]*'` → `https://toyintest.org/` → AC-1
+- [ ] `curl -sI http://toyintest.org/` → a redirect to `https://toyintest.org/` → AC-1
+- [ ] `curl -sI 'https://www.toyintest.org/some/path?x=1'` → `301` with `location: https://toyintest.org/some/path?x=1` → AC-4
+- [ ] Push a small visible change to `main` → a new Workers Builds run starts, passes `astro check` and `astro build`, runs `wrangler deploy`, and the change shows on `https://toyintest.org/` within minutes → AC-2
+- [ ] After that second deploy, `toyintest.org` is still listed as a Custom Domain on the `og-website` Worker and still serves → AC-2
+- [ ] Push a commit that fails `astro check` on a throwaway branch merged nowhere, or read the build log of a failed build if one occurs → the build stops before deploy, and the live site keeps serving the last good version → AC-2
+- [ ] Workers Builds settings for `og-website` → Git repository `toyinogun/og-website`, production branch `main`, Worker name `og-website`, deploy command `npx wrangler deploy`, Node `24.21.0` picked up from `.nvmrc` (shown in the build log) → AC-2
+
+## UI / manual
+
+- [ ] Open `https://toyintest.org/` on a desktop and a phone → the holding page renders with no browser security warning and no console error → AC-1
+- [ ] Cloudflare dashboard, Billing and Workers plan pages → the account is on the free plan, no paid add on is active, and Workers Builds usage sits within the free allowance → AC-3
+
+## Acceptance-criteria coverage
+
+- AC-1 a real page is reachable on `toyintest.org` over HTTPS · covered by the four `curl` steps on the apex and the browser step
+- AC-2 a push rebuilds and redeploys it · covered by the push, the custom domain survival step, the failed build step and the settings step
+- AC-3 the running cost is still zero · covered by the dashboard billing step
+- AC-4 `www` lands on the apex with path and query kept (spec 0001, Domain attachment) · covered by the `www` redirect step
