@@ -38,7 +38,7 @@ Define a short list of semantic tokens (`bg`, `surface`, `text`, `muted`, `line`
 - No new runtime dependency; it is CSS the browser already has.
 
 **Cons**:
-- `light-dark()` needs a 2024 or newer browser; older ones see light only.
+- `light-dark()` needs a 2024 or newer browser; older ones ignore the tokens and show their default black on white.
 - Contributors must learn "use the token, never `dark:`", which the contract test enforces but which is less familiar than stock Tailwind.
 
 ### Option 3: A component library or kit (daisyUI or a Tailwind template)
@@ -58,13 +58,14 @@ Adopt an existing Tailwind component kit with built in themes.
 
 | Decision | Pick | Why | Runner up |
 |---|---|---|---|
-| Font delivery | Astro's built in `fonts` config with `fontProviders.npm()` reading `@fontsource-variable` packages | Self hosted as you chose, versions pinned in `package-lock.json`, no network fetch during the Cloudflare build, automatic preload and size adjusted fallbacks | `fontProviders.fontsource()`, which fetches from the Fontsource CDN at build time: one less dependency but an extra network step in every build |
+| Font delivery | Astro's built in `fonts` config with `fontProviders.local()` pointing at the Latin WOFF2 files inside the `@fontsource-variable` npm packages | Self hosted as you chose, versions pinned in `package-lock.json`, no network fetch during the Cloudflare build, automatic size adjusted fallbacks and preload. The cross check showed the `npm()` provider guesses the wrong family names and rewrites file URLs to jsDelivr, so it would not keep that promise | Importing the Fontsource CSS directly: simplest, but loses Astro's adjusted fallbacks, so the layout jumps when the fonts arrive |
 | Theme switch mechanism | `color-scheme` on `<html>` driven by `data-theme`, tokens in `light-dark()` | One switch point; JavaScript off still follows the device | A `.dark` class plus duplicated dark token block inside a media query: works in older browsers but doubles every value |
 | Page transitions | Native view transitions between documents (`@view-transition`) | Zero JavaScript; each page stays a plain static document; degrades to normal navigation | Astro's `<ClientRouter />`: wider browser support, but turns the site into a client routed app, needs the theme script rerun on every swap, and adds a script to every page |
 | Prose styling | `@tailwindcss/typography` with its colour variables mapped to tokens | Official, handles dozens of Markdown edge cases (nested lists, tables, code) that hand written styles miss | Hand written prose CSS: no dependency, but slower and easier to get wrong |
 | Code highlighting | Astro's built in Shiki with `github-light` and `github-dark` | Already in Astro, no client JavaScript, readable in both themes | A single theme for both: simpler, but a light code block glares on a dark page |
 | Icons | Two inline SVGs copied from Lucide | Only two icons are needed; a package would be heavier than the icons | `@lucide/astro`: worth it once a page needs many icons |
 | Mobile header | Two rows below 40rem, no menu button | Your name, three links and the toggle do not fit one 320px row; a second row keeps every link visible with no script | Shrinking the wordmark to the monogram on phones: one row, but your name disappears where most first visits happen |
+| 404 page | A simple page on the base layout, served by Cloudflare's `not_found_handling: "404-page"` | Mistyped links land in your design, and the navigation tests get a real second page (you agreed after the cross check) | Cloudflare's bare default 404: nothing to build, but a dead end in the wrong look |
 | Nav contents at launch of this feature | Empty, filled by each page feature | `main` deploys on every push; links to pages that do not exist yet would be live 404s | Showing all links now pointing at placeholders: looks complete but ships dead ends |
 | Style guide | Dev only route injected by a tiny integration | A static page under `src/pages/` would always ship; injecting it only for `astro dev` keeps it out of `dist/` | A `/styleguide` page with `noindex`: shippable, but public |
 | Contrast floor | 4.5 to 1 for text, 3 to 1 for the focus ring, tested | Keeps the warm muted greys honest without committing to an accessibility standard you did not ask for | No check: quicker, but muted text on paper is exactly where readability quietly fails |
@@ -76,6 +77,10 @@ The forces that decide this are: theme must be nearly free for every future comp
 Option 2 meets all of these. Putting both theme values inside each token moves the theme decision from every component (Option 1) to one list of eight colours, which is what makes "theme is cheap now, expensive later" true in practice. Because the switch is `color-scheme`, the device setting works with no script at all and the toggle only has to pin a choice, which keeps the shipped JavaScript to an inline snippet and one small module. Option 3 would be faster for the first page and slower for every page after, because the kit's look has to be undone before the editorial one can be built, and it adds a lasting dependency to a site that needs about ten components.
 
 You chose page transitions over my recommendation of minimal motion only. That is a reasonable choice, and it is delivered in the cheapest form: native view transitions between documents, which add no JavaScript and simply do nothing in browsers that lack them. The one thing to accept consciously is that Firefox visitors (at the time of writing) get instant navigation instead of a cross fade.
+
+## Cross check
+
+A read only cross check by a second model (JSM-11, the Reviewer) found 3 blockers and 17 smaller gaps in the first draft. You chose to apply all the recommended fixes, plus the 404 page. The blockers were: the theme script pinned the device theme so the page stopped following the device; the npm font provider would have fetched fonts from jsDelivr during the build; and the keyboard criterion expected focus to move backwards into the header after the skip link. The smaller gaps pinned down exact font faces, the token table format, the full type scale, primitive defaults, button and header values, prose mappings, the favicon geometry, the contrast maths, route mapping and build tests, test fixtures and the evidence each criterion needs.
 
 ## Inspiration
 
