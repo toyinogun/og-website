@@ -17,7 +17,7 @@ _These are recommendations to keep your build orderly, not requirements. Skip an
 |---|---------|-------|--------|
 | 1 | Stack & architecture | Foundation | in-progress |
 | 2 | Coding standards & tooling | Foundation | in-progress |
-| 3 | Content model | Foundation | planned |
+| 3 | Content model | Foundation | in-progress |
 | 4 | Design system & UI foundation | Foundation | planned |
 | 5 | Live on your domain | Foundation | done |
 | 6 | Bio & project write ups | Release 1 | planned |
@@ -53,10 +53,17 @@ Capture the conventions and tooling choices from the real scaffolded project, th
 
 code in the repository root (`eslint.config.js`, `.prettierrc.json`, `.prettierignore`, `.husky/pre-commit`, `.github/workflows/ci.yml`, `package.json` scripts and `lint-staged`)
 
-### 3. Content model · needs a decision
+### 3. Content model
 The shape of a project entry and the structure of a case study: what a write up contains, in what order, and which fields the pages can rely on. This is the data model of a content site, and it is the most expensive thing here to get wrong, because changing it later means rewriting every write up and every page that reads one.
 **Done when:** the fields of a project entry are fixed and written down, a case study has a defined structure that works for a hiring reader and a client reader, and the model covers images, links, tags and ordering without a later rewrite.
-- [ ] Design it (spec): `/architect content model`
+- [x] Design it (spec): `/architect content model`
+- [ ] Build it: `/develop content model`
+  - [ ] Schema and vocabulary: the fixed tag lists and the strict project schema (AC-1, AC-2, AC-9)
+  - [ ] Checks in the build: body, image, cover, order and slug checks, run by the collection loader (AC-3, AC-4, AC-5, AC-8, AC-11, AC-12, AC-13)
+  - [ ] Helpers, example entry, authoring guide and the real build proof (AC-1, AC-5, AC-6, AC-7, AC-10, AC-14)
+- [ ] Verify it: `/check verify content model`
+
+spec [0002](../specs/0002-content-model/index.md) · decided: one typed `projects` collection, one folder per project, 19 strict fields, case study under Problem, Approach, Outcome, checks enforced in the build and in the tests
 
 ### 4. Design system & UI foundation · needs a decision
 The visual language, layout primitives and base components, including the light and dark theme you asked for. Theme belongs here rather than in its own feature, because building it into the components costs very little and retrofitting it means rebuilding them.
