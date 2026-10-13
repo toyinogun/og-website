@@ -309,7 +309,7 @@ Skateboard: build the thinnest whole model end to end (schema, checks, helpers, 
    - that the first real entry replaces the example, which also frees `order: 1`.
 
    Satisfies **AC-1**, **AC-5**, **AC-14**
-7. Run `npm run build` and `npm test` clean. Then prove enforcement with real builds. Make each change below on its own, confirm the result, then revert it.
+7. [x] Run `npm run build` and `npm test` clean. Then prove enforcement with real builds. Make each change below on its own, confirm the result, then revert it.
 
    These builds must **fail**, naming the file:
    - a published entry missing `## Approach`;
