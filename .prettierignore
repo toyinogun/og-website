@@ -1,0 +1,15 @@
+# build output and generated files
+dist/
+.astro/
+.wrangler/
+test-results/
+playwright-report/
+package-lock.json
+
+# Markdown is written and owned by the workflow skills (scope, specs, reviews,
+# AGENTS.md); reflowing it would churn files they edit line by line.
+*.md
+docs/
+
+# local agent settings
+.claude/
