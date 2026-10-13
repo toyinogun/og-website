@@ -17,7 +17,7 @@ _These are recommendations to keep your build orderly, not requirements. Skip an
 |---|---------|-------|--------|
 | 1 | Stack & architecture | Foundation | done |
 | 2 | Coding standards & tooling | Foundation | done |
-| 3 | Content model | Foundation | in-progress |
+| 3 | Content model | Foundation | done |
 | 4 | Design system & UI foundation | Foundation | in-progress |
 | 5 | Live on your domain | Foundation | done |
 | 6 | Bio & project write ups | Release 1 | planned |
