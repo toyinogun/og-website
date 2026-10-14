@@ -4,9 +4,18 @@
 // the slot and never add their own <main>. Basic share tags come from the
 // title and description (spec 0004, AC-13); feature 12 adds the share image,
 // sitemap and structured data.
-import { Font } from 'astro:assets';
+import { Font, getImage } from 'astro:assets';
 import SiteFooter from '../components/SiteFooter.astro';
 import SiteHeader from '../components/SiteHeader.astro';
+import siteCard from '../assets/share/site-card.png';
+import {
+	absoluteUrl,
+	jsonLdText,
+	SHARE,
+	SHARE_IMAGE_OPTIONS,
+	type JsonLdGraph,
+	type ShareImageSource,
+} from '../lib/seo';
 import { SITE } from '../lib/site';
 import { THEME_INIT_SCRIPT } from '../lib/theme';
 import '../styles/global.css';
@@ -17,10 +26,21 @@ interface Props {
 	title: string;
 	/** The meta description; omitted when empty. */
 	description?: string;
+	/** The share image source; the site card when absent (spec 0007). */
+	image?: ShareImageSource;
+	/** Keep the page out of search results and skip its canonical and share image tags (the 404 page). */
+	noindex?: boolean;
+	/** A JSON-LD graph, written as a data block in the head. */
+	structuredData?: JsonLdGraph;
 }
 
-const { title, description } = Astro.props;
+const { title, description, image, noindex = false, structuredData } = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site);
+const source = image ?? { src: siteCard, alt: SHARE.siteCardAlt };
+const shareImage = noindex
+	? undefined
+	: await getImage({ src: source.src, ...SHARE_IMAGE_OPTIONS });
+const shareImageUrl = shareImage && absoluteUrl(shareImage.src, Astro.site ?? canonical);
 ---
 
 <!doctype html>
@@ -36,13 +56,30 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
 		<meta name="generator" content={Astro.generator} />
 		<title>{title}</title>
 		{description && <meta name="description" content={description} />}
-		<link rel="canonical" href={canonical} />
+		{noindex ? <meta name="robots" content="noindex" /> : <link rel="canonical" href={canonical} />}
 		<meta property="og:type" content="website" />
 		<meta property="og:site_name" content={SITE.name} />
 		<meta property="og:title" content={title} />
 		{description && <meta property="og:description" content={description} />}
-		<meta property="og:url" content={canonical} />
-		<meta name="twitter:card" content="summary" />
+		{!noindex && <meta property="og:url" content={canonical} />}
+		{
+			shareImageUrl && (
+				<>
+					<meta property="og:image" content={shareImageUrl} />
+					<meta property="og:image:type" content="image/jpeg" />
+					<meta property="og:image:width" content={String(SHARE_IMAGE_OPTIONS.width)} />
+					<meta property="og:image:height" content={String(SHARE_IMAGE_OPTIONS.height)} />
+					<meta property="og:image:alt" content={source.alt} />
+				</>
+			)
+		}
+		<meta name="twitter:card" content={noindex ? 'summary' : 'summary_large_image'} />
+		<link rel="sitemap" href="/sitemap-index.xml" />
+		{
+			structuredData && (
+				<script is:inline type="application/ld+json" set:html={jsonLdText(structuredData)} />
+			)
+		}
 	</head>
 	<body class="flex min-h-dvh flex-col">
 		<a

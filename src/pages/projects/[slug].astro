@@ -44,7 +44,11 @@ const { title, summary, kind, cover, coverAlt, links, metrics } = project.data;
 const { Content } = await render(project);
 ---
 
-<BaseLayout title={projectPageTitle(title)} description={summary}>
+<BaseLayout
+	title={projectPageTitle(title)}
+	description={summary}
+	image={{ src: cover, alt: coverAlt }}
+>
 	<Container as="article" width="measure">
 		<PageIntro eyebrow={kindLabel(kind)} heading={title} lead={summary}>
 			{
@@ -66,6 +70,7 @@ const { Content } = await render(project);
 			alt={coverAlt}
 			widths={[640, 1000, 1400]}
 			sizes={COVER_SIZES}
+			priority
 			class="mt-12 h-auto w-full rounded-md"
 		/>
 		<Section id="glance" heading={PROJECT_PAGE.glanceHeading}>
