@@ -11,14 +11,14 @@ _Steps derived from spec 0005 acceptance criteria. `/check verify` runs these; `
 - [ ] On `/` the cards show no chips → AC-6
 - [ ] Chips are small muted text in a thin outline with rounded corners, no fill, in both themes; on `/styleguide` (dev server) the card with chips and `WorkList` filled and empty appear; `design.md` lists Tag chip and Work list → AC-8
 - [ ] Header shows Home and Work; Work is current on `/projects`, Home on `/`, neither on `/no-such-page`; Tab order is skip link, wordmark, Home, Work, toggle; two header rows at 639 pixels, one at 640 → AC-9
-- [ ] After deploy: `curl -sI https://toyintest.org/projects` → 200, no `location`; `curl -sI https://toyintest.org/projects/` → a redirect to `/projects`; `/` → 200; `/no-such-page` → 404 → AC-10
+- [ ] After deploy: `curl -sI https://toyintest.org/projects` → 200, no `location`; `curl -sI https://toyintest.org/projects/` → a 3xx (307) with `location: /projects`; `/` → 200; `/no-such-page` → 404; paste the output as a comment on the ship issue → AC-10
 - [ ] The tab title is "Work by Toyin Ogunseinde, DevOps engineer"; the meta description, canonical (`https://toyintest.org/projects`) and share tags match → AC-10, AC-11
 - [ ] Sweep 320, 360, 375, 639, 640, 768, 1024, 1440 pixels → no sideways scroll; one card per row below 768, two from 768, three from 1024; chips wrap inside their card; the closing button fills the width below 640 → AC-12
 - [ ] Headings go h1, h2 per card, closing h2; axe WCAG 2.2 AA finds nothing in light and dark; every link and button is at least 24 by 24 pixels → AC-13
 - [ ] Load `/projects` and scroll to the bottom → every request goes to the site itself; the page holds only the theme and toggle scripts → AC-14
 
 ## Commands
-- [ ] `npm test` → passes, including `work.test.ts`, `projects.test.ts` (`cardStackLabels`), `site.test.ts`, the `WorkList` and `ProjectCard` component tests, `tests/work-page.test.ts` → AC-2, AC-4, AC-5, AC-6, AC-7, AC-9
+- [ ] `npm test` → passes, including `stack-contract.test.ts` (`trailingSlash` and `html_handling` locked), `work.test.ts`, `projects.test.ts` (`cardStackLabels`), `site.test.ts`, the `WorkList` and `ProjectCard` component tests, `tests/work-page.test.ts` → AC-2, AC-4, AC-5, AC-6, AC-7, AC-9
 - [ ] `npm run build && npm run test:build` → `work-build.test.ts` and the spec 0003 nav build test pass → AC-3, AC-6, AC-10, AC-11, AC-14
 - [ ] `npm run test:e2e` → `work.spec.ts`, `home.spec.ts` and `design-system.spec.ts` pass at desktop and mobile widths → AC-9, AC-12, AC-13, AC-14
 
