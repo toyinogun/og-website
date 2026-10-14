@@ -5,7 +5,7 @@ A personal site whose job is to win work. It serves two readers at once, the per
 **Build approach:** Skateboard (ship the thinnest usable whole site, then grow it).
 **Workflow:** Alpha (after `/develop`, run `/check verify` on the real running site). The project default level of rigor. `/architect` is the recommended first stop for a feature with a real decision, but skippable when you already know the build. Any feature can carry its own tag (e.g. `· Beta`) to do more or less.
 
-**Constraints you set:** something presentable in about two weeks, running cost at or near zero, and a domain you already own (which one is still to be confirmed, see feature 5).
+**Constraints you set:** something presentable in about two weeks, running cost at or near zero, and a domain you already own (`toyintest.org`, see feature 5).
 
 **How content gets written:** the bio and project write ups get drafted from your resume and your repositories, then you edit them. You keep the final say on every word, and the build never waits on a blank page.
 
@@ -204,12 +204,12 @@ Collecting email addresses so you can send something later. Flagged because it m
 - [ ] Design it (spec): `/architect newsletter signup`
 
 ## Deferred
-Out of scope for the current build pass, kept so the plan stays honest. The first three are things you chose not to include (the accessibility target left this list on 2026-10-13 when you set WCAG 2.2 AA in spec 0003); they are listed here with the consequence so the choice stays visible rather than quietly disappearing.
+Out of scope for the current build pass, kept so the plan stays honest. The first three are things you chose not to include (the accessibility target left this list on 2026-10-13 when you set WCAG 2.2 AA in spec 0003; the privacy note, and error monitoring further down, shipped with feature 11 on 2026-10-14); they are listed here with the consequence so the choice stays visible rather than quietly disappearing.
 - **Visitor analytics**: without it there is no way to tell whether anyone reaches the contact form, which is the one number that says whether this site is doing its job · needs a decision
-- **Privacy note**: the contact form, and later the newsletter, collect names, email addresses and messages, so a short privacy note is the honest minimum once you are storing someone's email · needs a decision
+- **Privacy note**: shipped with feature 11, as the note under the contact form (spec 0006, AC-22). The newsletter, if built, needs its own
 - **Speed target**: no stated Core Web Vitals number, so speed stays a hope rather than a constraint
-- **Error monitoring**: nothing will tell you when the contact form starts failing silently · needs a decision
-- **Content Security Policy**: none today; if one is added, it must allow the inline theme script by its hash (spec 0003), or the theme breaks
+- **Error monitoring**: shipped with feature 11, for the contact form only: the Monday self check email and the Healthchecks.io alarm (spec 0006, AC-18, AC-21)
+- **Content Security Policy**: none today; if one is added, it must allow the inline theme script by its hash (spec 0003), and `https://challenges.cloudflare.com` for scripts and frames on `/contact` (spec 0006), or the theme and the form break
 - **Editing content without code**: a real convenience later, but a significant decision and cost for a site whose content changes a few times a year · needs a decision
 
 ## Legend
