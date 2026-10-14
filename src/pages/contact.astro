@@ -1,0 +1,28 @@
+---
+// The contact page (feature 11, spec 0006): the intro, then the form with
+// its noscript line, the privacy note and the LinkedIn line. The page itself
+// is a plain pre built file; only the send runs server code, the Worker at
+// /api/contact. Every word lives in `CONTACT` (src/lib/contact.ts). The page
+// has no CallToAction: the form is its one action.
+import ContactForm from '../components/ContactForm.astro';
+import Container from '../components/Container.astro';
+import PageIntro from '../components/PageIntro.astro';
+import Section from '../components/Section.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { CONTACT } from '../lib/contact';
+import { LINKEDIN_URL } from '../lib/site';
+---
+
+<BaseLayout title={CONTACT.title} description={CONTACT.description}>
+	<Container width="measure">
+		<PageIntro size="page" heading={CONTACT.heading} lead={CONTACT.lead} />
+		<Section>
+			<noscript>
+				<p class="mb-6">{CONTACT.noScript} <a href={LINKEDIN_URL}>{CONTACT.linkedinLink}</a></p>
+			</noscript>
+			<ContactForm />
+			<p class="mt-12 text-sm text-muted">{CONTACT.privacyNote}</p>
+			<p class="mt-6">{CONTACT.linkedinText} <a href={LINKEDIN_URL}>{CONTACT.linkedinLink}</a></p>
+		</Section>
+	</Container>
+</BaseLayout>

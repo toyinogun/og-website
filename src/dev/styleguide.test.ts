@@ -149,7 +149,7 @@ describe('style guide', () => {
 
 	// covers: AC-18 (spec 0004)
 	it('shows the call to action', () => {
-		expect(html).toContain(`>${'Message me on LinkedIn'}</a>`);
+		expect(html).toContain(`>${'Send me a message'}</a>`);
 	});
 
 	// covers: AC-18 (spec 0004)

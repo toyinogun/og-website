@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { copyrightLine, isCurrentPath, NAV_HREF_PATTERN, SITE } from './site';
+import { copyrightLine, isCurrentPath, LINKEDIN_URL, NAV_HREF_PATTERN, SITE } from './site';
 
 describe('SITE', () => {
 	it('names the site owner', () => {
@@ -13,12 +13,13 @@ describe('SITE', () => {
 		}
 	});
 
-	// covers: AC-9 (spec 0005); feature 10
-	it('has Home, then Work at /projects, then About, in the nav', () => {
+	// covers: AC-9 (spec 0005); feature 10; AC-4 (spec 0006)
+	it('has Home, then Work at /projects, then About, then Contact, in the nav', () => {
 		expect(SITE.nav).toEqual([
 			{ label: 'Home', href: '/' },
 			{ label: 'Work', href: '/projects' },
 			{ label: 'About', href: '/about' },
+			{ label: 'Contact', href: '/contact' },
 		]);
 	});
 
@@ -30,17 +31,20 @@ describe('SITE', () => {
 		]);
 	});
 
-	// covers: AC-3 (spec 0004)
-	it('sends the call to action to LinkedIn', () => {
-		expect(SITE.contact).toEqual({
-			label: 'Message me on LinkedIn',
-			href: 'https://linkedin.com/in/toyin-ogunseinde',
-		});
+	// covers: AC-4 (spec 0006)
+	it('sends the call to action to the contact form', () => {
+		expect(SITE.contact).toEqual({ label: 'Send me a message', href: '/contact' });
 	});
 
-	// covers: AC-11 (spec 0004)
-	it('uses the same LinkedIn address for the footer and the call to action', () => {
-		expect(SITE.links.find((link) => link.label === 'LinkedIn')?.href).toBe(SITE.contact.href);
+	// covers: AC-4 (spec 0006)
+	it('points the call to action at a page in the nav', () => {
+		expect(SITE.nav.map((item) => item.href)).toContain(SITE.contact.href);
+	});
+
+	// covers: AC-11 (spec 0004); AC-4 (spec 0006)
+	it('uses LINKEDIN_URL for the footer link', () => {
+		expect(LINKEDIN_URL).toBe('https://linkedin.com/in/toyin-ogunseinde');
+		expect(SITE.links.find((link) => link.label === 'LinkedIn')?.href).toBe(LINKEDIN_URL);
 	});
 
 	// covers: AC-3 (spec 0004)

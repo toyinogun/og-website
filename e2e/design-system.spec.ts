@@ -338,7 +338,7 @@ test.describe('keyboard (AC-9, AC-10)', () => {
 		await page.keyboard.press('Tab');
 		const next = await focused(page);
 		expect(next.inHeader).toBe(false);
-		expect(next.text).toBe('Message me on LinkedIn');
+		expect(next.text).toBe('Send me a message');
 	});
 });
 

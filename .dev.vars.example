@@ -1,0 +1,9 @@
+# Copy to .dev.vars (never committed) for `npm run build:local && npx wrangler dev`.
+# Cloudflare's always pass Turnstile test secret (spec 0006, Configuration).
+TURNSTILE_SECRET_KEY=1x0000000000000000000000000000000AA
+# The hostname the test secret returns; confirm it in the local proof.
+TURNSTILE_EXPECTED_HOSTNAME=example.com
+ALLOWED_ORIGINS=http://localhost:8787
+# Replace with your verified Email Routing destination address.
+CONTACT_TO=you@example.com
+HEALTHCHECK_URL=https://hc-ping.com/your-check-uuid

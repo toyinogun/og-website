@@ -159,8 +159,8 @@ From spec 0005: revisit `WORK.closingText` alongside `HOME.closingText`.
 From spec 0006: the deferred Privacy note and Error monitoring ship with this feature; before the build merges, you set up Email Routing, the Turnstile widget, the `CONTACT_OUTBOX` KV namespace and secrets, and a Healthchecks.io check (the spec's Follow-up).
 - [x] Design it (spec): `/architect contact form`
 - [ ] Build it: `/develop contact form`
-  - [ ] A message reaches you, with a 30 day copy: `src/lib/contact.ts` (words, validation, outcomes, email text), the Worker for `/api/*` (exit table, KV copy, `send_email`, Turnstile, rate limit, one log line), `wrangler.jsonc` and the contract test, the Worker tooling in `build`, the `/contact` page and form, `SITE.contact` and the Contact nav link (AC-1 to AC-20, AC-22, AC-24)
-  - [ ] You hear when it breaks: the Monday self check, the Turnstile secret probe, the week's message list and the Healthchecks.io pings (AC-21)
+  - [x] A message reaches you, with a 30 day copy: `src/lib/contact.ts` (words, validation, outcomes, email text), the Worker for `/api/*` (exit table, KV copy, `send_email`, Turnstile, rate limit, one log line), `wrangler.jsonc` and the contract test, the Worker tooling in `build`, the `/contact` page and form, `SITE.contact` and the Contact nav link (AC-1 to AC-20, AC-22, AC-24)
+  - [x] You hear when it breaks: the Monday self check, the Turnstile secret probe, the week's message list and the Healthchecks.io pings (AC-21)
   - [ ] The checks and the design record: `design.md` form rows and the style guide, page and build tests, the browser tests with stubbed endpoint and Turnstile, the generated types check in CI (AC-1 to AC-3, AC-6 to AC-8, AC-11, AC-19, AC-20, AC-23, AC-24)
 - [ ] Verify it: `/check verify contact form` (includes the local `wrangler dev` proof and the real Turnstile challenge by keyboard)
 - [ ] Test it: `/test contact form`

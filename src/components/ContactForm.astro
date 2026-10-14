@@ -1,0 +1,458 @@
+---
+// The contact form (spec 0006): the status area, the four fields, the
+// Turnstile container and the submit button, plus the script that checks,
+// sends and reports. Every word comes from `CONTACT`, every limit from
+// `CONTACT_LIMITS`, and the browser runs the same `validateContact` as the
+// Worker. The script keeps its state inside `setUpContactForm`, never at
+// module level; the outcome of a send is decided by `clientOutcome`.
+import { CONTACT, CONTACT_LIMITS, TOPICS, turnstileSiteKey } from '../lib/contact';
+import Button from './Button.astro';
+
+/** Props for `ContactForm`. */
+interface Props {
+	/** The Turnstile site key. Defaults to `turnstileSiteKey()` for this build. */
+	siteKey?: string;
+}
+
+const { siteKey = turnstileSiteKey() } = Astro.props;
+
+const control =
+	'block min-h-11 w-full rounded-sm border border-line bg-bg px-3 py-2.5 font-sans text-base text-text aria-invalid:border-2 aria-invalid:border-text read-only:cursor-progress';
+const label = 'font-sans text-base font-semibold text-text';
+const error = 'font-sans text-sm font-semibold text-text';
+---
+
+<div
+	id="contact-status"
+	tabindex="-1"
+	class="mb-6 rounded-sm border-l-3 border-text bg-surface p-4 text-base text-text empty:hidden data-[tone=sent]:border-accent"
+>
+</div>
+<form
+	id="contact-form"
+	action="/api/contact"
+	method="post"
+	novalidate
+	data-site-key={siteKey}
+	class="flex flex-col gap-6"
+>
+	<div class="flex flex-col gap-1.5">
+		<label for="contact-name" class={label}>{CONTACT.nameLabel}</label>
+		<input
+			id="contact-name"
+			name="name"
+			type="text"
+			autocomplete="name"
+			required
+			maxlength={CONTACT_LIMITS.nameMax}
+			class={control}
+		/>
+		<p id="contact-name-error" class={error} hidden>
+			<span class="sr-only">{CONTACT.errorPrefix} </span><span data-error-message></span>
+		</p>
+	</div>
+	<div class="flex flex-col gap-1.5">
+		<label for="contact-email" class={label}>{CONTACT.emailLabel}</label>
+		<input
+			id="contact-email"
+			name="email"
+			type="email"
+			autocomplete="email"
+			required
+			maxlength={CONTACT_LIMITS.emailMax}
+			class={control}
+		/>
+		<p id="contact-email-error" class={error} hidden>
+			<span class="sr-only">{CONTACT.errorPrefix} </span><span data-error-message></span>
+		</p>
+	</div>
+	<fieldset class="flex flex-col">
+		<legend class:list={[label, 'mb-1.5']}>{CONTACT.topicLegend}</legend>
+		{
+			TOPICS.map((topic) => (
+				<label
+					for={`contact-topic-${topic.value}`}
+					class="flex min-h-11 cursor-pointer items-center gap-3 font-sans text-base text-text"
+				>
+					<input
+						id={`contact-topic-${topic.value}`}
+						type="radio"
+						name="topic"
+						value={topic.value}
+						required
+						class="size-5 shrink-0 cursor-pointer accent-accent"
+					/>
+					{topic.label}
+				</label>
+			))
+		}
+		<p id="contact-topic-error" class:list={[error, 'mt-1.5']} hidden>
+			<span class="sr-only">{CONTACT.errorPrefix} </span><span data-error-message></span>
+		</p>
+	</fieldset>
+	<div class="flex flex-col gap-1.5">
+		<label for="contact-message" class={label}>{CONTACT.messageLabel}</label>
+		<p id="contact-message-hint" class="font-sans text-sm text-muted">{CONTACT.messageHint}</p>
+		<textarea
+			id="contact-message"
+			name="message"
+			required
+			maxlength={CONTACT_LIMITS.messageMax}
+			rows="8"
+			aria-describedby="contact-message-hint"
+			class:list={[control, 'resize-y']}></textarea>
+		<p id="contact-message-counter" class="font-sans text-sm text-muted" hidden></p>
+		<p id="contact-message-error" class={error} hidden>
+			<span class="sr-only">{CONTACT.errorPrefix} </span><span data-error-message></span>
+		</p>
+	</div>
+	<div id="contact-turnstile"></div>
+	<Button type="submit" class="w-full sm:w-auto sm:self-start">{CONTACT.submitLabel}</Button>
+</form>
+
+<script>
+	import {
+		charactersLeftText,
+		clientOutcome,
+		CONTACT,
+		CONTACT_FIELDS,
+		CONTACT_LIMITS,
+		shownFieldErrors,
+		validateContact,
+		type ContactField,
+		type ShownFieldError,
+	} from '../lib/contact';
+	import { LINKEDIN_URL } from '../lib/site';
+
+	/** The parts of Cloudflare's Turnstile API the form uses (explicit rendering). */
+	interface TurnstileApi {
+		render(container: HTMLElement, options: Readonly<Record<string, unknown>>): string;
+		reset(widgetId: string): void;
+		remove(widgetId: string): void;
+	}
+
+	type WidgetState = 'loading' | 'ready' | 'interactive' | 'verified' | 'expired' | 'failed';
+	type WaitResult = 'verified' | 'interactive' | 'failed';
+
+	const TURNSTILE_SRC = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
+	const FLEXIBLE_FROM = 300;
+
+	const turnstileApi = (): TurnstileApi | undefined =>
+		(window as unknown as { turnstile?: TurnstileApi }).turnstile;
+
+	const firstControlId = (field: ContactField): string =>
+		field === 'topic' ? 'contact-topic-role' : `contact-${field}`;
+
+	/** A paragraph with the message, then the LinkedIn link as its own element. */
+	const messageParagraph = (text: string, withLinkedin: boolean): HTMLParagraphElement => {
+		const paragraph = document.createElement('p');
+		paragraph.textContent = text;
+		if (withLinkedin) {
+			const link = document.createElement('a');
+			link.href = LINKEDIN_URL;
+			link.textContent = CONTACT.linkedinLink;
+			paragraph.append(' ', link);
+		}
+		return paragraph;
+	};
+
+	const setUpContactForm = (form: HTMLFormElement, status: HTMLElement): void => {
+		const container = form.querySelector<HTMLElement>('#contact-turnstile');
+		const submit = form.querySelector<HTMLButtonElement>('button[type="submit"]');
+		const message = form.querySelector<HTMLTextAreaElement>('#contact-message');
+		const counter = form.querySelector<HTMLElement>('#contact-message-counter');
+		if (!container || !submit || !message || !counter) return;
+
+		const controlsOf = (
+			field: ContactField,
+		): readonly (HTMLInputElement | HTMLTextAreaElement)[] => [
+			...form.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>(`[name="${field}"]`),
+		];
+		const baseDescribedBy = (field: ContactField): string =>
+			field === 'message' ? 'contact-message-hint' : '';
+
+		// Widget and send state, private to this form.
+		let widgetState: WidgetState = 'loading';
+		let widgetId: string | undefined;
+		let widgetSize: 'flexible' | 'compact' | undefined;
+		let token = '';
+		let retried = false;
+		let busy = false;
+		let waiters: ((result: WaitResult) => void)[] = [];
+
+		const setWidgetState = (next: WidgetState): void => {
+			widgetState = next;
+			const result: WaitResult | undefined =
+				next === 'verified' || next === 'interactive' || next === 'failed' ? next : undefined;
+			if (result) {
+				const waiting = waiters;
+				waiters = [];
+				waiting.forEach((resolve) => resolve(result));
+			}
+		};
+
+		const waitForToken = (): Promise<WaitResult> =>
+			new Promise((resolve) => {
+				const timer = window.setTimeout(() => {
+					waiters = waiters.filter((waiter) => waiter !== done);
+					resolve('failed');
+				}, CONTACT_LIMITS.tokenWaitMs);
+				const done = (result: WaitResult) => {
+					window.clearTimeout(timer);
+					resolve(result);
+				};
+				waiters = [...waiters, done];
+			});
+
+		const resetWidget = (): void => {
+			token = '';
+			const api = turnstileApi();
+			if (widgetState === 'failed' || !api || widgetId === undefined) return;
+			try {
+				api.reset(widgetId);
+				setWidgetState('ready');
+			} catch {
+				setWidgetState('failed');
+			}
+		};
+
+		const renderWidget = (): void => {
+			const api = turnstileApi();
+			if (!api) {
+				setWidgetState('failed');
+				return;
+			}
+			widgetSize = container.clientWidth >= FLEXIBLE_FROM ? 'flexible' : 'compact';
+			try {
+				widgetId = api.render(container, {
+					sitekey: form.dataset.siteKey,
+					action: 'contact',
+					appearance: 'interaction-only',
+					theme: 'auto',
+					size: widgetSize,
+					retry: 'never',
+					callback: (value: string) => {
+						token = value;
+						setWidgetState('verified');
+					},
+					'expired-callback': () => {
+						setWidgetState('expired');
+						resetWidget();
+					},
+					'before-interactive-callback': () => setWidgetState('interactive'),
+					'error-callback': () => {
+						token = '';
+						if (!retried && widgetId !== undefined) {
+							retried = true;
+							resetWidget();
+						} else {
+							setWidgetState('failed');
+						}
+						return true;
+					},
+				});
+				setWidgetState('ready');
+			} catch {
+				setWidgetState('failed');
+			}
+		};
+
+		// Re-render at the other size when the column crosses 300px and no token is held.
+		new ResizeObserver(() => {
+			const size = container.clientWidth >= FLEXIBLE_FROM ? 'flexible' : 'compact';
+			const api = turnstileApi();
+			if (
+				widgetSize === undefined ||
+				size === widgetSize ||
+				token !== '' ||
+				widgetState === 'failed'
+			)
+				return;
+			if (!api || widgetId === undefined) return;
+			try {
+				api.remove(widgetId);
+			} catch {
+				// A widget that cannot be removed is replaced anyway.
+			}
+			widgetId = undefined;
+			renderWidget();
+		}).observe(container);
+
+		const script = document.createElement('script');
+		script.src = TURNSTILE_SRC;
+		script.async = true;
+		script.addEventListener('load', renderWidget);
+		script.addEventListener('error', () => setWidgetState('failed'));
+		document.head.append(script);
+
+		// The status area: exactly one message, and focus moves to it.
+		const show = (role: 'status' | 'alert', ...children: readonly Node[]): void => {
+			const region = document.createElement('div');
+			region.setAttribute('role', role);
+			region.append(...children);
+			status.dataset.tone = role === 'status' ? 'sent' : 'problem';
+			status.replaceChildren(region);
+			status.focus();
+		};
+		const showMessage = (text: string, withLinkedin = false): void =>
+			show('alert', messageParagraph(text, withLinkedin));
+
+		const setFieldError = (field: ContactField, text: string | null): void => {
+			const errorBox = form.querySelector<HTMLElement>(`#contact-${field}-error`);
+			const errorText = errorBox?.querySelector<HTMLElement>('[data-error-message]');
+			if (!errorBox || !errorText) return;
+			errorText.textContent = text ?? '';
+			errorBox.hidden = text === null;
+			const describedBy = [baseDescribedBy(field), text === null ? '' : errorBox.id]
+				.filter(Boolean)
+				.join(' ');
+			controlsOf(field).forEach((control) => {
+				if (text === null) control.removeAttribute('aria-invalid');
+				else control.setAttribute('aria-invalid', 'true');
+				if (describedBy) control.setAttribute('aria-describedby', describedBy);
+				else control.removeAttribute('aria-describedby');
+			});
+		};
+
+		const showFieldErrors = (errors: readonly ShownFieldError[]): void => {
+			CONTACT_FIELDS.forEach((field) =>
+				setFieldError(field, errors.find((item) => item.field === field)?.message ?? null),
+			);
+			const summary = document.createElement('p');
+			summary.textContent = CONTACT.errorSummary;
+			const list = document.createElement('ul');
+			errors.forEach((item) => {
+				const link = document.createElement('a');
+				link.href = `#${firstControlId(item.field)}`;
+				link.textContent = item.message;
+				link.addEventListener('click', (event) => {
+					event.preventDefault();
+					document.getElementById(firstControlId(item.field))?.focus();
+				});
+				const entry = document.createElement('li');
+				entry.append(link);
+				list.append(entry);
+			});
+			show('alert', summary, list);
+		};
+
+		const updateCounter = (): void => {
+			const length = message.value.length;
+			counter.hidden = length < CONTACT_LIMITS.counterFrom;
+			counter.textContent = counter.hidden
+				? ''
+				: charactersLeftText(CONTACT_LIMITS.messageMax - length);
+		};
+
+		// While busy the text on screen is the text being sent.
+		const setBusy = (next: boolean): void => {
+			busy = next;
+			submit.textContent = next ? CONTACT.sendingLabel : CONTACT.submitLabel;
+			if (next) submit.setAttribute('aria-busy', 'true');
+			else submit.removeAttribute('aria-busy');
+			CONTACT_FIELDS.forEach((field) =>
+				controlsOf(field).forEach((control) => {
+					if (control instanceof HTMLInputElement && control.type === 'radio')
+						control.disabled = next;
+					else control.readOnly = next;
+				}),
+			);
+		};
+
+		const readFields = () => {
+			const data = new FormData(form);
+			const text = (field: ContactField) => {
+				const value = data.get(field);
+				return typeof value === 'string' ? value : '';
+			};
+			return {
+				data,
+				fields: {
+					name: text('name'),
+					email: text('email'),
+					topic: text('topic'),
+					message: text('message'),
+				},
+			};
+		};
+
+		const post = async (data: FormData): Promise<{ status: number | null; body: unknown }> => {
+			const controller = new AbortController();
+			const timer = window.setTimeout(() => controller.abort(), CONTACT_LIMITS.sendTimeoutMs);
+			try {
+				const response = await fetch(form.action, {
+					method: 'POST',
+					body: data,
+					headers: { Accept: 'application/json' },
+					signal: controller.signal,
+				});
+				const body: unknown = await response.json().catch(() => undefined);
+				return controller.signal.aborted
+					? { status: null, body: undefined }
+					: { status: response.status, body };
+			} catch {
+				return { status: null, body: undefined };
+			} finally {
+				window.clearTimeout(timer);
+			}
+		};
+
+		const send = async (data: FormData): Promise<void> => {
+			data.set('cf-turnstile-response', token);
+			setBusy(true);
+			const { status: code, body } = await post(data);
+			setBusy(false);
+			const outcome = clientOutcome(code, body);
+			if (outcome === 'sent') {
+				form.reset();
+				updateCounter();
+				show('status', messageParagraph(CONTACT.sent, false));
+			} else if (outcome === 'fix') {
+				const errors = shownFieldErrors((body as { fields?: unknown }).fields);
+				if (errors.length > 0) showFieldErrors(errors);
+				else showMessage(CONTACT.errors.notSent, true);
+			} else if (outcome === 'wait') showMessage(CONTACT.errors.rateLimited);
+			else if (outcome === 'check') showMessage(CONTACT.errors.verification);
+			else if (outcome === 'not_sent') showMessage(CONTACT.errors.notSent, true);
+			else showMessage(CONTACT.errors.uncertain, true);
+			// Tokens are single use: every send needs a fresh one.
+			resetWidget();
+		};
+
+		form.addEventListener('submit', async (event) => {
+			event.preventDefault();
+			if (busy) return;
+			const { data, fields } = readFields();
+			const result = validateContact(fields);
+			if (!result.ok) {
+				showFieldErrors(shownFieldErrors(result.errors));
+				return;
+			}
+			CONTACT_FIELDS.forEach((field) => setFieldError(field, null));
+
+			if (widgetState === 'verified') return send(data);
+			if (widgetState === 'failed') return showMessage(CONTACT.errors.checkFailed, true);
+			if (widgetState === 'interactive') return showMessage(CONTACT.errors.checkPending);
+
+			setBusy(true);
+			const waited = await waitForToken();
+			setBusy(false);
+			if (waited === 'verified') return send(data);
+			if (waited === 'interactive') return showMessage(CONTACT.errors.checkPending);
+			return showMessage(CONTACT.errors.checkFailed, true);
+		});
+
+		CONTACT_FIELDS.forEach((field) =>
+			controlsOf(field).forEach((control) =>
+				control.addEventListener(field === 'topic' ? 'change' : 'input', () =>
+					setFieldError(field, null),
+				),
+			),
+		);
+		message.addEventListener('input', updateCounter);
+	};
+
+	const form = document.querySelector<HTMLFormElement>('#contact-form');
+	const status = document.querySelector<HTMLElement>('#contact-status');
+	if (form && status) setUpContactForm(form, status);
+</script>
