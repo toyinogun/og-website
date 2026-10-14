@@ -10,5 +10,8 @@
 		"directory": "./dist",
 		// Unknown paths get dist/404.html with status 404 (spec 0003, AC-19).
 		"not_found_handling": "404-page",
+		// Serve /projects directly and redirect /projects/ to it, so the address
+		// matches astro.config.mjs `trailingSlash: 'never'` (spec 0005, AC-10).
+		"html_handling": "drop-trailing-slash",
 	},
 }

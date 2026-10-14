@@ -117,7 +117,7 @@ From spec 0003: design the project card and the tag chip on the design tokens.
 From spec 0004: the project card is already built (`ProjectCard`), so this page uses `PageIntro size="page"` and `ProjectCard headingLevel={2}`, adds the tag chip, and adds its `Work` nav link.
 - [x] Design it (spec): `/architect work listing`
 - [ ] Build it: `/develop work listing`
-  - [ ] The listing, live and linked: the `WORK` words, addresses without a trailing slash, `WorkList`, the `/projects` page with its intro and closing section, the `Work` nav link and the updated nav checks (AC-1 to AC-5, AC-9, AC-10, AC-11)
+  - [x] The listing, live and linked: the `WORK` words, addresses without a trailing slash, `WorkList`, the `/projects` page with its intro and closing section, the `Work` nav link and the updated nav checks (AC-1 to AC-5, AC-9, AC-10, AC-11)
   - [ ] The stack chips: `cardStackLabels`, `showStack` on `ProjectCard`, the style guide entries (AC-6, AC-7, AC-8)
   - [ ] The checks: the build test for the page, browser tests for order, columns, chips, widths, accessibility and requests (AC-3, AC-6, AC-10 to AC-14)
 - [ ] Verify it: `/check verify work listing`

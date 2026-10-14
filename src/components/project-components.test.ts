@@ -1,5 +1,5 @@
-// ProjectCard and SelectedWork (spec 0004; values in design.md, Component
-// values). The fixture is a minimal entry with a real cover import, cast to
+// ProjectCard, SelectedWork (spec 0004) and WorkList (spec 0005); values in
+// design.md, Component values. The fixture is a minimal entry with a real cover import, cast to
 // the entry type: the container API cannot load the content collection.
 import { experimental_AstroContainer as AstroContainer } from 'astro/container';
 import { beforeEach, describe, expect, it } from 'vitest';
@@ -7,6 +7,7 @@ import cover from '../content/projects/shipsafe/cover.png';
 import type { Project } from '../lib/projects';
 import ProjectCard from './ProjectCard.astro';
 import SelectedWork from './SelectedWork.astro';
+import WorkList from './WorkList.astro';
 
 const project = (id: string, data: Record<string, unknown> = {}): Project =>
 	({
@@ -161,5 +162,46 @@ describe('SelectedWork', () => {
 		const html = await render({ projects: [], heading: 'Selected work' });
 
 		expect(html.trim()).toBe('');
+	});
+});
+
+describe('WorkList', () => {
+	const render = (props: Record<string, unknown>) => container.renderToString(WorkList, { props });
+
+	// covers: AC-3 (spec 0005)
+	it('renders the projects section with no heading and a three column list, one h2 card per project in order', async () => {
+		const html = await render({
+			projects: [project('first'), withLinks, project('third')],
+			emptyText: 'Nothing yet.',
+		});
+
+		expect(html).toMatch(/^<section id="projects" class="py-16 md:py-24">/);
+		expect(html).not.toContain('aria-labelledby');
+		expect(html).toMatch(/<ul class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">/);
+		expect(html.match(/<li>\s*<article>/g)).toHaveLength(3);
+		const titles = [...html.matchAll(/<h2 class="text-xl">([^<]+)<\/h2>/g)].map((m) => m[1]);
+		expect(titles).toEqual(['Title of first', 'Title of with-links', 'Title of third']);
+		expect(html).not.toMatch(/<h3[\s>]/);
+		expect(html).not.toContain('Nothing yet.');
+	});
+
+	// covers: AC-3 (spec 0005)
+	it('shows featured and not featured projects alike', async () => {
+		const html = await render({
+			projects: [project('featured', { featured: true }), project('plain', { featured: false })],
+			emptyText: 'Nothing yet.',
+		});
+
+		expect(html.match(/<li>\s*<article>/g)).toHaveLength(2);
+	});
+
+	// covers: AC-4 (spec 0005)
+	it('renders the section with only the empty line for an empty list', async () => {
+		const html = await render({ projects: [], emptyText: 'Nothing yet.' });
+
+		expect(html).toMatch(/^<section id="projects" class="py-16 md:py-24">/);
+		expect(html.match(/<p[\s>]/g)).toHaveLength(1);
+		expect(html).toContain('<p class="max-w-measure">Nothing yet.</p>');
+		expect(html).not.toMatch(/<(ul|article|a|button|h2)[\s>]/);
 	});
 });

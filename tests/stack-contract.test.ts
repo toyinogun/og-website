@@ -43,6 +43,18 @@ describe('production origin', () => {
 	});
 });
 
+describe('addresses without a trailing slash (spec 0005)', () => {
+	// covers: AC-10 (spec 0005)
+	it('builds pages for addresses without a trailing slash', () => {
+		expect(astroConfig.trailingSlash).toBe('never');
+	});
+
+	// covers: AC-10 (spec 0005)
+	it('serves those addresses directly and redirects the slashed ones', () => {
+		expect(wrangler.assets?.html_handling).toBe('drop-trailing-slash');
+	});
+});
+
 describe('Wrangler config', () => {
 	// covers: AC-4
 	it('names the Worker og-website', () => {
