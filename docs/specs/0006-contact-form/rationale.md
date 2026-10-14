@@ -86,6 +86,10 @@ Errors use text, weight and a border in the `text` colour rather than a new red 
 
 `/check verify` found on 2026-10-14 that Cloudflare's always pass test secret answers siteverify with `success: true`, `hostname: example.com`, `metadata.result_with_testing_key: true` and no `action`, so every local send fails the action check. Two ways were weighed. A `TURNSTILE_EXPECTED_ACTION` var, empty only in `.dev.vars`, would give a full local send, but it puts a switch in production that turns the action check off when empty, and a dashboard edit or a bad merge could flip it silently. Accepting the gap keeps the check a constant: delivery is proved locally with the real Worker and bindings and only siteverify stood in, the refusal is proved with the real widget, and the success path of the action check is proved by the one real message after deploy, inside the rollback window. You chose to accept the gap. The weekly probe reads the same test reply as a new `test_secret` state, counted as not fine, because in production a test secret means every send is refused and the email should name the fix rather than say "unclear".
 
+### Real challenge without a live screen reader (JSM-56)
+
+AC-23 first asked a person to complete one forced Turnstile challenge by keyboard and with a screen reader, because a stub cannot prove the widget's accessibility. No agent can run a screen reader. Three ways were weighed: you run the ten minute check by hand (the strongest proof, but it needs a Mac with the repository), a spot check on toyintest.org after deploy (weak, because the live widget usually passes without showing a challenge), or an automated browser that drives the real forced challenge by keyboard and reads its accessibility tree, with Cloudflare's published WCAG 2.2 AA statement covering the widget's own screen reader behaviour. You chose the automated check on 2026-10-14. What it gives up: no one hears what VoiceOver actually says, so a wrong or confusing announcement inside Cloudflare's frame would go unseen. Placement, focus order and the accessible name are still proved on the real widget, and the widget is Cloudflare's to fix.
+
 ## References
 
 **Project sources**:
@@ -110,6 +114,7 @@ Errors use text, weight and a border in the `text` colour rather than a new red 
 - Email Service Workers API (`send_email` binding, `send()`): https://developers.cloudflare.com/email-service/api/send-emails/workers-api/
 - Static assets `run_worker_first` route patterns: https://developers.cloudflare.com/workers/static-assets/binding/
 - Turnstile server side validation (siteverify, single use tokens, 5 minute validity, test keys): https://developers.cloudflare.com/turnstile/get-started/server-side-validation/
+- Turnstile overview ("Turnstile is WCAG 2.2 AA compliant"): https://developers.cloudflare.com/turnstile/
 - Workers rate limit binding: https://developers.cloudflare.com/workers/runtime-apis/bindings/rate-limit/
 - Workers KV limits (free plan: 1,000 writes a day, 1,024 byte metadata): https://developers.cloudflare.com/kv/platform/limits/
 - Workers KV writes, expiry and metadata: https://developers.cloudflare.com/kv/api/write-key-value-pairs/
