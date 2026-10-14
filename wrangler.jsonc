@@ -25,9 +25,9 @@
 	"ratelimits": [
 		{ "name": "CONTACT_LIMITER", "namespace_id": "1001", "simple": { "limit": 3, "period": 60 } },
 	],
-	// The 30 day copy of each message (spec 0006, AC-12). The board creates the
-	// namespace and supplies its id (JSM-53).
-	"kv_namespaces": [{ "binding": "CONTACT_OUTBOX", "id": "board-supplies-the-contact-outbox-id" }],
+	// The 30 day copy of each message (spec 0006, AC-12). The namespace is
+	// titled CONTACT_OUTBOX on the account; the board supplied its id on JSM-53.
+	"kv_namespaces": [{ "binding": "CONTACT_OUTBOX", "id": "2b2b7d3849a047619d5ab51bb2e476ae" }],
 	// The weekly self check, Mondays 08:00 UTC (spec 0006, AC-21).
 	"triggers": { "crons": ["0 8 * * 1"] },
 	"vars": {
