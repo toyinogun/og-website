@@ -1,8 +1,8 @@
 ---
 // The work listing's projects (spec 0005; design.md, Component values: Work
-// list): a Section without a heading holding one card per project, in the
-// order given, or one line when the list is empty. The page's <h1> names the
-// list, so each card title is an <h2>.
+// list): a Section without a heading holding one card per project, with its
+// stack chips, in the order given, or one line when the list is empty. The
+// page's <h1> names the list, so each card title is an <h2>.
 import type { Project } from '../lib/projects';
 import Grid from './Grid.astro';
 import ProjectCard from './ProjectCard.astro';
@@ -25,7 +25,7 @@ const { projects, emptyText } = Astro.props;
 			<Grid cols={3} as="ul">
 				{projects.map((project) => (
 					<li>
-						<ProjectCard project={project} headingLevel={2} />
+						<ProjectCard project={project} headingLevel={2} showStack />
 					</li>
 				))}
 			</Grid>

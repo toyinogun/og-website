@@ -5,17 +5,46 @@ import StyleGuide from './styleguide.astro';
 
 // The container API cannot render the real collection's covers, so the two
 // entries the card examples use are stood in for, with a real cover import.
+// The cluster carries more than five stack keys, to show the chip limit.
 vi.mock('astro:content', async () => {
 	const cover = (await import('../content/projects/shipsafe/cover.png')).default;
-	const entry = (id: string, title: string, links: readonly unknown[]) => ({
+	const entry = (
+		id: string,
+		title: string,
+		order: number,
+		stack: readonly string[],
+		links: readonly unknown[],
+	) => ({
 		id,
 		collection: 'projects',
-		data: { title, outcome: `Outcome of ${id}.`, kind: 'personal', cover, coverAlt: title, links },
+		data: {
+			title,
+			outcome: `Outcome of ${id}.`,
+			kind: 'personal',
+			cover,
+			coverAlt: title,
+			links,
+			stack,
+			order,
+			draft: false,
+		},
 	});
 	return {
 		getCollection: async () => [
-			entry('hetzner-talos-cluster', 'Cluster example', []),
-			entry('shipsafe', 'ShipSafe example', [{ kind: 'code', url: 'https://github.com/x/y' }]),
+			entry(
+				'hetzner-talos-cluster',
+				'Cluster example',
+				10,
+				['kubernetes', 'talos', 'terraform', 'hetzner', 'argocd', 'cilium', 'longhorn'],
+				[],
+			),
+			entry(
+				'shipsafe',
+				'ShipSafe example',
+				30,
+				['go', 'docker'],
+				[{ kind: 'code', url: 'https://github.com/x/y' }],
+			),
 		],
 	};
 });
@@ -29,6 +58,10 @@ const tokensIn = (table: string) => {
 
 describe('style guide', () => {
 	let html: string;
+
+	/** The markup from the section with id `from` up to the section with id `to`. */
+	const between = (from: string, to: string) =>
+		html.slice(html.indexOf(`<section id="${from}"`), html.indexOf(`<section id="${to}"`));
 
 	beforeAll(async () => {
 		const container = await AstroContainer.create({
@@ -121,12 +154,37 @@ describe('style guide', () => {
 
 	// covers: AC-18 (spec 0004)
 	it('shows ProjectCard at both heading levels, with and without a link', () => {
-		const cards = html.match(/<article>[\s\S]*?<\/article>/g) ?? [];
+		const cards = between('project-card', 'work-list').match(/<article>[\s\S]*?<\/article>/g) ?? [];
 
-		expect(cards).toHaveLength(2);
+		expect(cards).toHaveLength(3);
 		expect(cards[0]).toContain('<h3 class="text-xl">ShipSafe example</h3>');
 		expect(cards[0]).toContain('<a href="https://github.com/x/y"');
+		expect(cards[0]).not.toContain('aria-label="Stack"');
 		expect(cards[1]).toContain('<h2 class="text-xl">Cluster example</h2>');
 		expect(cards[1]).not.toContain('<a ');
+		expect(cards[1]).not.toContain('aria-label="Stack"');
+	});
+
+	// covers: AC-8 (spec 0005)
+	it('shows ProjectCard with showStack on the longest stack, capped at five chips', () => {
+		const cards = between('project-card', 'work-list').match(/<article>[\s\S]*?<\/article>/g) ?? [];
+		const chips = cards[2]?.match(/<ul aria-label="Stack"[\s\S]*?<\/ul>/)?.[0] ?? '';
+
+		expect(cards[2]).toContain('Cluster example');
+		expect(chips.match(/<li[\s>]/g)).toHaveLength(5);
+	});
+
+	// covers: AC-8 (spec 0005)
+	it('shows WorkList filled, in order, and empty', () => {
+		const lists =
+			between('work-list', 'links').match(/<section id="projects"[\s\S]*?<\/section>/g) ?? [];
+
+		expect(lists).toHaveLength(2);
+		const titles = [...(lists[0] ?? '').matchAll(/<h2 class="text-xl">([^<]+)<\/h2>/g)].map(
+			(m) => m[1],
+		);
+		expect(titles).toEqual(['Cluster example', 'ShipSafe example']);
+		expect(lists[1]).toContain('<p class="max-w-measure">Write ups are on their way.</p>');
+		expect(lists[1]).not.toContain('<ul');
 	});
 });
