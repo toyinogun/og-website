@@ -358,7 +358,7 @@ Skateboard: the first milestone ships the thinnest whole thing, a form that real
 
 ## Follow-up
 
-- [ ] **Board, before merge:** turn on Email Routing for `toyintest.org` (Compute, Email Service, Email Routing), add and verify your inbox as a destination address, and check no existing MX records conflict.
+- [x] **Board, before merge:** turn on Email Routing for `toyintest.org` (Compute, Email Service, Email Routing), add and verify your inbox as a destination address, and check no existing MX records conflict. Done on JSM-51: routing enabled, DNS records locked, one verified destination address.
 - [ ] **Board, before merge:** create a Turnstile widget (Application security, Turnstile, Add widget) for hostname `toyintest.org`, mode Managed; give the Engineer the site key for `TURNSTILE_SITE_KEY` and set the secret as the `TURNSTILE_SECRET_KEY` Worker secret.
 - [ ] **Board, before merge:** create a KV namespace `CONTACT_OUTBOX` (Storage and databases, KV, Create) and give the Engineer its id; set the `CONTACT_TO` Worker secret on `og-website`; confirm rate limit namespace id `1001` is not used by `n8n` or `invoice2-email-worker`, that the account has a free Cron Trigger slot (the free plan allows 5), and its current daily request use.
 - [ ] **Board, before merge:** create a free Healthchecks.io account and one check named `toyintest contact form`, period 7 days, grace 4 hours, alerts by email to your inbox; set its ping URL as the `HEALTHCHECK_URL` Worker secret.
