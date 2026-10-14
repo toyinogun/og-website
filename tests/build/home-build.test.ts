@@ -57,7 +57,9 @@ describe('home cards (AC-4, AC-6)', () => {
 
 	// covers: AC-4
 	it('shows the featured projects in order, and not Mool', () => {
-		const titles = [...main.matchAll(/<h3 class="text-xl">([^<]+)<\/h3>/g)].map((m) => m[1]);
+		const titles = [...main.matchAll(/<h3 class="text-xl"><a [^>]*>([^<]+)<\/a><\/h3>/g)].map(
+			(m) => m[1],
+		);
 
 		expect(titles).toEqual([
 			'Production Kubernetes on Hetzner Cloud',
@@ -98,8 +100,13 @@ describe('home cards (AC-4, AC-6)', () => {
 	});
 
 	// covers: AC-6
-	it('never links to a project page', () => {
-		expect(home).not.toContain('href="/projects/');
+	// covers: feature 9 (spec 0004 follow up)
+	it('links each card title, and only the title, to its project page', () => {
+		expect([...home.matchAll(/href="(\/projects\/[^"]*)"/g)].map((m) => m[1])).toEqual([
+			'/projects/hetzner-talos-cluster',
+			'/projects/deployer',
+			'/projects/shipsafe',
+		]);
 	});
 });
 

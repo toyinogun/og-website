@@ -23,7 +23,7 @@ _These are recommendations to keep your build orderly, not requirements. Skip an
 | 6 | Bio & project write ups | Release 1 | done |
 | 7 | Home page | Release 1 | done |
 | 8 | Work listing | Release 1 | done |
-| 9 | Project detail page | Release 1 | planned |
+| 9 | Project detail page | Release 1 | in-progress |
 | 10 | About page | Release 1 | planned |
 | 11 | Contact form | Release 1 | planned |
 | 12 | Search metadata & share cards | Release 1 | planned |
@@ -124,13 +124,19 @@ From spec 0004: the project card is already built (`ProjectCard`), so this page 
 
 spec [0005](../specs/0005-work-listing/index.md) · decided: `/projects` lists every published project in `order`, three cards per row, the first 5 stack technologies as quiet outlined chips on this page only, one closing call to action, a one line empty state, the `Work` nav link, and addresses without a trailing slash · code in `src/pages/projects/index.astro`, `src/components/` (`WorkList`, `ProjectCard` `showStack`), `src/lib/` (`work.ts`, `projects.ts` `cardStackLabels`, `site.ts` nav), `astro.config.mjs` and `wrangler.jsonc` (no trailing slash), `tests/work-page.test.ts`, `tests/build/work-build.test.ts`, `e2e/work.spec.ts`
 
-### 9. Project detail page
+### 9. Project detail page · in-progress
 The case study itself, built on the structure decided in the content model. This is where a reader finds out how you think, which is the thing a resume cannot show.
 **Done when:** each project renders its full write up with images and links to live work or code, the structure reads well for both a hiring reader and a client reader, it works on a phone, and each page carries its own title, description and share card.
 From spec 0003: render the case study through `Prose`, and decide how figures inside the Markdown get optimised images.
 From spec 0004: make the card title link to `projectPath(id)` and keep the outside link.
-- [ ] Build it: `/develop project detail page`
-- [ ] Verify it: `/check verify project detail page`
+From spec 0005: add `src/pages/projects/[slug].astro`, link the card title without a trailing slash, and show the full stack (the cards show only the first five).
+- [x] Build it: `/develop project detail page`
+  - [x] The case study pages: `src/pages/projects/[slug].astro` from `visibleProjects` and `sortProjects`, the `PROJECT_PAGE` words and `glanceRows`, the intro with the write up's links, the cover, the at a glance panel with the full stack and the headline numbers, the write up through `Prose`, the closing call to action
+  - [x] Card titles link to `projectPath(id)` with no trailing slash, and the outside link stays
+  - [x] The checks: unit tests for the words and the panel, the build test for every project page, browser tests for card titles to pages, the phone layout, accessibility, widths and target sizes
+- [x] Verify it: `/check verify project detail page`
+
+no spec of its own: built on spec [0002](../specs/0002-content-model/index.md) (Value sourcing), with figures in the write up optimised by Astro's own Markdown image pipeline (a relative `![alt](./x.png)`, wrapped in `<figure>` with a `<figcaption>` for a caption) · code in `src/pages/projects/[slug].astro`, `src/lib/project-page.ts`, `src/components/ProjectCard.astro`, `tests/build/project-build.test.ts`, `e2e/project.spec.ts`
 
 ### 10. About page
 The longer version of who you are, plus the resume download. The resume is cheap to add here and uses content you already have, so it does not need its own feature.
@@ -143,12 +149,14 @@ From spec 0004: add a "More about me" link to the home About section, and the `A
 The point of the whole site. A visitor sends you a message without leaving the page. Tagged for extra rigor because it is the one feature that can fail silently: a broken form loses you work and says nothing, and it is also the only place the site handles someone else's personal data.
 **Done when:** a submitted message reliably reaches you, the sender sees a clear success or failure, bad input and spam are handled, the form is usable by keyboard, and a delivery failure is visible rather than silent.
 From spec 0004: change `SITE.contact` to `/contact` with a new label, and revisit `HOME.closingText`.
+From spec 0005: revisit `WORK.closingText` alongside `HOME.closingText`.
 - [ ] Design it (spec): `/architect contact form`
 
 ### 12. Search metadata & share cards · needs a decision
 So your name finds your site, and so a pasted link looks deliberate rather than broken. You will share this link a lot, in applications and in messages, and the preview is often the first thing anyone sees of your work.
 **Done when:** every page has a title and description, a sitemap exists, structured data describes you as a person, and pasting any page link into a message shows a correct title, description and image.
 From spec 0004: build on the share tags already in `BaseLayout` (title and description), adding the image, sitemap and structured data, and decide the share image for each page.
+From spec 0005: decide eager loading for the covers above the fold, and write sitemap addresses without a trailing slash.
 - [ ] Design it (spec): `/architect search metadata & share cards`
 
 ## Release 2: make the case stronger

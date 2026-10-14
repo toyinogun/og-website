@@ -157,11 +157,15 @@ describe('style guide', () => {
 		const cards = between('project-card', 'work-list').match(/<article>[\s\S]*?<\/article>/g) ?? [];
 
 		expect(cards).toHaveLength(3);
-		expect(cards[0]).toContain('<h3 class="text-xl">ShipSafe example</h3>');
+		expect(cards[0]).toMatch(
+			/<h3 class="text-xl">\s*<a href="\/projects\/[^"]+"[^>]*>ShipSafe example<\/a>/,
+		);
 		expect(cards[0]).toContain('<a href="https://github.com/x/y"');
 		expect(cards[0]).not.toContain('aria-label="Stack"');
-		expect(cards[1]).toContain('<h2 class="text-xl">Cluster example</h2>');
-		expect(cards[1]).not.toContain('<a ');
+		expect(cards[1]).toMatch(
+			/<h2 class="text-xl">\s*<a href="\/projects\/[^"]+"[^>]*>Cluster example<\/a>/,
+		);
+		expect(cards[1]).not.toContain('<a href="https:');
 		expect(cards[1]).not.toContain('aria-label="Stack"');
 	});
 
@@ -180,9 +184,9 @@ describe('style guide', () => {
 			between('work-list', 'links').match(/<section id="projects"[\s\S]*?<\/section>/g) ?? [];
 
 		expect(lists).toHaveLength(2);
-		const titles = [...(lists[0] ?? '').matchAll(/<h2 class="text-xl">([^<]+)<\/h2>/g)].map(
-			(m) => m[1],
-		);
+		const titles = [
+			...(lists[0] ?? '').matchAll(/<h2 class="text-xl">\s*<a [^>]*>([^<]+)<\/a>/g),
+		].map((m) => m[1]);
 		expect(titles).toEqual(['Cluster example', 'ShipSafe example']);
 		expect(lists[1]).toContain('<p class="max-w-measure">Write ups are on their way.</p>');
 		expect(lists[1]).not.toContain('<ul');

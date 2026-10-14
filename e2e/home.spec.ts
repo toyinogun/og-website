@@ -76,10 +76,12 @@ test.describe('home page from the static build', () => {
 	});
 
 	// covers: AC-6
-	test('gives each card link a unique name and no card a project page link', async ({ page }) => {
+	test('gives each card link out a unique name, and each title its project page', async ({
+		page,
+	}) => {
 		await page.goto('/');
 
-		const links = page.locator('#selected-work article a');
+		const links = page.locator('#selected-work article a:not([href^="/projects/"])');
 		const names = await links.evaluateAll((anchors) =>
 			anchors.map((a) => a.textContent?.replace(/\s+/g, ' ').trim()),
 		);
@@ -87,7 +89,19 @@ test.describe('home page from the static build', () => {
 			'Code for Deployer, a deploy platform for AI coding agents',
 			'Code for ShipSafe, trust scores for AI written code',
 		]);
-		await expect(page.locator('main a[href^="/projects/"]')).toHaveCount(0);
+		await expect(page.locator('#selected-work article h3 a')).toHaveText([
+			'Production Kubernetes on Hetzner Cloud',
+			'Deployer, a deploy platform for AI coding agents',
+			'ShipSafe, trust scores for AI written code',
+		]);
+		const hrefs = await page
+			.locator('#selected-work article h3 a')
+			.evaluateAll((anchors) => anchors.map((a) => a.getAttribute('href')));
+		expect(hrefs).toEqual([
+			'/projects/hetzner-talos-cluster',
+			'/projects/deployer',
+			'/projects/shipsafe',
+		]);
 	});
 
 	// covers: AC-5

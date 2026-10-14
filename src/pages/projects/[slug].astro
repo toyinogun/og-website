@@ -1,0 +1,123 @@
+---
+// One project's case study (feature 9): the intro and its links, the cover,
+// the at a glance panel built from the frontmatter (spec 0002, Value
+// sourcing), the write up through `Prose`, then the closing call to action.
+// Images inside the write up go through Astro's own Markdown image pipeline,
+// which optimises every relative `![alt](./x.png)` at build time.
+import { getCollection, render } from 'astro:content';
+import { Image } from 'astro:assets';
+import type { GetStaticPaths } from 'astro';
+import CallToAction from '../../components/CallToAction.astro';
+import Container from '../../components/Container.astro';
+import PageIntro from '../../components/PageIntro.astro';
+import Prose from '../../components/Prose.astro';
+import Section from '../../components/Section.astro';
+import Stack from '../../components/Stack.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { PROJECT_PAGE, glanceRows, projectPageTitle } from '../../lib/project-page';
+import {
+	kindLabel,
+	linkLabel,
+	sortProjects,
+	visibleProjects,
+	type Project,
+} from '../../lib/projects';
+
+export const getStaticPaths = (async () => {
+	const projects = sortProjects(
+		visibleProjects(await getCollection('projects'), { includeDrafts: import.meta.env.DEV }),
+	);
+	return projects.map((project) => ({ params: { slug: project.id }, props: { project } }));
+}) satisfies GetStaticPaths;
+
+/** Props for the project page, handed over by `getStaticPaths`. */
+interface Props {
+	/** The project this page shows. */
+	project: Project;
+}
+
+/** Cover widths in the reading column: the gutter on phones, 38rem from md. */
+const COVER_SIZES = '(min-width: 48rem) 38rem, calc(100vw - 2.5rem)';
+
+const { project } = Astro.props;
+const { title, summary, kind, cover, coverAlt, links, metrics } = project.data;
+const { Content } = await render(project);
+---
+
+<BaseLayout title={projectPageTitle(title)} description={summary}>
+	<Container as="article" width="measure">
+		<PageIntro eyebrow={kindLabel(kind)} heading={title} lead={summary}>
+			{
+				links.length > 0 && (
+					<ul aria-label={PROJECT_PAGE.linksLabel} class="flex flex-wrap gap-x-5 gap-y-2">
+						{links.map((link) => (
+							<li>
+								<a href={link.url} class="inline-flex min-h-6 items-center text-base">
+									{linkLabel(link)}
+								</a>
+							</li>
+						))}
+					</ul>
+				)
+			}
+		</PageIntro>
+		<Image
+			src={cover}
+			alt={coverAlt}
+			widths={[640, 1000, 1400]}
+			sizes={COVER_SIZES}
+			class="mt-12 h-auto w-full rounded-md"
+		/>
+		<Section id="glance" heading={PROJECT_PAGE.glanceHeading}>
+			<Stack gap="lg">
+				<dl class="grid gap-x-6 gap-y-4 sm:grid-cols-[10rem_1fr]">
+					{
+						glanceRows(project.data).map((row) => (
+							<div class="contents">
+								<dt class="text-sm text-muted sm:pt-0.5">{row.term}</dt>
+								{row.key === 'stack' ? (
+									<dd class="-mt-2 sm:mt-0">
+										<ul aria-label={PROJECT_PAGE.stackTerm} class="flex flex-wrap gap-2">
+											{row.values.map((label) => (
+												<li class="rounded-sm border border-line px-2 py-0.5 text-sm text-muted">
+													{label}
+												</li>
+											))}
+										</ul>
+									</dd>
+								) : (
+									<dd class="-mt-2 sm:mt-0">
+										{row.values.map((value) => (
+											<p>{value}</p>
+										))}
+									</dd>
+								)}
+							</div>
+						))
+					}
+				</dl>
+				{
+					metrics.length > 0 && (
+						<ul aria-label={PROJECT_PAGE.metricsLabel} class="grid gap-6 sm:grid-cols-3">
+							{metrics.map((metric) => (
+								<li class="flex flex-col gap-1 border-t border-line pt-3">
+									<span class="font-serif text-2xl font-semibold">{metric.value}</span>
+									<span class="text-sm text-muted">{metric.label}</span>
+								</li>
+							))}
+						</ul>
+					)
+				}
+			</Stack>
+		</Section>
+		<Prose>
+			<Content />
+		</Prose>
+		<Section id="contact" heading={PROJECT_PAGE.closingHeading}>
+			<Stack>
+				<p class="max-w-measure">{PROJECT_PAGE.closingText}</p>
+				<CallToAction class="w-full sm:w-auto sm:self-start" />
+			</Stack>
+		</Section>
+	</Container>
+</BaseLayout>

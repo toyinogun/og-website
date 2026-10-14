@@ -1,10 +1,10 @@
 ---
 // One project as a card (design.md, Component values: Project card): cover,
 // kind, title, outcome, the stack chips when `showStack` (spec 0005, the work
-// listing only) and the write up's first link. The card itself is not a link
-// and shows no metrics; feature 9 links the title to the project page.
+// listing only) and the write up's first link. The title links to the
+// project page (feature 9); the card itself is not a link and shows no metrics.
 import { Image } from 'astro:assets';
-import { cardStackLabels, kindLabel, linkLabel, type Project } from '../lib/projects';
+import { cardStackLabels, kindLabel, linkLabel, projectPath, type Project } from '../lib/projects';
 import Stack from './Stack.astro';
 
 /** Props for `ProjectCard`. */
@@ -37,7 +37,9 @@ const link = links[0];
 			class="h-auto w-full rounded-md"
 		/>
 		<p class="text-sm text-muted">{kindLabel(kind)}</p>
-		<Heading class="text-xl">{title}</Heading>
+		<Heading class="text-xl">
+			<a href={projectPath(project.id)} class="text-text no-underline hover:underline">{title}</a>
+		</Heading>
 		<p class="text-base">{outcome}</p>
 		{
 			showStack && (
