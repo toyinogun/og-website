@@ -120,7 +120,7 @@ The containers and radii live in `@theme static`. The two durations live in a pl
 
 ## Components
 
-Built by feature 4, plus the shared page pieces from the home page (feature 7, [spec 0004](docs/specs/0004-home-page/index.md)). Pages in Release 1 add their own: the work listing (feature 8, [spec 0005](docs/specs/0005-work-listing/index.md)) adds the tag chip and the work list.
+Built by feature 4, plus the shared page pieces from the home page (feature 7, [spec 0004](docs/specs/0004-home-page/index.md)). Pages in Release 1 add their own: the work listing (feature 8, [spec 0005](docs/specs/0005-work-listing/index.md)) adds the tag chip and the work list, and the project page (feature 9, built on [spec 0002](docs/specs/0002-content-model/index.md) with no spec of its own) adds the case study layout below.
 
 | Component | File | What it is |
 |---|---|---|
@@ -138,7 +138,8 @@ Built by feature 4, plus the shared page pieces from the home page (feature 7, [
 | 404 page | `src/pages/404.astro` | "This page does not exist", one line of help, a primary Button home |
 | Page intro | `src/components/PageIntro.astro` | the top of a page: optional eyebrow, the one `<h1>`, optional lead, then a slot for actions. `display` size on the home page, `page` size on inner pages (spec 0004) |
 | Call to action | `src/components/CallToAction.astro` | the one contact action: a primary Button to `SITE.contact`. The only way any page shows it (spec 0004) |
-| Project card | `src/components/ProjectCard.astro` | cover, kind, title, outcome and the write up's first link; takes `project`, `headingLevel` and `showStack` (spec 0004, spec 0005) |
+| Project card | `src/components/ProjectCard.astro` | cover, kind, title, outcome and the write up's first link; the title links to the project page through `projectPath(id)`. Takes `project`, `headingLevel` and `showStack` (spec 0004, spec 0005, feature 9) |
+| Project page | `src/pages/projects/[slug].astro` | one case study per visible project, in the reading column: intro with the write up's links, cover, the at a glance panel, the write up through `Prose`, the closing call to action (feature 9). The one place a project shows outside `ProjectCard` |
 | Tag chip | inside `ProjectCard` | one stack technology as a small outlined label; only when the card gets `showStack` (the work listing), at most 5 per card (spec 0005) |
 | Work list | `src/components/WorkList.astro` | the work listing's cards in a 3 column grid, or one line when no project is published; takes `projects` and `emptyText` (spec 0005) |
 
@@ -159,7 +160,22 @@ Built by feature 4, plus the shared page pieces from the home page (feature 7, [
 | Call to action | a primary Button; full width below `sm` where the page asks for it (`w-full sm:w-auto`) |
 | Tag chip | an `<li>` in a `<ul aria-label="Stack">`. `--text-sm` Inter 400, `muted` text, 1px `line` border, `--radius-sm`, padding `0.125rem 0.5rem`, no background, no accent, not interactive. The list wraps with a `0.5rem` gap and no bullets |
 | Work list | a `Section` without a heading: a 3 column `Grid` as a `<ul>` of cards at `headingLevel` 2, or one `max-w-measure` paragraph when empty |
-| Project card | no border, background or shadow. Stack gap `sm`. Cover first, full card width, `--radius-md`, its natural 1600 by 840 ratio. Kind `--text-sm` `muted`. Title serif 600 `--text-xl`. Outcome `--text-base` `text`. With `showStack`, the tag chips sit between the outcome and the link. The link uses the in text link style, with a visually hidden "for <title>" so each card's link has its own name |
+| Project card | no border, background or shadow. Stack gap `sm`. Cover first, full card width, `--radius-md`, its natural 1600 by 840 ratio. Kind `--text-sm` `muted`. Title serif 600 `--text-xl`, and the whole title is a link to `projectPath(id)` (no trailing slash) in `text` colour with no underline at rest, underlined on hover; the card itself is not a link. Outcome `--text-base` `text`. With `showStack`, the tag chips sit between the outcome and the link. The link uses the in text link style, with a visually hidden "for <title>" so each card's link has its own name |
+
+### Project page
+
+The case study (feature 9), top to bottom. The whole page is one `Container` at `measure` width rendered as an `<article>`, so every part shares the reading column. The fixed words come from `PROJECT_PAGE` in `src/lib/project-page.ts`; the project's own words come from its write up.
+
+| Part | Values |
+|---|---|
+| Intro | `PageIntro` at `page` size: eyebrow is the kind label, heading is `title`, lead is `summary`. When the write up has `links`, they sit in the actions slot as a `<ul aria-label="Project links">`, wrapping with `1.25rem` across and `0.5rem` down, no bullets; each is an in text link at `--text-base` with at least a `1.5rem` tall target |
+| Cover | `3rem` below the intro, full column width, `--radius-md`, its natural 1600 by 840 ratio, alt text from `coverAlt` |
+| At a glance | a `Section` headed "At a glance", content Stack gap `lg`. A `<dl>`: terms `--text-sm` `muted`, values `--text-base` `text`. One column on phones (each value tucked `0.5rem` under its term); from `sm`, a `10rem` term column beside the values, `1.5rem` across and `1rem` down. Rows in order: who it was for, role, team (only when written), when, type of work, stack. The stack row shows the **full** stack as tag chips (same values as the card chips, no cap of 5) |
+| Headline numbers | only when the write up has `metrics`, after the `<dl>`: a `<ul aria-label="Headline numbers">`, one column on phones and three from `sm`, `1.5rem` gaps. Each item has a 1px `line` hairline above, `0.75rem` top padding, the value serif 600 `--text-2xl` over the label `--text-sm` `muted`. No accent |
+| Write up | the rendered Markdown inside `Prose` (below), figures included |
+| Closing | a `Section` with its own heading, a Stack gap `md`: one `max-w-measure` paragraph, then `CallToAction`, full width below `sm` and left aligned from `sm` (`w-full sm:w-auto sm:self-start`) |
+
+The accent stays within its three places: the intro links and the write up's links (links), the focus ring, and the one primary button at the end.
 
 ### Prose
 
@@ -180,6 +196,7 @@ Overrides of the plugin defaults:
 - Code blocks: Shiki `github-light` and `github-dark` with `defaultColor: 'light-dark()'`, `--radius-md`, scroll sideways inside their own box.
 - Tables: `display: block; overflow-x: auto;` so a wide table scrolls inside its own box; `line` borders.
 - Images: `max-width: 100%`, `height: auto`, `--radius-md`. Figures are written as HTML inside the Markdown (`<figure>` with `<figcaption>`); captions `--text-sm` `muted`.
+- Figure captions in a project write up: wrap a relative Markdown image (`![alt](./x.png)`, never a raw `<img>`) in `<figure>` with a `<figcaption>` after it, with a blank line on each side of the image line. Astro's own Markdown image pipeline then optimises the image like any other, and the output is `<figure>`, the image in a `<p>`, then the caption. The exact pattern lives in [the authoring guide](docs/specs/0002-content-model/authoring.md), section 4. The style guide sample uses a raw `<img>` only because it points at a file in `public/`; project write ups cannot.
 - Long words and URLs wrap (`overflow-wrap: break-word`).
 
 ## Brand marks

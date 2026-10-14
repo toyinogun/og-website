@@ -102,6 +102,22 @@ The at a glance panel (kind, who it was for, role, team, dates, stack, type of w
 - Alt text is required. Describe what the image shows for someone who cannot see it.
 - Raw HTML with `<img` or `<h1` fails the build, in any letter case. Use Markdown images instead.
 
+**An image with a caption.** Wrap a normal Markdown image in `<figure>` and put the caption in `<figcaption>` after it:
+
+```markdown
+<figure>
+
+![The node pool in the Hetzner console](./images/nodes.png)
+
+<figcaption>One control plane and three workers, all from Terraform.</figcaption>
+</figure>
+```
+
+- Keep the blank line before and after the image line. Without them the Markdown inside `<figure>` is not read, and the page shows the raw `![...]` text.
+- The image follows every rule above (a `./` path, a real file, alt text), and Astro optimises it like any other image in the body.
+- The caption adds context the alt text does not repeat: alt text says what the image shows, the caption says why it matters. Keep it to one or two short sentences of plain text: Markdown inside `<figcaption>` is not read, so leave out emphasis and links.
+- The caption shows small and muted under the image ([`design.md`](../../../design.md), Prose).
+
 ## 5. When the checks run
 
 The checks run on `astro check` (the pre commit hook and the deploy gate), on `npm run build`, and when `astro dev` starts. They do **not** run again on edits you make while `astro dev` is running. Restart the dev server to recheck; the next commit catches it anyway. `npm test` runs the same checks over every real entry.
