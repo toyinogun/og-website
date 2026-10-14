@@ -220,8 +220,8 @@ Skateboard: the share image first, because it is the part people see, then each 
 ## Follow-up
 
 - [ ] After the merge deploys: a `Board:` task to verify `toyintest.org` in Google Search Console with the Cloudflare DNS record and submit `https://toyintest.org/sitemap-index.xml` (your pick on 2026-10-14). Created by the Tech Lead at ship.
-- [ ] Record `@astrojs/sitemap` in `AGENTS.md` (Stack key dependencies) and the new `BaseLayout` props and `src/lib/seo.ts` in its Rules; `/sync` owns that.
-- [ ] Record in `AGENTS.md` `## Agent skills`: `jdevalk/skills` astro-seo imported and attached to the Engineer (JSM-68); declined `fabiensalles/claude-marketplace` astro-sitemap, `kostja94/marketing-skills` open-graph, `aaron-he-zhu/aaron-marketing-skills` serp-markup-builder, `soborbo/claudeskills` astro-seo, and the MCP servers seo-mcp and OpenGraph.io MCP. `/sync` owns that.
+- [x] Record `@astrojs/sitemap` in `AGENTS.md` (Stack key dependencies) and the new `BaseLayout` props and `src/lib/seo.ts` in its Rules; `/sync` owns that. Done on JSM-70.
+- [x] Record in `AGENTS.md` `## Agent skills`: `jdevalk/skills` astro-seo imported and attached to the Engineer (JSM-68); declined `fabiensalles/claude-marketplace` astro-sitemap, `kostja94/marketing-skills` open-graph, `aaron-he-zhu/aaron-marketing-skills` serp-markup-builder, `soborbo/claudeskills` astro-seo, and the MCP servers seo-mcp and OpenGraph.io MCP. `/sync` owns that. Done on JSM-70.
 
 ## Rationale
 

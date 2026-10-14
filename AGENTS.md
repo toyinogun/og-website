@@ -6,7 +6,7 @@ The personal site of Toyin Ogunseinde. Scope: `docs/scope/scope.md`.
 
 - **Language / Runtime**: TypeScript strict (`astro/tsconfigs/strict`), Node 24 LTS pinned in `.nvmrc`
 - **Framework**: Astro 7, fully pre rendered static output, no adapter
-- **Key dependencies**: Tailwind CSS 4 (via `@tailwindcss/vite`), Astro content collections (Markdown in the repo), Astro image handling
+- **Key dependencies**: Tailwind CSS 4 (via `@tailwindcss/vite`), Astro content collections (Markdown in the repo), Astro image handling, `@astrojs/sitemap` (spec 0007)
 - **Hosting**: Cloudflare Workers static assets (`wrangler.jsonc`, `assets.directory: ./dist`), deployed by Workers Builds on push to `main`, served at `https://toyintest.org`
 - **Package manager**: npm (`package-lock.json` is committed; install with `npm ci`)
 
@@ -46,7 +46,8 @@ Stored in `docs/specs/`. Format: `docs/specs/NNNN-title/index.md`, with `rationa
 - Resume (feature 10): the CV is a cleaned PDF at `public/toyin-ogunseinde-cv.pdf` (`RESUME_PATH` in `src/lib/about.ts`), with no phone number or street address, since the repository is public. The About page shows its download button only while that file exists, so adding or removing it needs no code change.
 - Call to action (spec 0004): `SITE.contact` in `src/lib/site.ts` is the one contact target, and every page shows it only through `CallToAction`, now `/contact` (feature 11, spec 0006), so repointing it stays a one line change.
 - Page building blocks (spec 0004): a page opens with `PageIntro` (its one `<h1>`), shows projects only through `ProjectCard`, and passes its own `title` and `description` to `BaseLayout`, which builds the share tags from them.
-- Page words (spec 0004, spec 0005): each page keeps every word in one constant in its own `src/lib/<page>.ts` (`HOME`, `WORK`, `PROJECT_PAGE` in `project-page.ts`, `ABOUT`, `CONTACT`), held to its length limits by the test beside it.
+- Page words (spec 0004, spec 0005): each page keeps every word in one constant in its own `src/lib/<page>.ts` (`HOME`, `WORK`, `PROJECT_PAGE` in `project-page.ts`, `ABOUT`, `CONTACT`, `NOT_FOUND` in `not-found.ts`), held to its length limits by the test beside it.
+- Search metadata (spec 0007): `BaseLayout` writes every share and search tag. A page only passes `image` (a project page passes its cover; every other page gets the site card `src/assets/share/site-card.png`), `noindex` (the 404 page) or `structuredData` (the Person data on the home page). Share image options, alt text, JSON-LD and the `robots.txt` body live in `src/lib/seo.ts`, and `@astrojs/sitemap` lists every page but the 404 with no extra step. Only the first cover on a page gets `priority` on `ProjectCard`.
 - Addresses never end in a slash (spec 0005): `trailingSlash: 'never'` in `astro.config.mjs` and `html_handling: drop-trailing-slash` in `wrangler.jsonc`, so internal `href`s are written as `/projects`, never `/projects/` (that one costs a redirect).
 - New tags: add the value to `STACK` or `SERVICES` in `src/lib/vocabulary.ts` before an entry uses it; an unknown tag fails the build.
 - Naming: PascalCase `.astro` components, kebab case routes and content files, camelCase functions and variables.
@@ -72,7 +73,8 @@ Chosen by `/audit`, installed by `/develop tooling`:
 ## Agent skills
 
 Imported under Paperclip Skills and attached to the Engineer (JSM-55): `cloudflare/skills` wrangler, `cloudflare/skills` workers-best-practices (spec 0001), `cloudflare/skills` cloudflare-email-service (spec 0006).
-Declined: `astrolicious/agent-skills` astro, `wshobson/agents` tailwind-design-system, `morinokami/astro-mcp`, a Tailwind utilities MCP server, `secondsky/claude-skills` cloudflare-workers-security, `secondsky/claude-skills` cloudflare-cron-triggers, `cloudflare/skills` turnstile-spin (Paperclip refuses skills that ship scripts; skipped on JSM-55, the Turnstile check is already built)
+Imported and attached to the Engineer (JSM-68): `jdevalk/skills` astro-seo (spec 0007).
+Declined: `astrolicious/agent-skills` astro, `wshobson/agents` tailwind-design-system, `morinokami/astro-mcp`, a Tailwind utilities MCP server, `secondsky/claude-skills` cloudflare-workers-security, `secondsky/claude-skills` cloudflare-cron-triggers, `cloudflare/skills` turnstile-spin (Paperclip refuses skills that ship scripts; skipped on JSM-55, the Turnstile check is already built), `fabiensalles/claude-marketplace` astro-sitemap, `kostja94/marketing-skills` open-graph, `aaron-he-zhu/aaron-marketing-skills` serp-markup-builder, `soborbo/claudeskills` astro-seo, the seo-mcp and OpenGraph.io MCP servers (spec 0007)
 MCP servers: Cloudflare documentation (connected), Astro documentation (recommended)
 
 ## Context files
