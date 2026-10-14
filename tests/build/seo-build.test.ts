@@ -71,11 +71,14 @@ describe('share image tags (AC-4, AC-5)', () => {
 		expect(meta(head, 'name', 'twitter:card')).toBe('summary_large_image');
 	});
 
-	it.each(['/', '/projects', '/about', '/contact'])('%s shows the site card', (path) => {
-		const head = headOf(pageAt(path).html);
+	it.each(['/', '/projects', '/services', '/about', '/contact'])(
+		'%s shows the site card',
+		(path) => {
+			const head = headOf(pageAt(path).html);
 
-		expect(unescape(meta(head, 'property', 'og:image:alt') ?? '')).toBe(SHARE.siteCardAlt);
-	});
+			expect(unescape(meta(head, 'property', 'og:image:alt') ?? '')).toBe(SHARE.siteCardAlt);
+		},
+	);
 
 	it.each(projectIds)('project %s shows its own cover, not the site card', (id) => {
 		const head = headOf(pageAt(`/projects/${id}`).html);
@@ -140,6 +143,7 @@ describe('sitemap (AC-8, AC-9, AC-10)', () => {
 			'https://toyintest.org/',
 			'https://toyintest.org/projects',
 			...projectIds.map((id) => `https://toyintest.org/projects/${id}`),
+			'https://toyintest.org/services',
 			'https://toyintest.org/about',
 			'https://toyintest.org/contact',
 		];
@@ -218,7 +222,7 @@ describe('covers above the fold (AC-15)', () => {
 		},
 	);
 
-	it.each(['/about', '/contact'])('%s has no high priority image', (path) => {
+	it.each(['/services', '/about', '/contact'])('%s has no high priority image', (path) => {
 		expect(pageAt(path).html).not.toContain('fetchpriority');
 	});
 });
