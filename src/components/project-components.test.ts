@@ -34,6 +34,12 @@ const withLinks = project('with-links', {
 	],
 });
 
+/** The card's links out, leaving aside the title's link to the project page. */
+const outsideLinks = (html: string) =>
+	(html.match(/<a [\s\S]*?<\/a>/g) ?? []).filter(
+		(anchor) => !anchor.startsWith('<a href="/projects/'),
+	);
+
 let container: AstroContainer;
 
 beforeEach(async () => {
@@ -52,7 +58,7 @@ describe('ProjectCard', () => {
 		const positions = [
 			html.indexOf('<img'),
 			html.indexOf('>Personal project</p>'),
-			html.indexOf('<h3 class="text-xl">Title of plain</h3>'),
+			html.search(/<h3 class="text-xl">\s*<a [^>]*>Title of plain<\/a>\s*<\/h3>/),
 			html.indexOf('>Outcome of plain.</p>'),
 		];
 		expect(positions.every((position) => position >= 0)).toBe(true);
@@ -61,8 +67,8 @@ describe('ProjectCard', () => {
 
 	// covers: AC-6, AC-18
 	it('uses an h2 when headingLevel is 2, and h3 by default', async () => {
-		expect(await render({ project: project('a'), headingLevel: 2 })).toContain(
-			'<h2 class="text-xl">Title of a</h2>',
+		expect(await render({ project: project('a'), headingLevel: 2 })).toMatch(
+			/<h2 class="text-xl">\s*<a [^>]*>Title of a<\/a>\s*<\/h2>/,
 		);
 		expect(await render({ project: project('a') })).toMatch(/<h3[\s>]/);
 	});
@@ -91,9 +97,9 @@ describe('ProjectCard', () => {
 	});
 
 	// covers: AC-6
-	it('links only the first link, named uniquely with a hidden "for <title>"', async () => {
+	it('links only the first outside link, named uniquely with a hidden "for <title>"', async () => {
 		const html = await render({ project: withLinks });
-		const anchors = html.match(/<a [\s\S]*?<\/a>/g) ?? [];
+		const anchors = outsideLinks(html);
 
 		expect(anchors).toHaveLength(1);
 		expect(anchors[0]).toMatch(/^<a href="https:\/\/github\.com\/example\/first"/);
@@ -115,10 +121,19 @@ describe('ProjectCard', () => {
 	});
 
 	// covers: AC-6
-	it('shows no link when the project has none', async () => {
+	it('shows no outside link when the project has none', async () => {
 		const html = await render({ project: project('plain') });
 
-		expect(html).not.toContain('<a ');
+		expect(outsideLinks(html)).toEqual([]);
+	});
+
+	// covers: feature 9 (spec 0004 and 0005 follow ups)
+	it('links the title to the project page, with no trailing slash', async () => {
+		const html = await render({ project: withLinks });
+
+		expect(html).toMatch(
+			/<h3 class="text-xl">\s*<a href="\/projects\/with-links" class="text-text no-underline hover:underline">Title of with-links<\/a>\s*<\/h3>/,
+		);
 	});
 
 	// covers: AC-6, AC-16
@@ -129,12 +144,11 @@ describe('ProjectCard', () => {
 	});
 
 	// covers: AC-6
-	it('shows no metrics, no tags and never links to a project page', async () => {
+	it('shows no metrics and no tags', async () => {
 		const html = await render({ project: withLinks });
 
 		expect(html).not.toContain('a metric');
 		expect(html).not.toMatch(/>\s*(Go|Backend)\s*</);
-		expect(html).not.toContain('/projects/');
 	});
 	// covers: AC-6, AC-7 (spec 0005)
 	describe('with showStack', () => {
@@ -187,7 +201,7 @@ describe('ProjectCard', () => {
 			});
 			const outcome = html.indexOf('>Outcome of with-links.</p>');
 			const list = html.indexOf('<ul aria-label="Stack" class="flex flex-wrap gap-2">');
-			const link = html.indexOf('<a ');
+			const link = html.indexOf('<a href="https:');
 
 			expect(outcome).toBeGreaterThan(-1);
 			expect(list).toBeGreaterThan(outcome);
@@ -229,7 +243,9 @@ describe('SelectedWork', () => {
 		expect(html).toMatch(/<h2 id="selected-work-heading"[^>]*>Selected work<\/h2>/);
 		expect(html).toMatch(/<ul class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">/);
 		expect(html.match(/<li>\s*<article>/g)).toHaveLength(3);
-		const titles = [...html.matchAll(/<h3 class="text-xl">([^<]+)<\/h3>/g)].map((m) => m[1]);
+		const titles = [...html.matchAll(/<h3 class="text-xl">\s*<a [^>]*>([^<]+)<\/a>/g)].map(
+			(m) => m[1],
+		);
 		expect(titles).toEqual(['Title of first', 'Title of with-links', 'Title of third']);
 	});
 
@@ -255,7 +271,9 @@ describe('WorkList', () => {
 		expect(html).not.toContain('aria-labelledby');
 		expect(html).toMatch(/<ul class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">/);
 		expect(html.match(/<li>\s*<article>/g)).toHaveLength(3);
-		const titles = [...html.matchAll(/<h2 class="text-xl">([^<]+)<\/h2>/g)].map((m) => m[1]);
+		const titles = [...html.matchAll(/<h2 class="text-xl">\s*<a [^>]*>([^<]+)<\/a>/g)].map(
+			(m) => m[1],
+		);
 		expect(titles).toEqual(['Title of first', 'Title of with-links', 'Title of third']);
 		expect(html).not.toMatch(/<h3[\s>]/);
 		expect(html.match(/<ul aria-label="Stack"/g)).toHaveLength(3);
