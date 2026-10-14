@@ -266,7 +266,7 @@ test.describe('keyboard (AC-9, AC-10)', () => {
 
 	for (const scheme of ['light', 'dark'] as const) {
 		// covers: AC-9, AC-10
-		test(`tabs through skip link, wordmark and toggle, each with the ring (${scheme})`, async ({
+		test(`tabs through skip link, wordmark, Home and toggle, each with the ring (${scheme})`, async ({
 			page,
 		}) => {
 			await page.emulateMedia({ colorScheme: scheme });
@@ -281,12 +281,16 @@ test.describe('keyboard (AC-9, AC-10)', () => {
 			await page.keyboard.press('Tab');
 			expect((await focused(page)).text).toBe('Toyin Ogunseinde');
 
-			// The nav is empty until the page features ship, so the toggle is next.
+			await page.keyboard.press('Tab');
+			const home = await focused(page);
+			expect(home.text).toBe('Home');
+			expect(home.inHeader).toBe(true);
+
 			await page.keyboard.press('Tab');
 			const toggleFocus = await focused(page);
 			expect(toggleFocus.tag).toBe('BUTTON');
 
-			for (const state of [skip, toggleFocus]) {
+			for (const state of [skip, home, toggleFocus]) {
 				expect(state.outlineStyle).toBe('solid');
 				expect(state.outlineWidth).toBe('2px');
 			}
@@ -312,7 +316,7 @@ test.describe('keyboard (AC-9, AC-10)', () => {
 	});
 
 	// covers: AC-10
-	test('with nothing focusable in main, Tab after the skip link never returns to the header', async ({
+	test('on the home page, Tab after the skip link goes to the first link in main', async ({
 		page,
 	}) => {
 		await page.goto('/');
@@ -322,7 +326,9 @@ test.describe('keyboard (AC-9, AC-10)', () => {
 		expect((await focused(page)).id).toBe('main');
 
 		await page.keyboard.press('Tab');
-		expect((await focused(page)).inHeader).toBe(false);
+		const next = await focused(page);
+		expect(next.inHeader).toBe(false);
+		expect(next.text).toBe('Message me on LinkedIn');
 	});
 });
 
@@ -351,23 +357,44 @@ test.describe('layout (AC-13)', () => {
 		}
 	});
 
-	// covers: AC-13
-	test('keeps the header on one row while the nav is empty, at 639px and 640px', async ({
+	// covers: AC-13 (spec 0004, AC-10)
+	test('puts the nav on a second header row at 639px and on one row at 640px', async ({
 		page,
 	}, testInfo) => {
 		test.skip(testInfo.project.name !== 'desktop', 'the sweep sets its own widths');
-		for (const width of [639, 640]) {
+		const middle = (box: { y: number; height: number } | null) =>
+			box ? box.y + box.height / 2 : NaN;
+		for (const [width, rows] of [
+			[639, 2],
+			[640, 1],
+		] as const) {
 			await page.setViewportSize({ width, height: 800 });
 			await page.goto('/');
 
-			const wordmark = await page.locator('[data-wordmark]').boundingBox();
-			const button = await toggle(page).boundingBox();
-			expect(
-				wordmark &&
-					button &&
-					Math.abs(wordmark.y + wordmark.height / 2 - (button.y + button.height / 2)) < 4,
-			).toBe(true);
+			const wordmark = middle(await page.locator('[data-wordmark]').boundingBox());
+			const button = middle(await toggle(page).boundingBox());
+			const home = middle(
+				await page
+					.getByRole('navigation', { name: 'Main' })
+					.getByRole('link')
+					.first()
+					.boundingBox(),
+			);
+			expect(Math.abs(wordmark - button), `at ${width}px`).toBeLessThan(4);
+			if (rows === 1) expect(Math.abs(home - wordmark), `at ${width}px`).toBeLessThan(4);
+			else expect(home - wordmark, `at ${width}px`).toBeGreaterThan(20);
 		}
+	});
+
+	// covers: spec 0004, AC-10
+	test('marks Home as the current page on / only', async ({ page }) => {
+		const home = page.getByRole('navigation', { name: 'Main' }).getByRole('link', { name: 'Home' });
+
+		await page.goto('/');
+		await expect(home).toHaveAttribute('aria-current', 'page');
+
+		await page.goto('/no-such-page');
+		await expect(home).not.toHaveAttribute('aria-current', /.*/);
 	});
 });
 
@@ -460,7 +487,7 @@ test.describe('accessibility, WCAG 2.2 AA (AC-20)', () => {
 		for (const path of ['/', '/no-such-page']) {
 			await page.goto(path);
 			const targets = page.locator(
-				'header a, header button, footer a, footer button, main a.inline-flex, main button',
+				'header a, header button, footer a, footer button, main a.inline-flex, main article a, main button',
 			);
 			expect(await targets.count()).toBeGreaterThan(0);
 			for (const target of await targets.all()) {

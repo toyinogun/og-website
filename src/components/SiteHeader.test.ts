@@ -75,6 +75,15 @@ describe('SiteHeader', () => {
 	});
 
 	// covers: AC-16
+	// covers: AC-20 (spec 0004, AC-16)
+	it('gives every nav link a target at least 24 pixels tall', async () => {
+		const html = await render(NAV);
+		const links = html.match(/<a href="\/work[^"]*"[^>]*>/g) ?? [];
+
+		expect(links.length).toBeGreaterThan(0);
+		for (const link of links) expect(link).toMatch(/class="inline-flex min-h-6 items-center /);
+	});
+
 	it('names its view transition site-header', async () => {
 		const html = await render([]);
 

@@ -42,7 +42,7 @@ const pathname = Astro.url.pathname;
 								<a
 									href={item.href}
 									aria-current={isCurrentPath(pathname, item.href) ? 'page' : undefined}
-									class="text-base text-muted no-underline transition-colors duration-(--duration-fast) hover:text-text aria-[current=page]:font-semibold aria-[current=page]:text-text aria-[current=page]:underline aria-[current=page]:decoration-accent aria-[current=page]:decoration-2"
+									class="inline-flex min-h-6 items-center text-base text-muted no-underline transition-colors duration-(--duration-fast) hover:text-text aria-[current=page]:font-semibold aria-[current=page]:text-text aria-[current=page]:underline aria-[current=page]:decoration-accent aria-[current=page]:decoration-2"
 								>
 									{item.label}
 								</a>
