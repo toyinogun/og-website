@@ -292,10 +292,15 @@ test.describe('keyboard (AC-9, AC-10)', () => {
 			expect(work.inHeader).toBe(true);
 
 			await page.keyboard.press('Tab');
+			const about = await focused(page);
+			expect(about.text).toBe('About');
+			expect(about.inHeader).toBe(true);
+
+			await page.keyboard.press('Tab');
 			const toggleFocus = await focused(page);
 			expect(toggleFocus.tag).toBe('BUTTON');
 
-			for (const state of [skip, home, work, toggleFocus]) {
+			for (const state of [skip, home, work, about, toggleFocus]) {
 				expect(state.outlineStyle).toBe('solid');
 				expect(state.outlineWidth).toBe('2px');
 			}
@@ -346,6 +351,7 @@ test.describe('layout (AC-13)', () => {
 		for (const path of [
 			'/',
 			'/projects',
+			'/about',
 			'/projects/hetzner-talos-cluster',
 			'/projects/deployer',
 			'/no-such-page',
@@ -369,7 +375,7 @@ test.describe('layout (AC-13)', () => {
 	});
 
 	// covers: AC-13 (spec 0004, AC-10; spec 0005, AC-9)
-	test('puts both nav links on a second header row at 639px and on one row at 640px', async ({
+	test('puts the nav links on a second header row at 639px and on one row at 640px', async ({
 		page,
 	}, testInfo) => {
 		test.skip(testInfo.project.name !== 'desktop', 'the sweep sets its own widths');
@@ -386,31 +392,27 @@ test.describe('layout (AC-13)', () => {
 			const button = middle(await toggle(page).boundingBox());
 			const links = page.getByRole('navigation', { name: 'Main' }).getByRole('link');
 			const home = middle(await links.first().boundingBox());
-			const work = middle(await links.last().boundingBox());
+			const last = middle(await links.last().boundingBox());
 			expect(Math.abs(wordmark - button), `at ${width}px`).toBeLessThan(4);
-			expect(Math.abs(home - work), `at ${width}px`).toBeLessThan(4);
+			expect(Math.abs(home - last), `at ${width}px`).toBeLessThan(4);
 			if (rows === 1) expect(Math.abs(home - wordmark), `at ${width}px`).toBeLessThan(4);
 			else expect(home - wordmark, `at ${width}px`).toBeGreaterThan(20);
 		}
 	});
 
-	// covers: spec 0004, AC-10; spec 0005, AC-9
-	test('marks Home current on / only, and Work current on /projects only', async ({ page }) => {
+	// covers: spec 0004, AC-10; spec 0005, AC-9; feature 10
+	test('marks only the nav link for the page you are on as current', async ({ page }) => {
 		const nav = page.getByRole('navigation', { name: 'Main' });
-		const home = nav.getByRole('link', { name: 'Home' });
-		const work = nav.getByRole('link', { name: 'Work' });
+		const links = { '/': 'Home', '/projects': 'Work', '/about': 'About' } as const;
 
-		await page.goto('/');
-		await expect(home).toHaveAttribute('aria-current', 'page');
-		await expect(work).not.toHaveAttribute('aria-current', /.*/);
-
-		await page.goto('/projects');
-		await expect(work).toHaveAttribute('aria-current', 'page');
-		await expect(home).not.toHaveAttribute('aria-current', /.*/);
-
-		await page.goto('/no-such-page');
-		await expect(home).not.toHaveAttribute('aria-current', /.*/);
-		await expect(work).not.toHaveAttribute('aria-current', /.*/);
+		for (const path of ['/', '/projects', '/about', '/no-such-page']) {
+			await page.goto(path);
+			for (const [href, name] of Object.entries(links)) {
+				const link = nav.getByRole('link', { name });
+				if (href === path) await expect(link, path).toHaveAttribute('aria-current', 'page');
+				else await expect(link, path).not.toHaveAttribute('aria-current', /.*/);
+			}
+		}
 	});
 });
 
@@ -480,6 +482,7 @@ test.describe('accessibility, WCAG 2.2 AA (AC-20)', () => {
 		for (const path of [
 			'/',
 			'/projects',
+			'/about',
 			'/projects/hetzner-talos-cluster',
 			'/projects/deployer',
 			'/no-such-page',
@@ -509,6 +512,7 @@ test.describe('accessibility, WCAG 2.2 AA (AC-20)', () => {
 		for (const path of [
 			'/',
 			'/projects',
+			'/about',
 			'/projects/hetzner-talos-cluster',
 			'/projects/deployer',
 			'/no-such-page',
