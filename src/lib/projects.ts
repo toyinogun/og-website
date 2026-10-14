@@ -3,7 +3,7 @@
 // decide whether drafts show and pass that in: `import.meta.env.DEV`.
 import type { CollectionEntry } from 'astro:content';
 import type { ProjectData } from './project-schema';
-import { linkKindLabel } from './vocabulary';
+import { linkKindLabel, stackLabel, type StackKey } from './vocabulary';
 
 export { kindLabel, serviceLabel, stackLabel } from './vocabulary';
 
@@ -45,6 +45,16 @@ export const sortProjects = (entries: readonly Project[]): readonly Project[] =>
  */
 export const featuredProjects = (visible: readonly Project[]): readonly Project[] =>
 	sortProjects(visible.filter((entry) => entry.data.featured));
+
+/** How many stack chips a card shows at most (spec 0005, AC-7). */
+export const CARD_STACK_LIMIT = 5;
+
+/**
+ * The display names of the first `CARD_STACK_LIMIT` keys of `stack`, in the
+ * order the write up lists them. Never mutates its input.
+ */
+export const cardStackLabels = (stack: readonly StackKey[]): readonly string[] =>
+	stack.slice(0, CARD_STACK_LIMIT).map(stackLabel);
 
 /** A project's page address, `/projects/<id>`. */
 export const projectPath = (id: string): string => `/projects/${id}`;

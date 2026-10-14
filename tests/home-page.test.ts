@@ -114,7 +114,8 @@ describe('home page', () => {
 
 	// covers: key invariant (spec 0004): no link to a page that does not exist yet
 	it('links to no page that has not shipped', () => {
-		expect(html).not.toMatch(/href="\/(work|projects|about|contact)\b/);
+		expect(html).not.toMatch(/href="\/(work|about|contact)\b/);
+		expect(html).not.toMatch(/href="\/projects\//);
 	});
 
 	// covers: AC-7

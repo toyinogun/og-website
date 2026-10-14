@@ -1,10 +1,10 @@
 ---
 // One project as a card (design.md, Component values: Project card): cover,
-// kind, title, outcome and the write up's first link. The card itself is not
-// a link and shows no metrics or tags; feature 8 adds tag chips and feature 9
-// links the title to the project page.
+// kind, title, outcome, the stack chips when `showStack` (spec 0005, the work
+// listing only) and the write up's first link. The card itself is not a link
+// and shows no metrics; feature 9 links the title to the project page.
 import { Image } from 'astro:assets';
-import { kindLabel, linkLabel, type Project } from '../lib/projects';
+import { cardStackLabels, kindLabel, linkLabel, type Project } from '../lib/projects';
 import Stack from './Stack.astro';
 
 /** Props for `ProjectCard`. */
@@ -13,14 +13,16 @@ interface Props {
 	project: Project;
 	/** The title's heading level, one below the section it sits in. Defaults to 3. */
 	headingLevel?: 2 | 3;
+	/** Show the first stack technologies as tag chips. Defaults to false (the home cards). */
+	showStack?: boolean;
 }
 
 /** Cover widths across the grid: one column on phones, two from md, three from lg. */
 const COVER_SIZES =
 	'(min-width: 64rem) 22rem, (min-width: 48rem) calc(50vw - 3rem), calc(100vw - 2.5rem)';
 
-const { project, headingLevel = 3 } = Astro.props;
-const { title, cover, coverAlt, kind, outcome, links } = project.data;
+const { project, headingLevel = 3, showStack = false } = Astro.props;
+const { title, cover, coverAlt, kind, outcome, links, stack } = project.data;
 const Heading = headingLevel === 2 ? 'h2' : 'h3';
 const link = links[0];
 ---
@@ -37,6 +39,15 @@ const link = links[0];
 		<p class="text-sm text-muted">{kindLabel(kind)}</p>
 		<Heading class="text-xl">{title}</Heading>
 		<p class="text-base">{outcome}</p>
+		{
+			showStack && (
+				<ul aria-label="Stack" class="flex flex-wrap gap-2">
+					{cardStackLabels(stack).map((label) => (
+						<li class="rounded-sm border border-line px-2 py-0.5 text-sm text-muted">{label}</li>
+					))}
+				</ul>
+			)
+		}
 		{
 			link && (
 				<a href={link.url} class="inline-flex min-h-6 items-center self-start text-base">

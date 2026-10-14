@@ -266,7 +266,7 @@ test.describe('keyboard (AC-9, AC-10)', () => {
 
 	for (const scheme of ['light', 'dark'] as const) {
 		// covers: AC-9, AC-10
-		test(`tabs through skip link, wordmark, Home and toggle, each with the ring (${scheme})`, async ({
+		test(`tabs through skip link, wordmark, Home, Work and toggle, each with the ring (${scheme})`, async ({
 			page,
 		}) => {
 			await page.emulateMedia({ colorScheme: scheme });
@@ -287,10 +287,15 @@ test.describe('keyboard (AC-9, AC-10)', () => {
 			expect(home.inHeader).toBe(true);
 
 			await page.keyboard.press('Tab');
+			const work = await focused(page);
+			expect(work.text).toBe('Work');
+			expect(work.inHeader).toBe(true);
+
+			await page.keyboard.press('Tab');
 			const toggleFocus = await focused(page);
 			expect(toggleFocus.tag).toBe('BUTTON');
 
-			for (const state of [skip, home, toggleFocus]) {
+			for (const state of [skip, home, work, toggleFocus]) {
 				expect(state.outlineStyle).toBe('solid');
 				expect(state.outlineWidth).toBe('2px');
 			}
@@ -338,7 +343,7 @@ test.describe('layout (AC-13)', () => {
 	// covers: AC-13
 	test('never scrolls sideways and no box exceeds 72rem', async ({ page }, testInfo) => {
 		test.skip(testInfo.project.name !== 'desktop', 'the sweep sets its own widths');
-		for (const path of ['/', '/no-such-page']) {
+		for (const path of ['/', '/projects', '/no-such-page']) {
 			for (const width of WIDTHS) {
 				await page.setViewportSize({ width, height: 800 });
 				await page.goto(path);
@@ -357,8 +362,8 @@ test.describe('layout (AC-13)', () => {
 		}
 	});
 
-	// covers: AC-13 (spec 0004, AC-10)
-	test('puts the nav on a second header row at 639px and on one row at 640px', async ({
+	// covers: AC-13 (spec 0004, AC-10; spec 0005, AC-9)
+	test('puts both nav links on a second header row at 639px and on one row at 640px', async ({
 		page,
 	}, testInfo) => {
 		test.skip(testInfo.project.name !== 'desktop', 'the sweep sets its own widths');
@@ -373,28 +378,33 @@ test.describe('layout (AC-13)', () => {
 
 			const wordmark = middle(await page.locator('[data-wordmark]').boundingBox());
 			const button = middle(await toggle(page).boundingBox());
-			const home = middle(
-				await page
-					.getByRole('navigation', { name: 'Main' })
-					.getByRole('link')
-					.first()
-					.boundingBox(),
-			);
+			const links = page.getByRole('navigation', { name: 'Main' }).getByRole('link');
+			const home = middle(await links.first().boundingBox());
+			const work = middle(await links.last().boundingBox());
 			expect(Math.abs(wordmark - button), `at ${width}px`).toBeLessThan(4);
+			expect(Math.abs(home - work), `at ${width}px`).toBeLessThan(4);
 			if (rows === 1) expect(Math.abs(home - wordmark), `at ${width}px`).toBeLessThan(4);
 			else expect(home - wordmark, `at ${width}px`).toBeGreaterThan(20);
 		}
 	});
 
-	// covers: spec 0004, AC-10
-	test('marks Home as the current page on / only', async ({ page }) => {
-		const home = page.getByRole('navigation', { name: 'Main' }).getByRole('link', { name: 'Home' });
+	// covers: spec 0004, AC-10; spec 0005, AC-9
+	test('marks Home current on / only, and Work current on /projects only', async ({ page }) => {
+		const nav = page.getByRole('navigation', { name: 'Main' });
+		const home = nav.getByRole('link', { name: 'Home' });
+		const work = nav.getByRole('link', { name: 'Work' });
 
 		await page.goto('/');
 		await expect(home).toHaveAttribute('aria-current', 'page');
+		await expect(work).not.toHaveAttribute('aria-current', /.*/);
+
+		await page.goto('/projects');
+		await expect(work).toHaveAttribute('aria-current', 'page');
+		await expect(home).not.toHaveAttribute('aria-current', /.*/);
 
 		await page.goto('/no-such-page');
 		await expect(home).not.toHaveAttribute('aria-current', /.*/);
+		await expect(work).not.toHaveAttribute('aria-current', /.*/);
 	});
 });
 
@@ -461,7 +471,7 @@ test.describe('accessibility, WCAG 2.2 AA (AC-20)', () => {
 			.analyze();
 
 	for (const scheme of ['light', 'dark'] as const) {
-		for (const path of ['/', '/no-such-page']) {
+		for (const path of ['/', '/projects', '/no-such-page']) {
 			// covers: AC-20
 			test(`finds no violations on ${path} in ${scheme}`, async ({ page }) => {
 				await page.emulateMedia({ colorScheme: scheme });
@@ -484,7 +494,7 @@ test.describe('accessibility, WCAG 2.2 AA (AC-20)', () => {
 	test('gives every header, footer and button target at least 24 by 24 pixels', async ({
 		page,
 	}) => {
-		for (const path of ['/', '/no-such-page']) {
+		for (const path of ['/', '/projects', '/no-such-page']) {
 			await page.goto(path);
 			const targets = page.locator(
 				'header a, header button, footer a, footer button, main a.inline-flex, main article a, main button',

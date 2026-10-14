@@ -1,5 +1,5 @@
-// ProjectCard and SelectedWork (spec 0004; values in design.md, Component
-// values). The fixture is a minimal entry with a real cover import, cast to
+// ProjectCard, SelectedWork (spec 0004) and WorkList (spec 0005); values in
+// design.md, Component values. The fixture is a minimal entry with a real cover import, cast to
 // the entry type: the container API cannot load the content collection.
 import { experimental_AstroContainer as AstroContainer } from 'astro/container';
 import { beforeEach, describe, expect, it } from 'vitest';
@@ -7,6 +7,7 @@ import cover from '../content/projects/shipsafe/cover.png';
 import type { Project } from '../lib/projects';
 import ProjectCard from './ProjectCard.astro';
 import SelectedWork from './SelectedWork.astro';
+import WorkList from './WorkList.astro';
 
 const project = (id: string, data: Record<string, unknown> = {}): Project =>
 	({
@@ -135,6 +136,82 @@ describe('ProjectCard', () => {
 		expect(html).not.toMatch(/>\s*(Go|Backend)\s*</);
 		expect(html).not.toContain('/projects/');
 	});
+	// covers: AC-6, AC-7 (spec 0005)
+	describe('with showStack', () => {
+		const HETZNER_STACK = [
+			'kubernetes',
+			'talos',
+			'terraform',
+			'hetzner',
+			'argocd',
+			'cilium',
+			'longhorn',
+			'prometheus',
+			'grafana',
+		];
+		/** The chip classes, written once (spec 0005, AC-8). */
+		const CHIP = 'rounded-sm border border-line px-2 py-0.5 text-sm text-muted';
+		const stackList = (html: string) =>
+			html.match(/<ul aria-label="Stack"[\s\S]*?<\/ul>/)?.[0] ?? '';
+		const chips = (html: string) =>
+			[...stackList(html).matchAll(/<li[^>]*>([^<]+)<\/li>/g)].map((m) => m[1]);
+
+		it('shows the first five stack labels of a nine key stack, in order', async () => {
+			const html = await render({
+				project: project('hetzner', { stack: HETZNER_STACK }),
+				showStack: true,
+			});
+
+			expect(chips(html)).toEqual([
+				'Kubernetes',
+				'Talos Linux',
+				'Terraform',
+				'Hetzner Cloud',
+				'Argo CD',
+			]);
+		});
+
+		it('shows a short stack whole', async () => {
+			const html = await render({
+				project: project('shipsafe', { stack: ['go', 'docker'] }),
+				showStack: true,
+			});
+
+			expect(chips(html)).toEqual(['Go', 'Docker']);
+		});
+
+		it('places the list between the outcome and the link, styled as chips', async () => {
+			const html = await render({
+				project: project('with-links', { ...withLinks.data, stack: ['go', 'docker'] }),
+				showStack: true,
+			});
+			const outcome = html.indexOf('>Outcome of with-links.</p>');
+			const list = html.indexOf('<ul aria-label="Stack" class="flex flex-wrap gap-2">');
+			const link = html.indexOf('<a ');
+
+			expect(outcome).toBeGreaterThan(-1);
+			expect(list).toBeGreaterThan(outcome);
+			expect(link).toBeGreaterThan(list);
+			expect(stackList(html).match(new RegExp(`<li class="${CHIP}">`, 'g'))).toHaveLength(2);
+		});
+
+		it('makes no chip interactive', async () => {
+			const list = stackList(
+				await render({ project: project('hetzner', { stack: HETZNER_STACK }), showStack: true }),
+			);
+
+			expect(list).not.toMatch(/<(a|button)[\s>]/);
+			expect(list).not.toMatch(/\b(tabindex|title)=/);
+		});
+
+		it('shows no stack list without showStack, or with it false', async () => {
+			for (const props of [{}, { showStack: false }]) {
+				const html = await render({ project: project('plain'), ...props });
+
+				expect(html).not.toContain('aria-label="Stack"');
+			}
+		});
+	});
 });
 
 describe('SelectedWork', () => {
@@ -161,5 +238,47 @@ describe('SelectedWork', () => {
 		const html = await render({ projects: [], heading: 'Selected work' });
 
 		expect(html.trim()).toBe('');
+	});
+});
+
+describe('WorkList', () => {
+	const render = (props: Record<string, unknown>) => container.renderToString(WorkList, { props });
+
+	// covers: AC-3 (spec 0005)
+	it('renders the projects section with no heading and a three column list, one h2 card per project in order', async () => {
+		const html = await render({
+			projects: [project('first'), withLinks, project('third')],
+			emptyText: 'Nothing yet.',
+		});
+
+		expect(html).toMatch(/^<section id="projects" class="py-16 md:py-24">/);
+		expect(html).not.toContain('aria-labelledby');
+		expect(html).toMatch(/<ul class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">/);
+		expect(html.match(/<li>\s*<article>/g)).toHaveLength(3);
+		const titles = [...html.matchAll(/<h2 class="text-xl">([^<]+)<\/h2>/g)].map((m) => m[1]);
+		expect(titles).toEqual(['Title of first', 'Title of with-links', 'Title of third']);
+		expect(html).not.toMatch(/<h3[\s>]/);
+		expect(html.match(/<ul aria-label="Stack"/g)).toHaveLength(3);
+		expect(html).not.toContain('Nothing yet.');
+	});
+
+	// covers: AC-3 (spec 0005)
+	it('shows featured and not featured projects alike', async () => {
+		const html = await render({
+			projects: [project('featured', { featured: true }), project('plain', { featured: false })],
+			emptyText: 'Nothing yet.',
+		});
+
+		expect(html.match(/<li>\s*<article>/g)).toHaveLength(2);
+	});
+
+	// covers: AC-4 (spec 0005)
+	it('renders the section with only the empty line for an empty list', async () => {
+		const html = await render({ projects: [], emptyText: 'Nothing yet.' });
+
+		expect(html).toMatch(/^<section id="projects" class="py-16 md:py-24">/);
+		expect(html.match(/<p[\s>]/g)).toHaveLength(1);
+		expect(html).toContain('<p class="max-w-measure">Nothing yet.</p>');
+		expect(html).not.toMatch(/<(ul|article|a|button|h2)[\s>]/);
 	});
 });

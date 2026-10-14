@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
+	CARD_STACK_LIMIT,
+	cardStackLabels,
 	featuredProjects,
 	formatTimeframe,
 	kindLabel,
@@ -167,5 +169,56 @@ describe('label helpers (spec 0002, AC-9)', () => {
 	// covers: AC-9
 	it('linkLabel falls back to the default name for the kind', () => {
 		expect(linkLabel({ kind: 'app-store', url: 'https://x.com' })).toBe('App Store');
+	});
+});
+
+describe('cardStackLabels (spec 0005, AC-7)', () => {
+	const hetzner = [
+		'kubernetes',
+		'talos',
+		'terraform',
+		'hetzner',
+		'argocd',
+		'cilium',
+		'longhorn',
+		'prometheus',
+		'grafana',
+	] as const;
+
+	// covers: AC-7
+	it('caps the chips at five', () => {
+		expect(CARD_STACK_LIMIT).toBe(5);
+	});
+
+	// covers: AC-7
+	it('names the first five keys of a longer stack, in written order', () => {
+		expect(cardStackLabels(hetzner)).toEqual([
+			'Kubernetes',
+			'Talos Linux',
+			'Terraform',
+			'Hetzner Cloud',
+			'Argo CD',
+		]);
+	});
+
+	// covers: AC-7
+	it('returns a stack of five or fewer whole', () => {
+		expect(cardStackLabels(['go', 'docker'])).toEqual(['Go', 'Docker']);
+		expect(cardStackLabels(hetzner.slice(0, 5))).toHaveLength(5);
+		expect(cardStackLabels([])).toEqual([]);
+	});
+
+	// covers: AC-7
+	it.each([0, 1, 4, 5, 6, 9])('returns at most five labels for %i keys', (count) => {
+		expect(cardStackLabels(hetzner.slice(0, count))).toHaveLength(Math.min(count, 5));
+	});
+
+	// covers: AC-7
+	it('never mutates its input', () => {
+		const stack = [...hetzner];
+
+		cardStackLabels(stack);
+
+		expect(stack).toEqual([...hetzner]);
 	});
 });

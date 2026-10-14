@@ -1,0 +1,32 @@
+---
+// The work listing (spec 0005): every published project as a card, in the
+// order the write ups set, then the closing call to action. The words live in
+// `WORK` (src/lib/work.ts).
+import { getCollection } from 'astro:content';
+import CallToAction from '../../components/CallToAction.astro';
+import Container from '../../components/Container.astro';
+import PageIntro from '../../components/PageIntro.astro';
+import Section from '../../components/Section.astro';
+import Stack from '../../components/Stack.astro';
+import WorkList from '../../components/WorkList.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { sortProjects, visibleProjects } from '../../lib/projects';
+import { WORK } from '../../lib/work';
+
+const projects = sortProjects(
+	visibleProjects(await getCollection('projects'), { includeDrafts: import.meta.env.DEV }),
+);
+---
+
+<BaseLayout title={WORK.title} description={WORK.description}>
+	<Container>
+		<PageIntro size="page" heading={WORK.heading} lead={WORK.lead} />
+		<WorkList projects={projects} emptyText={WORK.emptyText} />
+		<Section id="contact" heading={WORK.closingHeading}>
+			<Stack>
+				<p class="max-w-measure">{WORK.closingText}</p>
+				<CallToAction class="w-full sm:w-auto sm:self-start" />
+			</Stack>
+		</Section>
+	</Container>
+</BaseLayout>

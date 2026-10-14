@@ -14,7 +14,9 @@ import ProjectCard from '../components/ProjectCard.astro';
 import Prose from '../components/Prose.astro';
 import Section from '../components/Section.astro';
 import Stack from '../components/Stack.astro';
+import WorkList from '../components/WorkList.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { sortProjects, visibleProjects } from '../lib/projects';
 import { Content as Sample } from './sample.md';
 
 const COLOURS = [
@@ -42,14 +44,29 @@ const STACK_GAPS = ['sm', 'md', 'lg', 'xl'] as const;
 const GRID_COLS = [1, 2, 3] as const;
 const GRID_GAPS = ['md', 'lg'] as const;
 
-// Real entries for the card examples: one with a link, one without.
+// Real entries for the card examples: one with a link, one without, and the
+// longest stack with chips, to show the chip limit (spec 0005).
 const projects = await getCollection('projects');
 const withLink = projects.find((entry) => entry.id === 'shipsafe');
 const withoutLink = projects.find((entry) => entry.id === 'hetzner-talos-cluster');
+const longestStack =
+	withoutLink ??
+	projects.reduce<(typeof projects)[number] | undefined>(
+		(longest, entry) =>
+			longest && longest.data.stack.length >= entry.data.stack.length ? longest : entry,
+		undefined,
+	);
 const CARD_EXAMPLES = [
-	{ project: withLink, headingLevel: 3, note: 'headingLevel={3}, with a link' },
-	{ project: withoutLink, headingLevel: 2, note: 'headingLevel={2}, without a link' },
+	{ project: withLink, headingLevel: 3, showStack: false, note: 'headingLevel={3}, with a link' },
+	{
+		project: withoutLink,
+		headingLevel: 2,
+		showStack: false,
+		note: 'headingLevel={2}, without a link',
+	},
+	{ project: longestStack, headingLevel: 2, showStack: true, note: 'showStack, chips capped at 5' },
 ] as const;
+const listed = sortProjects(visibleProjects(projects, { includeDrafts: import.meta.env.DEV }));
 ---
 
 <BaseLayout title="Style guide" description="Every token and component, on the dev server only.">
@@ -152,16 +169,29 @@ const CARD_EXAMPLES = [
 			<Grid cols={2} as="ul">
 				{
 					CARD_EXAMPLES.map(
-						({ project, headingLevel, note }) =>
+						({ project, headingLevel, showStack, note }) =>
 							project && (
 								<li>
 									<code class="mb-3 block text-sm text-muted">{note}</code>
-									<ProjectCard project={project} headingLevel={headingLevel} />
+									<ProjectCard
+										project={project}
+										headingLevel={headingLevel}
+										showStack={showStack}
+									/>
 								</li>
 							),
 					)
 				}
 			</Grid>
+		</Section>
+
+		<Section heading="Work list" id="work-list" class="border-t border-line">
+			<Stack>
+				<code class="text-sm text-muted">{'projects={every visible project}'}</code>
+				<WorkList projects={listed} emptyText="Write ups are on their way." />
+				<code class="text-sm text-muted">{'projects={[]}'}</code>
+				<WorkList projects={[]} emptyText="Write ups are on their way." />
+			</Stack>
 		</Section>
 
 		<Section heading="Links and focus" id="links" class="border-t border-line">

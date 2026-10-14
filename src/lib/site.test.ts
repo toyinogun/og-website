@@ -13,9 +13,12 @@ describe('SITE', () => {
 		}
 	});
 
-	// covers: AC-10 (spec 0004)
-	it('has Home as its one nav entry', () => {
-		expect(SITE.nav).toEqual([{ label: 'Home', href: '/' }]);
+	// covers: AC-9 (spec 0005)
+	it('has Home, then Work at /projects, in the nav', () => {
+		expect(SITE.nav).toEqual([
+			{ label: 'Home', href: '/' },
+			{ label: 'Work', href: '/projects' },
+		]);
 	});
 
 	// covers: AC-11 (spec 0004)
@@ -88,6 +91,12 @@ describe('isCurrentPath', () => {
 	it('matches home only on the home page', () => {
 		expect(isCurrentPath('/', '/')).toBe(true);
 		expect(isCurrentPath('/work', '/')).toBe(false);
+	});
+
+	// covers: AC-9 (spec 0005): project pages (feature 9) sit under Work
+	it('marks Work current on a project page', () => {
+		expect(isCurrentPath('/projects/deployer', '/projects')).toBe(true);
+		expect(isCurrentPath('/projects', '/projects')).toBe(true);
 	});
 
 	it('does not match unrelated paths', () => {

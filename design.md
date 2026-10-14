@@ -120,7 +120,7 @@ The containers and radii live in `@theme static`. The two durations live in a pl
 
 ## Components
 
-Built by feature 4, plus the shared page pieces from the home page (feature 7, [spec 0004](docs/specs/0004-home-page/index.md)). Pages in Release 1 add their own (the tag chip belongs to the work listing, feature 8).
+Built by feature 4, plus the shared page pieces from the home page (feature 7, [spec 0004](docs/specs/0004-home-page/index.md)). Pages in Release 1 add their own: the work listing (feature 8, [spec 0005](docs/specs/0005-work-listing/index.md)) adds the tag chip and the work list.
 
 | Component | File | What it is |
 |---|---|---|
@@ -138,7 +138,9 @@ Built by feature 4, plus the shared page pieces from the home page (feature 7, [
 | 404 page | `src/pages/404.astro` | "This page does not exist", one line of help, a primary Button home |
 | Page intro | `src/components/PageIntro.astro` | the top of a page: optional eyebrow, the one `<h1>`, optional lead, then a slot for actions. `display` size on the home page, `page` size on inner pages (spec 0004) |
 | Call to action | `src/components/CallToAction.astro` | the one contact action: a primary Button to `SITE.contact`. The only way any page shows it (spec 0004) |
-| Project card | `src/components/ProjectCard.astro` | cover, kind, title, outcome and the write up's first link; takes `project` and `headingLevel` (spec 0004) |
+| Project card | `src/components/ProjectCard.astro` | cover, kind, title, outcome and the write up's first link; takes `project`, `headingLevel` and `showStack` (spec 0004, spec 0005) |
+| Tag chip | inside `ProjectCard` | one stack technology as a small outlined label; only when the card gets `showStack` (the work listing), at most 5 per card (spec 0005) |
+| Work list | `src/components/WorkList.astro` | the work listing's cards in a 3 column grid, or one line when no project is published; takes `projects` and `emptyText` (spec 0005) |
 
 ### Component values
 
@@ -155,7 +157,9 @@ Built by feature 4, plus the shared page pieces from the home page (feature 7, [
 | Skip link | `--color-surface` background, `text` colour, `0.75rem 1rem` padding, `--radius-sm`, fixed `1rem` from the top left while focused |
 | Page intro | top padding `3rem`, `5rem` from `md`, no bottom padding (the next Section brings the rhythm). Content Stack gap `md`, at most `--container-measure` wide, left aligned. Eyebrow `--text-sm` Inter `muted`. Heading serif 600 at `--text-display` (`display`) or `--text-3xl` (`page`). Lead `--text-lg` `muted` |
 | Call to action | a primary Button; full width below `sm` where the page asks for it (`w-full sm:w-auto`) |
-| Project card | no border, background or shadow. Stack gap `sm`. Cover first, full card width, `--radius-md`, its natural 1600 by 840 ratio. Kind `--text-sm` `muted`. Title serif 600 `--text-xl`. Outcome `--text-base` `text`. The link uses the in text link style, with a visually hidden "for <title>" so each card's link has its own name |
+| Tag chip | an `<li>` in a `<ul aria-label="Stack">`. `--text-sm` Inter 400, `muted` text, 1px `line` border, `--radius-sm`, padding `0.125rem 0.5rem`, no background, no accent, not interactive. The list wraps with a `0.5rem` gap and no bullets |
+| Work list | a `Section` without a heading: a 3 column `Grid` as a `<ul>` of cards at `headingLevel` 2, or one `max-w-measure` paragraph when empty |
+| Project card | no border, background or shadow. Stack gap `sm`. Cover first, full card width, `--radius-md`, its natural 1600 by 840 ratio. Kind `--text-sm` `muted`. Title serif 600 `--text-xl`. Outcome `--text-base` `text`. With `showStack`, the tag chips sit between the outcome and the link. The link uses the in text link style, with a visually hidden "for <title>" so each card's link has its own name |
 
 ### Prose
 

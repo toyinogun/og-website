@@ -10,6 +10,11 @@ import tailwindcss from '@tailwindcss/vite';
 export default defineConfig({
 	site: 'https://toyintest.org',
 
+	// Addresses without a trailing slash, matching the nav hrefs (spec 0003)
+	// and the `drop-trailing-slash` asset handling in wrangler.jsonc (spec 0005,
+	// AC-10). The build output stays dist/<path>/index.html.
+	trailingSlash: 'never',
+
 	// Self hosted from the local npm packages, never fetched over the network:
 	// exactly the three faces in design.md (spec 0003, AC-7).
 	fonts: [

@@ -45,7 +45,10 @@ const LINKEDIN_URL = 'https://linkedin.com/in/toyin-ogunseinde';
  */
 export const SITE: Site = {
 	name: 'Toyin Ogunseinde',
-	nav: [{ label: 'Home', href: '/' }],
+	nav: [
+		{ label: 'Home', href: '/' },
+		{ label: 'Work', href: '/projects' },
+	],
 	links: [
 		{ label: 'LinkedIn', href: LINKEDIN_URL, kind: 'profile' },
 		{ label: 'GitHub', href: 'https://github.com/toyinogun', kind: 'profile' },

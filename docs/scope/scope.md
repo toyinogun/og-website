@@ -22,7 +22,7 @@ _These are recommendations to keep your build orderly, not requirements. Skip an
 | 5 | Live on your domain | Foundation | done |
 | 6 | Bio & project write ups | Release 1 | done |
 | 7 | Home page | Release 1 | done |
-| 8 | Work listing | Release 1 | planned |
+| 8 | Work listing | Release 1 | in-progress |
 | 9 | Project detail page | Release 1 | planned |
 | 10 | About page | Release 1 | planned |
 | 11 | Contact form | Release 1 | planned |
@@ -110,13 +110,19 @@ The page that decides whether a visitor keeps reading. It says who you are, what
 
 spec [0004](../specs/0004-home-page/index.md) · decided: what you do as the heading, open to roles and contracts, one "Message me on LinkedIn" action (repointed to the contact form later), featured projects as equal cards linking to their own code until feature 9, the first bio paragraph, basic share tags from each page's title and description (image, sitemap and structured data stay with feature 12), and the shared `PageIntro`, `ProjectCard` and `CallToAction` · code in `src/pages/index.astro`, `src/components/` (`PageIntro`, `CallToAction`, `ProjectCard`, `SelectedWork`), `src/lib/` (`home.ts`, `text.ts`, `site.ts`), `src/layouts/BaseLayout.astro`, `tests/build/home-build.test.ts`, `e2e/home.spec.ts`
 
-### 8. Work listing
+### 8. Work listing · in-progress
 The index of your work. This is the page both of your readers go to first to judge you, so it has to make each project easy to scan and easy to open.
 **Done when:** every featured project appears with a title, a one line outcome and an image, the order is deliberate rather than accidental, the empty and loading states look intentional, it works on a phone, and it carries its own title, description and share card.
 From spec 0003: design the project card and the tag chip on the design tokens.
 From spec 0004: the project card is already built (`ProjectCard`), so this page uses `PageIntro size="page"` and `ProjectCard headingLevel={2}`, adds the tag chip, and adds its `Work` nav link.
-- [ ] Build it: `/develop work listing`
-- [ ] Verify it: `/check verify work listing`
+- [x] Design it (spec): `/architect work listing`
+- [x] Build it: `/develop work listing`
+  - [x] The listing, live and linked: the `WORK` words, addresses without a trailing slash, `WorkList`, the `/projects` page with its intro and closing section, the `Work` nav link and the updated nav checks (AC-1 to AC-5, AC-9, AC-10, AC-11)
+  - [x] The stack chips: `cardStackLabels`, `showStack` on `ProjectCard`, the style guide entries (AC-6, AC-7, AC-8)
+  - [x] The checks: the build test for the page, browser tests for order, columns, chips, widths, accessibility and requests (AC-3, AC-6, AC-10 to AC-14)
+- [x] Verify it: `/check verify work listing`
+
+spec [0005](../specs/0005-work-listing/index.md) · decided: `/projects` lists every published project in `order`, three cards per row, the first 5 stack technologies as quiet outlined chips on this page only, one closing call to action, a one line empty state, the `Work` nav link, and addresses without a trailing slash · code in `src/pages/projects/index.astro`, `src/components/` (`WorkList`, `ProjectCard` `showStack`), `src/lib/` (`work.ts`, `projects.ts` `cardStackLabels`, `site.ts` nav), `astro.config.mjs` and `wrangler.jsonc` (no trailing slash), `tests/work-page.test.ts`, `tests/build/work-build.test.ts`, `e2e/work.spec.ts`
 
 ### 9. Project detail page
 The case study itself, built on the structure decided in the content model. This is where a reader finds out how you think, which is the thing a resume cannot show.

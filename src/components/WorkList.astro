@@ -1,0 +1,36 @@
+---
+// The work listing's projects (spec 0005; design.md, Component values: Work
+// list): a Section without a heading holding one card per project, with its
+// stack chips, in the order given, or one line when the list is empty. The
+// page's <h1> names the list, so each card title is an <h2>.
+import type { Project } from '../lib/projects';
+import Grid from './Grid.astro';
+import ProjectCard from './ProjectCard.astro';
+import Section from './Section.astro';
+
+/** Props for `WorkList`. */
+interface Props {
+	/** The projects to show, already picked and ordered by `visibleProjects` and `sortProjects`. */
+	projects: readonly Project[];
+	/** The line shown instead of the grid when `projects` is empty. */
+	emptyText: string;
+}
+
+const { projects, emptyText } = Astro.props;
+---
+
+<Section id="projects">
+	{
+		projects.length > 0 ? (
+			<Grid cols={3} as="ul">
+				{projects.map((project) => (
+					<li>
+						<ProjectCard project={project} headingLevel={2} showStack />
+					</li>
+				))}
+			</Grid>
+		) : (
+			<p class="max-w-measure">{emptyText}</p>
+		)
+	}
+</Section>
