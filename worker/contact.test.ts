@@ -286,6 +286,52 @@ describe('handleContact, delivery outcomes', () => {
 		expect(fakes.alarm).not.toHaveBeenCalled();
 	});
 
+	// covers: AC-12, AC-14
+	it('treats a send that throws before returning a promise as a failed email', async () => {
+		const fakes = setup();
+		const env: ContactEnv = {
+			...fakes.env,
+			EMAIL: {
+				send: () => {
+					throw new TypeError('send is not supported here');
+				},
+			},
+		};
+		const response = await handleContact(post(), env, fakes.deps);
+
+		expect(response.status).toBe(200);
+		expect(JSON.parse(fakes.puts[1].value).emailStatus).toBe('failed');
+		expect(fakes.logs).toEqual([
+			{
+				line: { event: 'contact', outcome: 'stored_only', reason: 'email_failed' },
+				level: 'error',
+			},
+		]);
+	});
+
+	// covers: AC-12, AC-14
+	it('treats an outbox write that throws before returning a promise as not saved', async () => {
+		const fakes = setup();
+		const env: ContactEnv = {
+			...fakes.env,
+			CONTACT_OUTBOX: {
+				put: () => {
+					throw new TypeError('kv is not bound');
+				},
+				list: async () => ({ keys: [], list_complete: true }),
+			},
+		};
+		const response = await handleContact(post(), env, fakes.deps);
+
+		expect(response.status).toBe(200);
+		expect(fakes.sends[0].text).toContain('\nReference: not saved\n');
+		expect(fakes.logs[0].line).toEqual({
+			event: 'contact',
+			outcome: 'sent',
+			reason: 'outbox_failed',
+		});
+	});
+
 	// covers: AC-13
 	it('never retries a send', async () => {
 		const fakes = setup({ sendFails: true });

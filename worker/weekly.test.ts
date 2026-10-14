@@ -277,6 +277,42 @@ describe('handleScheduled', () => {
 		},
 	);
 
+	// covers: AC-21
+	it('never throws when the email, the probe and the ping throw before returning a promise', async () => {
+		const fakes = setup();
+		const env: ContactEnv = {
+			...fakes.env,
+			EMAIL: {
+				send: () => {
+					throw new TypeError('send is not supported here');
+				},
+			},
+		};
+		const deps: WeeklyDeps = {
+			...fakes.deps,
+			verifyTurnstile: () => {
+				throw new TypeError('no fetch');
+			},
+			ping: () => {
+				throw new TypeError('no fetch');
+			},
+		};
+		await handleScheduled(env, deps);
+
+		expect(fakes.logs).toEqual([
+			{
+				line: {
+					event: 'weekly_check',
+					email: 'failed',
+					turnstile: 'unreachable',
+					messages: 0,
+					healthcheck: 'failed',
+				},
+				level: 'error',
+			},
+		]);
+	});
+
 	// covers: AC-18, AC-21
 	it('logs no names, emails or secrets', async () => {
 		const fakes = setup({

@@ -82,16 +82,28 @@ const weekOfMessages = async (
 	);
 };
 
+/** Runs an outside call; a throw of either kind, before or after it returns a promise, gives `fallback`. */
+const settle = async <T>(run: () => Promise<T>, fallback: T): Promise<T> => {
+	try {
+		return await run();
+	} catch {
+		return fallback;
+	}
+};
+
 const probeTurnstile = async (env: ContactEnv, deps: WeeklyDeps): Promise<WeeklyTurnstileState> => {
 	if (!env.TURNSTILE_SECRET_KEY) return weeklyTurnstileState('missing');
-	const result = await deps
-		.verifyTurnstile({
-			secret: env.TURNSTILE_SECRET_KEY,
-			token: PROBE_TOKEN,
-			expectedHostname: env.TURNSTILE_EXPECTED_HOSTNAME ?? '',
-			expectedAction: 'contact',
-		})
-		.catch((): VerifyResult => ({ kind: 'unreachable' }));
+	const secret = env.TURNSTILE_SECRET_KEY;
+	const result = await settle<VerifyResult>(
+		() =>
+			deps.verifyTurnstile({
+				secret,
+				token: PROBE_TOKEN,
+				expectedHostname: env.TURNSTILE_EXPECTED_HOSTNAME ?? '',
+				expectedAction: 'contact',
+			}),
+		{ kind: 'unreachable' },
+	);
 	return weeklyTurnstileState(result.body === undefined ? 'unreachable' : result.body);
 };
 
@@ -104,22 +116,23 @@ export const handleScheduled = async (env: ContactEnv, deps: WeeklyDeps): Promis
 	const { EMAIL, CONTACT_TO } = env;
 	const emailed =
 		EMAIL && CONTACT_TO
-			? await EMAIL.send({
-					from: FORM_SENDER,
-					to: CONTACT_TO,
-					subject: weeklyCheckSubject(),
-					text: weeklyCheckBody(now, turnstile, messages),
-				}).then(
-					() => true,
-					() => false,
-				)
+			? await settle(async () => {
+					await EMAIL.send({
+						from: FORM_SENDER,
+						to: CONTACT_TO,
+						subject: weeklyCheckSubject(),
+						text: weeklyCheckBody(now, turnstile, messages),
+					});
+					return true;
+				}, false)
 			: false;
 
 	const fine = emailed && turnstile === 'ok';
-	const healthcheck = env.HEALTHCHECK_URL
-		? await deps.ping(fine ? env.HEALTHCHECK_URL : `${env.HEALTHCHECK_URL}/fail`).then(
-				(response) => (response.ok ? 'pinged' : 'failed'),
-				() => 'failed',
+	const url = env.HEALTHCHECK_URL;
+	const healthcheck = url
+		? await settle(
+				async () => ((await deps.ping(fine ? url : `${url}/fail`)).ok ? 'pinged' : 'failed'),
+				'failed',
 			)
 		: 'missing';
 

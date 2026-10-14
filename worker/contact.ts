@@ -216,12 +216,18 @@ const verifyExit = (result: VerifyResult): ExitName | null => {
 	}
 };
 
-/** Runs a storage or email call, reporting only whether it worked. */
-const attempt = async (run: () => Promise<unknown>): Promise<boolean> =>
-	run().then(
-		() => true,
-		() => false,
-	);
+/**
+ * Runs a storage or email call, reporting only whether it worked. A binding
+ * may throw before it returns a promise, so both kinds of failure count.
+ */
+const attempt = async (run: () => Promise<unknown>): Promise<boolean> => {
+	try {
+		await run();
+		return true;
+	} catch {
+		return false;
+	}
+};
 
 /** Saves the copy, sends the email, then records whether the email went out (AC-12 to AC-14). */
 const deliver = async (
