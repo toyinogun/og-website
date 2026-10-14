@@ -1,7 +1,7 @@
 # 0008. Services and how you work
 
 **Date**: 2026-10-14
-**Status**: Proposed
+**Status**: In Progress
 
 ## Summary
 
