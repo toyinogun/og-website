@@ -163,7 +163,7 @@ From spec 0006: the deferred Privacy note and Error monitoring ship with this fe
   - [x] You hear when it breaks: the Monday self check, the Turnstile secret probe, the week's message list and the Healthchecks.io pings (AC-21)
   - [x] The checks and the design record: `design.md` form rows and the style guide, page and build tests, the browser tests with stubbed endpoint and Turnstile, the generated types check in CI (AC-1 to AC-3, AC-6 to AC-8, AC-11, AC-19, AC-20, AC-23, AC-24)
 - [ ] Verify it: `/check verify contact form` (includes the local `wrangler dev` proof and the real Turnstile challenge by keyboard)
-- [ ] Test it: `/test contact form`
+- [x] Test it: `/test contact form`
 
 spec [0006](../specs/0006-contact-form/index.md) · decided: `/contact` posts in place to a Worker script that runs only for `/api/*` (no adapter, pages stay free), a 30 day KV copy then a free `send_email` to your verified inbox, Turnstile and 3 sends a minute, honest sent, not sent and uncertain messages that keep the text, an inline privacy note, a Monday self check plus a Healthchecks.io alarm, "Send me a message" to `/contact` and a Contact nav link · code in `src/pages/contact.astro`, `src/components/ContactForm.astro`, `src/lib/contact.ts`, `src/lib/site.ts`, `worker/` (`index.ts`, `contact.ts`, `turnstile.ts`, `weekly.ts`), `wrangler.jsonc`, `tests/contact-page.test.ts`, `tests/build/contact-build.test.ts`, `e2e/contact.spec.ts`
 

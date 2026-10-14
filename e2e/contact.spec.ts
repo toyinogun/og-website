@@ -144,6 +144,21 @@ test.describe('Turnstile (AC-11)', () => {
 	});
 
 	// covers: AC-11
+	test('keeps the widget as it is when the width crosses 300 pixels while a token is held', async ({
+		page,
+	}) => {
+		await page.setViewportSize({ width: 320, height: 800 });
+		await open(page, 'ok');
+		await expect.poll(() => turnstileCalls(page).then((calls) => calls?.render.length)).toBe(1);
+
+		await page.setViewportSize({ width: 768, height: 800 });
+		await page.waitForTimeout(300);
+
+		expect((await turnstileCalls(page)).render).toHaveLength(1);
+		expect((await turnstileCalls(page)).remove).toBe(0);
+	});
+
+	// covers: AC-11
 	test('waits for a slow token with the button busy, then sends', async ({ page }) => {
 		await open(page, 'slow');
 		const requests = await answer(page, 200, { ok: true });

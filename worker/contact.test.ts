@@ -452,6 +452,38 @@ describe('handleContact, the gate checks (AC-16, AC-17)', () => {
 	});
 
 	// covers: AC-16
+	it('checks the Origin before the config, and the config before the content type', async () => {
+		const missing = setup({ env: { CONTACT_TO: undefined } });
+		const foreign = await send(
+			post(JSON.stringify(FIELDS), {
+				Origin: 'https://evil.example',
+				'Content-Type': 'application/json',
+			}),
+			missing,
+		);
+		const json = await send(
+			post(JSON.stringify(FIELDS), { 'Content-Type': 'application/json' }),
+			missing,
+		);
+
+		expect(foreign.response.status).toBe(403);
+		expect(json.response.status).toBe(503);
+	});
+
+	// covers: AC-9, AC-17
+	it('reads the body before the limit, so a malformed body costs no limiter call', async () => {
+		const fakes = setup();
+		await send(
+			post(`${new URLSearchParams(FIELDS)}&name=Other`, {
+				'Content-Type': 'application/x-www-form-urlencoded',
+			}),
+			fakes,
+		);
+
+		expect(fakes.limits).toEqual([]);
+	});
+
+	// covers: AC-16
 	it.each(['application/json', 'text/plain', ''])(
 		'answers 400 content_type for %j',
 		async (type) => {
