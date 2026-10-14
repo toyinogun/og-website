@@ -39,6 +39,8 @@ Stored in `docs/specs/`. Format: `docs/specs/NNNN-title/index.md`, with `rationa
 - `src/dev/` holds dev server only pages (the style guide at `/styleguide`, injected in `astro.config.mjs` when `command === 'dev'`); the static build never emits them (spec 0003).
 - Keep every page pre rendered. Never add `@astrojs/cloudflare` or on demand rendering: it turns free static requests into metered Worker invocations (spec 0001).
 - Projects (spec 0002): one folder per project at `src/content/projects/<slug>/index.md`, written to `docs/specs/0002-content-model/authoring.md`; the build fails on any rule break. Pages get entries from `getCollection('projects')`, then filter and sort only through the helpers in `src/lib/projects.ts` (`visibleProjects` with `includeDrafts: import.meta.env.DEV`, `sortProjects`, `featuredProjects`), never on their own.
+- Bio: `src/content/bio.md`, plain Markdown with no frontmatter, outside any content collection. Pages that show the bio import it from there rather than copying the text.
+- New tags: add the value to `STACK` or `SERVICES` in `src/lib/vocabulary.ts` before an entry uses it; an unknown tag fails the build.
 - Naming: PascalCase `.astro` components, kebab case routes and content files, camelCase functions and variables.
 - Documented public APIs: a doc comment on every exported helper and on each component's `Props` interface.
 - Tests: Vitest beside the source as `*.test.ts` (except `src/pages/`, whose tests go in `tests/`); browser flows in `e2e/` as `*.spec.ts`. New logic ships with tests. See `test-preferences.json`.
