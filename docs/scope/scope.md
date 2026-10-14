@@ -20,7 +20,7 @@ _These are recommendations to keep your build orderly, not requirements. Skip an
 | 3 | Content model | Foundation | done |
 | 4 | Design system & UI foundation | Foundation | done |
 | 5 | Live on your domain | Foundation | done |
-| 6 | Bio & project write ups | Release 1 | planned |
+| 6 | Bio & project write ups | Release 1 | in-progress |
 | 7 | Home page | Release 1 | planned |
 | 8 | Work listing | Release 1 | planned |
 | 9 | Project detail page | Release 1 | planned |
@@ -95,7 +95,7 @@ Each page feature adds its own link to the header nav (`SITE.nav`) when its page
 The actual words. A bio, and a write up for each project worth showing. This sits first in the release because it is the critical path: everything on the work page and the home page is waiting on this text, and your editing pass has to fit in the two weeks too.
 **Done when:** a bio exists in your voice, each featured project has a complete write up matching the content model, you have edited and approved all of it, and the images you already have are in place.
 From spec 0003: also collect your links out (a label and URL for each, for example GitHub, LinkedIn, email), so the site footer stops being empty.
-- [ ] Build it: `/develop bio & project write ups`
+- [x] Build it: `/develop bio & project write ups` (bio in `src/content/bio.md`, entries in `src/content/projects/`)
 - [ ] Verify it: `/check verify bio & project write ups`
 
 ### 7. Home page · needs a decision
