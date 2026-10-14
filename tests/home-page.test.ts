@@ -114,12 +114,13 @@ describe('home page', () => {
 
 	// covers: key invariant (spec 0004): no link to a page that does not exist yet
 	it('links to no page that has not shipped', () => {
-		expect(html).not.toMatch(/href="\/(work|about|contact)\b/);
+		expect(html).not.toMatch(/href="\/(work|contact)\b/);
 		expect(html).not.toMatch(/href="\/projects\//);
 	});
 
 	// covers: AC-7
-	it('shows the first bio paragraph, and nothing after it, in the About section', () => {
+	// covers: feature 10 (spec 0004, Follow-up)
+	it('shows the first bio paragraph, and nothing after it, then More about me, in the About section', () => {
 		const about = main.slice(
 			main.indexOf('<section id="about"'),
 			main.indexOf('<section id="contact"'),
@@ -132,7 +133,11 @@ describe('home page', () => {
 		expect(about).toContain(`<p class="max-w-measure">${escapeHtml(firstParagraph(bio))}</p>`);
 		expect(secondParagraph.length).toBeGreaterThan(0);
 		expect(html).not.toContain(escapeHtml(secondParagraph.split('. ')[0] ?? ''));
-		expect(about).not.toContain('<a ');
+		const links = about.match(/<a [^>]*>[^<]*<\/a>/g) ?? [];
+		expect(links).toHaveLength(1);
+		expect(links[0]).toMatch(/^<a href="\/about"/);
+		expect(links[0]).toContain(`>${escapeHtml(HOME.aboutLink)}</a>`);
+		expect(about.indexOf('<a ')).toBeGreaterThan(about.indexOf(escapeHtml(firstParagraph(bio))));
 	});
 
 	// covers: AC-5

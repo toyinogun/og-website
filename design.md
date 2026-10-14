@@ -134,7 +134,7 @@ Built by feature 4, plus the shared page pieces from the home page (feature 7, [
 | Stack | `src/components/Stack.astro` | vertical spacing between children at one of the four gaps |
 | Grid | `src/components/Grid.astro` | up to 3 columns: one on phones, `min(cols, 2)` from `md`, `cols` from `lg` |
 | Prose | `src/components/Prose.astro` | styles rendered Markdown in the reading column |
-| Button | `src/components/Button.astro` | `primary` or `secondary`; `<a>` when given `href`, otherwise `<button>` |
+| Button | `src/components/Button.astro` | `primary` or `secondary`; `<a>` when given `href`, otherwise `<button>`; `download` asks the browser to save a linked file (the About page resume) |
 | 404 page | `src/pages/404.astro` | "This page does not exist", one line of help, a primary Button home |
 | Page intro | `src/components/PageIntro.astro` | the top of a page: optional eyebrow, the one `<h1>`, optional lead, then a slot for actions. `display` size on the home page, `page` size on inner pages (spec 0004) |
 | Call to action | `src/components/CallToAction.astro` | the one contact action: a primary Button to `SITE.contact`. The only way any page shows it (spec 0004) |

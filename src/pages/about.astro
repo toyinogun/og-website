@@ -1,0 +1,58 @@
+---
+// The About page (feature 10): the intro and the resume download, the whole
+// bio through `Prose`, the links out, then the closing call to action. The
+// words live in `ABOUT` (src/lib/about.ts), the story in src/content/bio.md,
+// which is imported here and never copied.
+import Button from '../components/Button.astro';
+import CallToAction from '../components/CallToAction.astro';
+import Container from '../components/Container.astro';
+import PageIntro from '../components/PageIntro.astro';
+import Prose from '../components/Prose.astro';
+import Section from '../components/Section.astro';
+import Stack from '../components/Stack.astro';
+import { Content as Bio } from '../content/bio.md';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { ABOUT, RESUME_PATH } from '../lib/about';
+import { SITE } from '../lib/site';
+---
+
+<BaseLayout title={ABOUT.title} description={ABOUT.description}>
+	<Container width="measure">
+		<PageIntro heading={ABOUT.heading} lead={ABOUT.lead}>
+			<Button
+				variant="secondary"
+				href={RESUME_PATH}
+				download
+				class="w-full sm:w-auto sm:self-start"
+			>
+				{ABOUT.resumeLabel}
+			</Button>
+		</PageIntro>
+		<Prose class="mt-12">
+			<Bio />
+		</Prose>
+		<Section id="links" heading={ABOUT.linksHeading}>
+			<ul class="flex flex-wrap gap-x-5 gap-y-2">
+				{
+					SITE.links.map((link) => (
+						<li>
+							<a
+								href={link.href}
+								rel={link.kind === 'profile' ? 'me' : undefined}
+								class="inline-flex min-h-6 items-center text-base"
+							>
+								{link.label}
+							</a>
+						</li>
+					))
+				}
+			</ul>
+		</Section>
+		<Section id="contact" heading={ABOUT.closingHeading}>
+			<Stack>
+				<p class="max-w-measure">{ABOUT.closingText}</p>
+				<CallToAction class="w-full sm:w-auto sm:self-start" />
+			</Stack>
+		</Section>
+	</Container>
+</BaseLayout>

@@ -13,11 +13,12 @@ describe('SITE', () => {
 		}
 	});
 
-	// covers: AC-9 (spec 0005)
-	it('has Home, then Work at /projects, in the nav', () => {
+	// covers: AC-9 (spec 0005); feature 10
+	it('has Home, then Work at /projects, then About, in the nav', () => {
 		expect(SITE.nav).toEqual([
 			{ label: 'Home', href: '/' },
 			{ label: 'Work', href: '/projects' },
+			{ label: 'About', href: '/about' },
 		]);
 	});
 

@@ -48,6 +48,7 @@ export const SITE: Site = {
 	nav: [
 		{ label: 'Home', href: '/' },
 		{ label: 'Work', href: '/projects' },
+		{ label: 'About', href: '/about' },
 	],
 	links: [
 		{ label: 'LinkedIn', href: LINKEDIN_URL, kind: 'profile' },
