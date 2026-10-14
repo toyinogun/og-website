@@ -40,6 +40,8 @@ Stored in `docs/specs/`. Format: `docs/specs/NNNN-title/index.md`, with `rationa
 - Keep every page pre rendered. Never add `@astrojs/cloudflare` or on demand rendering: it turns free static requests into metered Worker invocations (spec 0001).
 - Projects (spec 0002): one folder per project at `src/content/projects/<slug>/index.md`, written to `docs/specs/0002-content-model/authoring.md`; the build fails on any rule break. Pages get entries from `getCollection('projects')`, then filter and sort only through the helpers in `src/lib/projects.ts` (`visibleProjects` with `includeDrafts: import.meta.env.DEV`, `sortProjects`, `featuredProjects`), never on their own.
 - Bio: `src/content/bio.md`, plain Markdown with no frontmatter, outside any content collection. Pages that show the bio import it from there rather than copying the text.
+- Call to action (spec 0004): `SITE.contact` in `src/lib/site.ts` is the one contact target, and every page shows it only through `CallToAction`, so repointing it (to the contact form, feature 11) stays a one line change.
+- Page building blocks (spec 0004): a page opens with `PageIntro` (its one `<h1>`), shows projects only through `ProjectCard`, and passes its own `title` and `description` to `BaseLayout`, which builds the share tags from them.
 - New tags: add the value to `STACK` or `SERVICES` in `src/lib/vocabulary.ts` before an entry uses it; an unknown tag fails the build.
 - Naming: PascalCase `.astro` components, kebab case routes and content files, camelCase functions and variables.
 - Documented public APIs: a doc comment on every exported helper and on each component's `Props` interface.
