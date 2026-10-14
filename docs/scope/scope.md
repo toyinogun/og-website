@@ -96,7 +96,7 @@ The actual words. A bio, and a write up for each project worth showing. This sit
 **Done when:** a bio exists in your voice, each featured project has a complete write up matching the content model, you have edited and approved all of it, and the images you already have are in place.
 From spec 0003: also collect your links out (a label and URL for each, for example GitHub, LinkedIn, email), so the site footer stops being empty.
 - [x] Build it: `/develop bio & project write ups` (bio in `src/content/bio.md`, entries in `src/content/projects/`)
-- [ ] Verify it: `/check verify bio & project write ups`
+- [x] Verify it: `/check verify bio & project write ups`
 
 ### 7. Home page · needs a decision
 The page that decides whether a visitor keeps reading. It says who you are, what you do, shows a taste of the proof, and points at one clear next step. It also sets the page patterns the rest of the site follows.
