@@ -1,7 +1,7 @@
 # 0004. Home page
 
 **Date**: 2026-10-14
-**Status**: In Progress
+**Status**: Accepted
 
 ## Summary
 

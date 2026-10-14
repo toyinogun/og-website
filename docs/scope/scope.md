@@ -21,7 +21,7 @@ _These are recommendations to keep your build orderly, not requirements. Skip an
 | 4 | Design system & UI foundation | Foundation | done |
 | 5 | Live on your domain | Foundation | done |
 | 6 | Bio & project write ups | Release 1 | done |
-| 7 | Home page | Release 1 | in-progress |
+| 7 | Home page | Release 1 | done |
 | 8 | Work listing | Release 1 | planned |
 | 9 | Project detail page | Release 1 | planned |
 | 10 | About page | Release 1 | planned |
@@ -98,7 +98,7 @@ From spec 0003: also collect your links out (a label and URL for each, for examp
 - [x] Build it: `/develop bio & project write ups` (bio in `src/content/bio.md`, entries in `src/content/projects/`)
 - [x] Verify it: `/check verify bio & project write ups`
 
-### 7. Home page · in-progress
+### 7. Home page · done
 The page that decides whether a visitor keeps reading. It says who you are, what you do, shows a taste of the proof, and points at one clear next step. It also sets the page patterns the rest of the site follows.
 **Done when:** a first time visitor can tell within seconds what you do and who for, the strongest work is visible without scrolling far, there is one obvious call to action, the page works on a phone, and it carries its own title, description and share card.
 - [x] Design it (spec): `/architect home page`
