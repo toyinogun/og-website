@@ -106,7 +106,7 @@ The page that decides whether a visitor keeps reading. It says who you are, what
   - [x] Who you are and how to reach you, live: site constants (Home nav link, LinkedIn call to action, footer links), the `HOME` words, share tags in the base layout, `PageIntro` and `CallToAction`, the intro and closing sections (AC-1, AC-2, AC-3, AC-9, AC-10, AC-11, AC-12, AC-13)
   - [x] The proof and the rest of the page: `firstParagraph`, `ProjectCard`, `SelectedWork`, the Selected work and About sections, the style guide entries (AC-4, AC-5, AC-6, AC-7, AC-8, AC-18)
   - [x] The checks: build test for head tags, images and scripts; the home browser tests (above the fold, phone, widths, accessibility); spec 0003 browser tests updated for the non empty nav (AC-6, AC-10, AC-13 to AC-17)
-- [ ] Verify it: `/check verify home page`
+- [x] Verify it: `/check verify home page`
 
 spec [0004](../specs/0004-home-page/index.md) · decided: what you do as the heading, open to roles and contracts, one "Message me on LinkedIn" action (repointed to the contact form later), featured projects as equal cards linking to their own code until feature 9, the first bio paragraph, basic share tags from each page's title and description (image, sitemap and structured data stay with feature 12), and the shared `PageIntro`, `ProjectCard` and `CallToAction` · code in `src/pages/index.astro`, `src/components/` (`PageIntro`, `CallToAction`, `ProjectCard`, `SelectedWork`), `src/lib/` (`home.ts`, `text.ts`, `site.ts`), `src/layouts/BaseLayout.astro`, `tests/build/home-build.test.ts`, `e2e/home.spec.ts`
 
