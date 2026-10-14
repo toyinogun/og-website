@@ -18,7 +18,7 @@ export interface AboutCopy {
 export const ABOUT: AboutCopy = {
 	title: 'About Toyin Ogunseinde, DevOps and infrastructure engineer',
 	description:
-		'How I went from WordPress support to running Kubernetes in production, with my CV to download and where to find me online.',
+		'How I went from WordPress support to running Kubernetes in production, what I build today, and where to find me online.',
 	heading: 'About me',
 	lead: 'DevOps and infrastructure engineer in the Netherlands. This is the longer story, from the support desk to production clusters.',
 	resumeLabel: 'Download my CV (PDF)',
