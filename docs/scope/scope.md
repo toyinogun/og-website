@@ -22,7 +22,7 @@ _These are recommendations to keep your build orderly, not requirements. Skip an
 | 5 | Live on your domain | Foundation | done |
 | 6 | Bio & project write ups | Release 1 | done |
 | 7 | Home page | Release 1 | done |
-| 8 | Work listing | Release 1 | in-progress |
+| 8 | Work listing | Release 1 | done |
 | 9 | Project detail page | Release 1 | planned |
 | 10 | About page | Release 1 | planned |
 | 11 | Contact form | Release 1 | planned |
@@ -110,7 +110,7 @@ The page that decides whether a visitor keeps reading. It says who you are, what
 
 spec [0004](../specs/0004-home-page/index.md) · decided: what you do as the heading, open to roles and contracts, one "Message me on LinkedIn" action (repointed to the contact form later), featured projects as equal cards linking to their own code until feature 9, the first bio paragraph, basic share tags from each page's title and description (image, sitemap and structured data stay with feature 12), and the shared `PageIntro`, `ProjectCard` and `CallToAction` · code in `src/pages/index.astro`, `src/components/` (`PageIntro`, `CallToAction`, `ProjectCard`, `SelectedWork`), `src/lib/` (`home.ts`, `text.ts`, `site.ts`), `src/layouts/BaseLayout.astro`, `tests/build/home-build.test.ts`, `e2e/home.spec.ts`
 
-### 8. Work listing · in-progress
+### 8. Work listing · done
 The index of your work. This is the page both of your readers go to first to judge you, so it has to make each project easy to scan and easy to open.
 **Done when:** every featured project appears with a title, a one line outcome and an image, the order is deliberate rather than accidental, the empty and loading states look intentional, it works on a phone, and it carries its own title, description and share card.
 From spec 0003: design the project card and the tag chip on the design tokens.

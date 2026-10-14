@@ -11,7 +11,7 @@ _Steps derived from spec 0005 acceptance criteria. `/check verify` runs these; `
 - [x] On `/` the cards show no chips → AC-6
 - [x] Chips are small muted text in a thin outline with rounded corners, no fill, in both themes; on `/styleguide` (dev server) the card with chips and `WorkList` filled and empty appear; `design.md` lists Tag chip and Work list → AC-8
 - [x] Header shows Home and Work; Work is current on `/projects`, Home on `/`, neither on `/no-such-page`; Tab order is skip link, wordmark, Home, Work, toggle; two header rows at 639 pixels, one at 640 → AC-9
-- [ ] After deploy: `curl -sI https://toyintest.org/projects` → 200, no `location`; `curl -sI https://toyintest.org/projects/` → a 3xx (307) with `location: /projects`; `/` → 200; `/no-such-page` → 404; paste the output as a comment on the ship issue → AC-10
+- [x] After deploy: `curl -sI https://toyintest.org/projects` → 200, no `location`; `curl -sI https://toyintest.org/projects/` → a 3xx (307) with `location: /projects`; `/` → 200; `/no-such-page` → 404; paste the output as a comment on the ship issue → AC-10 (passed 2026-10-14 on JSM-31: 200, 307 to `/projects`, 200, 404)
 - [x] The tab title is "Work by Toyin Ogunseinde, DevOps engineer"; the meta description, canonical (`https://toyintest.org/projects`) and share tags match → AC-10, AC-11
 - [x] Sweep 320, 360, 375, 639, 640, 768, 1024, 1440 pixels → no sideways scroll; one card per row below 768, two from 768, three from 1024; chips wrap inside their card; the closing button fills the width below 640 → AC-12
 - [x] Headings go h1, h2 per card, closing h2; axe WCAG 2.2 AA finds nothing in light and dark; every link and button is at least 24 by 24 pixels → AC-13
