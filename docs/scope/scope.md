@@ -120,7 +120,7 @@ From spec 0004: the project card is already built (`ProjectCard`), so this page 
   - [x] The listing, live and linked: the `WORK` words, addresses without a trailing slash, `WorkList`, the `/projects` page with its intro and closing section, the `Work` nav link and the updated nav checks (AC-1 to AC-5, AC-9, AC-10, AC-11)
   - [x] The stack chips: `cardStackLabels`, `showStack` on `ProjectCard`, the style guide entries (AC-6, AC-7, AC-8)
   - [x] The checks: the build test for the page, browser tests for order, columns, chips, widths, accessibility and requests (AC-3, AC-6, AC-10 to AC-14)
-- [ ] Verify it: `/check verify work listing`
+- [x] Verify it: `/check verify work listing`
 
 spec [0005](../specs/0005-work-listing/index.md) · decided: `/projects` lists every published project in `order`, three cards per row, the first 5 stack technologies as quiet outlined chips on this page only, one closing call to action, a one line empty state, the `Work` nav link, and addresses without a trailing slash · code in `src/pages/projects/index.astro`, `src/components/` (`WorkList`, `ProjectCard` `showStack`), `src/lib/` (`work.ts`, `projects.ts` `cardStackLabels`, `site.ts` nav), `astro.config.mjs` and `wrangler.jsonc` (no trailing slash), `tests/work-page.test.ts`, `tests/build/work-build.test.ts`, `e2e/work.spec.ts`
 
