@@ -18,12 +18,16 @@ import Prose from '../components/Prose.astro';
 import Section from '../components/Section.astro';
 import Stack from '../components/Stack.astro';
 import OfferList from '../components/OfferList.astro';
+import Testimonials from '../components/Testimonials.astro';
 import WorkList from '../components/WorkList.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { CONTACT } from '../lib/contact';
 import { sortProjects, visibleProjects } from '../lib/projects';
 import { SHARE } from '../lib/seo';
 import { SERVICES_PAGE } from '../lib/services';
+import type { TestimonialView } from '../lib/testimonials';
+import { HOME } from '../lib/home';
+import { PROJECT_PAGE } from '../lib/project-page';
 import { LINKEDIN_URL } from '../lib/site';
 import { Content as Sample } from './sample.md';
 
@@ -102,6 +106,24 @@ const [offerWithProof, offerWithoutProof] = [
 	{ ...SERVICES_PAGE.offers[0], proof: listed },
 	{ ...SERVICES_PAGE.offers[2], proof: [] },
 ] as const;
+
+// Sample quotes written here, not read from the collection (spec 0009, AC-16).
+const quoteOne: TestimonialView = {
+	id: 'sample-one',
+	quote:
+		'Toyin rebuilt our cluster as code in three weeks, and we have not touched it by hand since.',
+	name: 'Sample Person',
+	attribution: 'Engineering lead, Example BV',
+};
+const quoteTwo: TestimonialView = {
+	id: 'sample-two',
+	quote:
+		'Clear plans, calm hand overs and a delivery pipeline the whole team could read on day one.',
+	name: 'Another Sample',
+	profileUrl: 'https://www.example.com/in/another-sample',
+	attribution: 'Head of platform, Example Works',
+	project: { title: 'Sample project title', href: '/projects/sample' },
+};
 ---
 
 <BaseLayout title="Style guide" description="Every token and component, on the dev server only.">
@@ -236,6 +258,27 @@ const [offerWithProof, offerWithoutProof] = [
 					heading={SERVICES_PAGE.offersHeading}
 					proofLabel={SERVICES_PAGE.proofLabel}
 					offers={[offerWithProof, offerWithoutProof]}
+				/>
+			</Stack>
+		</Section>
+
+		<Section heading="Testimonials" id="testimonials-guide" class="border-t border-line">
+			<Stack>
+				<code class="text-sm text-muted">{'one quote, no profile link, no project'}</code>
+				<Testimonials
+					id="testimonials-one"
+					heading={PROJECT_PAGE.testimonialsHeading}
+					projectLabel={HOME.testimonialsProjectLabel}
+					testimonials={[quoteOne]}
+				/>
+				<code class="text-sm text-muted"
+					>{'two quotes, the second with a profile link and a project'}</code
+				>
+				<Testimonials
+					id="testimonials-two"
+					heading={HOME.testimonialsHeading}
+					projectLabel={HOME.testimonialsProjectLabel}
+					testimonials={[quoteOne, quoteTwo]}
 				/>
 			</Stack>
 		</Section>

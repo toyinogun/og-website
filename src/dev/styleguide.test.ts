@@ -197,6 +197,19 @@ describe('style guide', () => {
 		expect(items[1]).not.toContain('Seen in');
 	});
 
+	// covers: AC-16 (spec 0009)
+	it('shows Testimonials with one quote, then with two', () => {
+		const one = html.match(/<section id="testimonials-one"[\s\S]*?<\/section>/)?.[0] ?? '';
+		const two = html.match(/<section id="testimonials-two"[\s\S]*?<\/section>/)?.[0] ?? '';
+
+		expect(one.match(/<figure>/g)).toHaveLength(1);
+		expect(one).toContain('text-2xl');
+		expect(one).not.toContain('<a ');
+		expect(two.match(/<figure>/g)).toHaveLength(2);
+		expect(two).toContain('href="https://www.example.com/in/another-sample"');
+		expect(two).toContain('href="/projects/sample"');
+	});
+
 	// covers: AC-8 (spec 0005)
 	it('shows WorkList filled, in order, and empty', () => {
 		const lists =

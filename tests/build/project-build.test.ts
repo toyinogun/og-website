@@ -139,3 +139,18 @@ describe('card titles link to the project pages', () => {
 		}
 	});
 });
+
+describe.each(published)('the %s page testimonials (spec 0009, AC-11)', (id) => {
+	const { html, main } = pageOf(id);
+
+	// covers: AC-11
+	it('shows no testimonials section while there are no quotes', () => {
+		expect(html).not.toContain('id="testimonials"');
+		expect(html).not.toContain(PROJECT_PAGE.testimonialsHeading);
+		// Only the write up (inside Prose) may hold a blockquote.
+		const start = main.indexOf('<div class="prose');
+		const end = main.indexOf('<section id="contact"');
+		const outsideProse = main.slice(0, start) + main.slice(end);
+		expect(outsideProse).not.toContain('<blockquote');
+	});
+});

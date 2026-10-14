@@ -18,6 +18,7 @@ export interface ProjectPageCopy {
 	readonly servicesTerm: string;
 	readonly stackTerm: string;
 	readonly metricsLabel: string;
+	readonly testimonialsHeading: string;
 	readonly closingHeading: string;
 	readonly closingText: string;
 }
@@ -33,6 +34,7 @@ export const PROJECT_PAGE: ProjectPageCopy = {
 	servicesTerm: 'Type of work',
 	stackTerm: 'Stack',
 	metricsLabel: 'Headline numbers',
+	testimonialsHeading: 'What people said',
 	closingHeading: 'Want something like this built?',
 	closingText: 'Tell me about the role or the project, and I will get back to you.',
 };

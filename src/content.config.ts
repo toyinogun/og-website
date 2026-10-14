@@ -18,6 +18,8 @@ import {
 	type Problem,
 } from './lib/project-checks';
 import { projectSchema } from './lib/project-schema';
+import { collectionTestimonialProblems } from './lib/testimonial-checks';
+import { testimonialSchema, type TestimonialData } from './lib/testimonial-schema';
 
 /** Where project folders live, relative to the project root. */
 export const PROJECTS_BASE = './src/content/projects';
@@ -136,5 +138,78 @@ const projects = defineCollection({
 	schema: ({ image }) => projectSchema(image),
 });
 
+/** Where testimonial files live, relative to the project root (spec 0009). */
+export const TESTIMONIALS_BASE = './src/content/testimonials';
+
+/** The ids of the projects that exist: folders under `PROJECTS_BASE` holding an `index.md`. */
+const knownProjectIds = async (root: string): Promise<ReadonlySet<string>> => {
+	const files = await listFiles(join(root, PROJECTS_BASE));
+	return new Set(
+		files
+			.filter((file) => /^[^/]+\/index\.md$/.test(file))
+			.map((file) => file.split('/')[0] ?? file),
+	);
+};
+
+const testimonialsGlob = glob({
+	pattern: '*.yaml',
+	base: TESTIMONIALS_BASE,
+	// The id is the file name without `.yaml`, exactly as written, checked by `checkSlug`.
+	generateId: ({ entry }) => entry.replace(/\.yaml$/, ''),
+});
+
+const testimonials = defineCollection({
+	loader: {
+		name: 'testimonials-loader',
+		load: async (context) => {
+			const root = fileURLToPath(context.config.root);
+			// Schema problems are collected, not thrown by the glob loader, so one
+			// error can list every problem. Entries that failed are kept out of
+			// the other checks, which expect valid data.
+			const schemaProblems: string[] = [];
+			const invalid = new Set<string>();
+			await testimonialsGlob.load({
+				...context,
+				parseData: async (props) => {
+					try {
+						return await context.parseData(props);
+					} catch (error) {
+						invalid.add(props.id);
+						const message = (error instanceof Error ? error.message : String(error))
+							.replace(/\s+/g, ' ')
+							.trim();
+						schemaProblems.push(`${props.filePath ?? props.id}: schema: ${message}`);
+						return props.data;
+					}
+				},
+			});
+
+			const entries = context.store.values().filter((entry) => !invalid.has(entry.id));
+			const pathOf = new Map(
+				context.store.values().map((entry) => [entry.id, entry.filePath ?? entry.id]),
+			);
+			const checked = collectionTestimonialProblems(
+				entries.map((entry) => ({
+					id: entry.id,
+					data: entry.data as unknown as TestimonialData,
+				})),
+				await knownProjectIds(root),
+			).map(
+				({ rule, message, ids }) =>
+					`${ids.map((id) => pathOf.get(id) ?? id).join(', ')}: ${rule}: ${message}`,
+			);
+
+			const lines = [...schemaProblems, ...checked];
+			// The single sanctioned throw for this collection (spec 0009, AC-3).
+			if (lines.length > 0) {
+				throw new Error(
+					`Testimonial content breaks the rules in spec 0009 (see docs/specs/0009-testimonials/authoring.md):\n${lines.map((line) => `  - ${line}`).join('\n')}`,
+				);
+			}
+		},
+	},
+	schema: testimonialSchema,
+});
+
 /** Every content collection on the site. */
-export const collections = { projects };
+export const collections = { projects, testimonials };

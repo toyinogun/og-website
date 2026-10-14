@@ -1,0 +1,62 @@
+---
+// Quotes from people who worked with you (spec 0009; design.md, Component
+// values: Testimonials): a Section with an <h2> holding one <figure> per quote,
+// in the order given. Renders nothing for an empty list, so a page never shows
+// an empty heading. One quote is set larger than several.
+import type { TestimonialView } from '../lib/testimonials';
+import Section from './Section.astro';
+import Stack from './Stack.astro';
+
+/** Props for `Testimonials`. */
+interface Props {
+	/** The section's `<h2>`. */
+	heading: string;
+	/** The section's id; the heading gets `<id>-heading`. */
+	id: string;
+	/** The label before a quote's project link, for example `On`. Without it no project line shows. */
+	projectLabel?: string;
+	/** The quotes to show, already picked and ordered, as `testimonialView` built them. */
+	testimonials: readonly TestimonialView[];
+}
+
+const { heading, id, projectLabel, testimonials } = Astro.props;
+const quoteSize = testimonials.length === 1 ? 'text-2xl' : 'text-xl';
+---
+
+{
+	testimonials.length > 0 && (
+		<Section id={id} heading={heading}>
+			<Stack as="ul" gap="lg">
+				{testimonials.map((view) => (
+					<li>
+						<figure>
+							<blockquote class="max-w-measure border-l-2 border-line pl-5">
+								<p class:list={['font-serif font-normal text-text', quoteSize]}>{view.quote}</p>
+							</blockquote>
+							<figcaption class="mt-3">
+								<p class="text-base font-semibold text-text">
+									{view.profileUrl === undefined ? (
+										view.name
+									) : (
+										<a href={view.profileUrl} class="inline-flex min-h-6 items-center">
+											{view.name}
+										</a>
+									)}
+								</p>
+								<p class="text-sm text-muted">{view.attribution}</p>
+								{view.project !== undefined && projectLabel !== undefined && (
+									<p class="text-sm text-muted">
+										{projectLabel}{' '}
+										<a href={view.project.href} class="inline-flex min-h-6 items-center">
+											{view.project.title}
+										</a>
+									</p>
+								)}
+							</figcaption>
+						</figure>
+					</li>
+				))}
+			</Stack>
+		</Section>
+	)
+}

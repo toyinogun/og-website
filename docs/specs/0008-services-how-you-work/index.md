@@ -215,7 +215,7 @@ Skateboard: the first milestone alone ships a page a client can read, reachable 
 ## Follow-up
 
 - [ ] Before the build's pull request merges, edit the draft words in `src/lib/services.ts` until they sound like you, and confirm you are happy to promise the free 30 minute call and the weekly update.
-- [ ] When this ships, `/sync` rewords the `CLAUDE.md` page building blocks line to allow the "Seen in" name links, and adds `SERVICES_PAGE` in `services.ts` to the page words list.
+- [x] When this ships, `/sync` rewords the `CLAUDE.md` page building blocks line to allow the "Seen in" name links, and adds `SERVICES_PAGE` in `services.ts` to the page words list.
 - [ ] Optional later: a starting day rate, if clients who cannot afford you become a real cost (one string and a change to the no figures rule in AC-2).
 
 ## Rationale

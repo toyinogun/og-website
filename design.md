@@ -144,6 +144,7 @@ Built by feature 4, plus the shared page pieces from the home page (feature 7, [
 | Work list | `src/components/WorkList.astro` | the work listing's cards in a 3 column grid, or one line when no project is published; takes `projects` and `emptyText` (spec 0005) |
 | Services page | `src/pages/services.astro` | the offers, how a project runs and how pricing works: intro with the availability eyebrow and `CallToAction`, `OfferList`, a numbered steps section, a pricing section, the closing call to action (feature 13, [spec 0008](docs/specs/0008-services-how-you-work/index.md)) |
 | Offer list | `src/components/OfferList.astro` | the Services page's offers, each with name, summary and a derived "Seen in" line of name links to project pages; takes `heading`, `proofLabel` and `offers` with their `proof` (spec 0008) |
+| Testimonials | `src/components/Testimonials.astro` | quotes from people who worked with you, one `<figure>` each, with the name, role and company and, on the home page, the project the quote is about; takes `heading`, `id`, an optional `projectLabel` and `testimonials` (views from `testimonialView`). Renders nothing for an empty list (feature 14, [spec 0009](docs/specs/0009-testimonials/index.md)) |
 | Contact form | `src/components/ContactForm.astro` | the status area, then the form: name, email, the topic radios, the message with its hint and counter, the Turnstile container and the submit Button. Its script checks with `validateContact`, sends to `/api/contact` and shows one outcome in the status area (spec 0006) |
 | Contact page | `src/pages/contact.astro` | the intro, then a `Section` without a heading: the noscript line, `ContactForm`, the privacy note and the LinkedIn line. No `CallToAction`: the form is the page's one action (spec 0006) |
 
@@ -206,6 +207,20 @@ The offers, steps and pricing (feature 13, [spec 0008](docs/specs/0008-services-
 | Closing | as the other pages: a `Section` with its own heading, a `max-w-measure` paragraph, then `CallToAction` |
 
 The accent stays within its places: the "Seen in" links, the focus ring and the two primary buttons (intro and closing), which are the same one contact action.
+
+### Testimonials
+
+Quotes from past colleagues, managers and clients (feature 14, [spec 0009](docs/specs/0009-testimonials/index.md)). Words: `HOME.testimonialsHeading` and `HOME.testimonialsProjectLabel` on the home page, `PROJECT_PAGE.testimonialsHeading` on a project page. With no quotes the section is not rendered at all: no heading, no empty box.
+
+| Part | Values |
+|---|---|
+| Section | a `Section` with `id="testimonials"` and an `<h2>`; no `<h3>` inside. Holds an unbulleted `<ul>` with Stack gap `lg` (3rem), one `<li>` per quote, each a `<figure>` |
+| Quote | a `<blockquote>` with one `<p>` in Source Serif 4 weight 400, `text` colour, not italic, inside `max-w-measure`, with a 2px `line` left border and `1.25rem` left padding. One quote on the page: `--text-2xl`. Two or more: `--text-xl` each. No quotation marks added, by markup or CSS |
+| Caption | a `<figcaption>` `0.75rem` below the quote: the name in Inter 600 `--text-base` `text` (an in text link when the quote has a `profileUrl`), the attribution `Role, Company` in `--text-sm` `muted`, and on the home page, when the quote's project is visible, a `--text-sm` `muted` line `On <project title>` whose title is an in text link. Links are `inline-flex min-h-6 items-center` |
+| Chrome | none: no image, card border, background or shadow |
+| Placement | home page: directly after Selected work, before About, at most 3 quotes by `order`. Project page: directly after the write up (`Prose`), before the closing section, every quote that points at that project, with no project line |
+
+The accent stays within its places: the name link, the project link and the focus ring.
 
 ### Contact page
 
