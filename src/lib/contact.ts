@@ -391,12 +391,14 @@ export const outboxMetadata = (record: OutboxRecord): OutboxMetadata => ({
 
 /** The weekly check's view of the Turnstile secret; only `ok` counts as fine. */
 export type WeeklyTurnstileState =
-	'ok' | 'secret_missing' | 'unreachable' | 'secret_rejected' | 'unknown';
+	'ok' | 'secret_missing' | 'unreachable' | 'secret_rejected' | 'test_secret' | 'unknown';
 
 /**
  * Reads the weekly probe's siteverify reply (spec 0006, *Weekly check
  * states*, first match wins). The probe sends a token that cannot pass, so a
- * working secret answers `invalid-input-response`.
+ * working secret answers `invalid-input-response`. Cloudflare's test secret
+ * marks its reply with `metadata.result_with_testing_key`, which reads as
+ * `test_secret` (it refuses every real send, AC-10).
  */
 export const weeklyTurnstileState = (result: unknown): WeeklyTurnstileState => {
 	if (result === 'missing') return 'secret_missing';
@@ -405,6 +407,8 @@ export const weeklyTurnstileState = (result: unknown): WeeklyTurnstileState => {
 	if (!Array.isArray(codes)) return 'unreachable';
 	if (codes.includes('invalid-input-secret') || codes.includes('missing-input-secret'))
 		return 'secret_rejected';
+	if (isRecord(result.metadata) && result.metadata.result_with_testing_key === true)
+		return 'test_secret';
 	if (result.success === false && codes.includes('invalid-input-response')) return 'ok';
 	return 'unknown';
 };
@@ -415,6 +419,8 @@ const TURNSTILE_STATE_WORDS: Readonly<Record<WeeklyTurnstileState, string>> = {
 	unreachable: 'NOT CHECKED: Cloudflare siteverify did not answer',
 	secret_rejected:
 		'BROKEN: Cloudflare rejected the TURNSTILE_SECRET_KEY secret, so the form cannot send',
+	test_secret:
+		"TEST SECRET: TURNSTILE_SECRET_KEY is Cloudflare's test secret, which refuses every real send; set the real secret",
 	unknown: 'UNCLEAR: siteverify gave an answer the check does not recognise',
 };
 

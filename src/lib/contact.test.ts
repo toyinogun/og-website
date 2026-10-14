@@ -458,6 +458,36 @@ describe('weeklyTurnstileState', () => {
 			{ success: false, 'error-codes': ['missing-input-secret', 'invalid-input-response'] },
 			'secret_rejected',
 		],
+		[
+			{
+				success: false,
+				'error-codes': ['invalid-input-secret'],
+				metadata: { result_with_testing_key: true },
+			},
+			'secret_rejected',
+		],
+		[
+			{
+				success: true,
+				hostname: 'example.com',
+				'error-codes': [],
+				metadata: { result_with_testing_key: true },
+			},
+			'test_secret',
+		],
+		[
+			{
+				success: false,
+				'error-codes': ['invalid-input-response'],
+				metadata: { result_with_testing_key: true },
+			},
+			'test_secret',
+		],
+		[{ success: true, 'error-codes': [], metadata: { result_with_testing_key: false } }, 'unknown'],
+		[
+			{ success: true, 'error-codes': [], metadata: { result_with_testing_key: 'true' } },
+			'unknown',
+		],
 		[{ success: false, 'error-codes': ['invalid-input-response'] }, 'ok'],
 		[{ success: true, 'error-codes': [] }, 'unknown'],
 		[{ success: false, 'error-codes': ['internal-error'] }, 'unknown'],
@@ -493,12 +523,24 @@ describe('the weekly check email', () => {
 	});
 
 	// covers: AC-21
-	it.each(['secret_missing', 'unreachable', 'secret_rejected', 'unknown'] as const)(
-		'flags the %s state in capitals',
+	it.each(['secret_missing', 'unreachable', 'secret_rejected', 'test_secret', 'unknown'] as const)(
+		'flags the %s state in capitals, in at most 200 characters',
 		(state) => {
-			expect(weeklyCheckBody(sentAt, state, [])).toMatch(/Turnstile secret: [A-Z]{3,}/);
+			const line = weeklyCheckBody(sentAt, state, [])
+				.split('\n')
+				.find((text) => text.startsWith('Turnstile secret: '));
+
+			expect(line).toMatch(/^Turnstile secret: [A-Z]{3,}/);
+			expect(line?.slice('Turnstile secret: '.length).length).toBeLessThanOrEqual(200);
 		},
 	);
+
+	// covers: AC-21
+	it('tells you to replace the test secret', () => {
+		expect(weeklyCheckBody(sentAt, 'test_secret', [])).toContain(
+			"Turnstile secret: TEST SECRET: TURNSTILE_SECRET_KEY is Cloudflare's test secret, which refuses every real send; set the real secret",
+		);
+	});
 
 	// covers: AC-21
 	it('lists each message, and points to the dashboard for any not sent', () => {

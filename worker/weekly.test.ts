@@ -170,6 +170,20 @@ describe('handleScheduled', () => {
 			'unknown',
 		],
 		['a passing token', { kind: 'ok', body: { success: true, 'error-codes': [] } }, 'unknown'],
+		[
+			"Cloudflare's test secret (its real reply, seen 2026-10-14)",
+			{
+				kind: 'rejected',
+				reason: 'action_mismatch',
+				body: {
+					success: true,
+					hostname: 'example.com',
+					'error-codes': [],
+					metadata: { result_with_testing_key: true },
+				},
+			},
+			'test_secret',
+		],
 		['a probe that throws', 'throws', 'unreachable'],
 	] as const)('pings failure and logs an error for %s', async (_label, verify, state) => {
 		const fakes = setup({ verify: verify as VerifyResult | 'throws' });
@@ -198,6 +212,29 @@ describe('handleScheduled', () => {
 		expect(fakes.sends[0].text).toContain('Turnstile secret: NOT SET');
 		expect(fakes.pings).toEqual(['https://hc-ping.com/check/fail']);
 		expect(fakes.logs[0].line.turnstile).toBe('secret_missing');
+	});
+
+	// covers: AC-10, AC-21
+	it('names the test secret in the email, so a local run reads as expected', async () => {
+		const fakes = setup({
+			env: { TURNSTILE_EXPECTED_HOSTNAME: 'example.com' },
+			verify: {
+				kind: 'rejected',
+				reason: 'action_mismatch',
+				body: {
+					success: true,
+					hostname: 'example.com',
+					'error-codes': [],
+					metadata: { result_with_testing_key: true },
+				},
+			},
+		});
+		await handleScheduled(fakes.env, fakes.deps);
+
+		expect(fakes.sends[0].text).toContain('Turnstile secret: TEST SECRET:');
+		expect(fakes.pings).toEqual(['https://hc-ping.com/check/fail']);
+		expect(fakes.logs[0].line.turnstile).toBe('test_secret');
+		expect(fakes.logs[0].level).toBe('error');
 	});
 
 	// covers: AC-21
