@@ -4,10 +4,38 @@
 // removing one fails the build for any entry still using it.
 
 /** Technologies a project used, keyed for the schema, valued for display. */
-export const STACK = { typescript: 'TypeScript', astro: 'Astro' } as const;
+export const STACK = {
+	typescript: 'TypeScript',
+	astro: 'Astro',
+	go: 'Go',
+	nodejs: 'Node.js',
+	kubernetes: 'Kubernetes',
+	talos: 'Talos Linux',
+	terraform: 'Terraform',
+	hetzner: 'Hetzner Cloud',
+	argocd: 'Argo CD',
+	cilium: 'Cilium',
+	longhorn: 'Longhorn',
+	prometheus: 'Prometheus',
+	grafana: 'Grafana',
+	postgres: 'PostgreSQL',
+	sqlite: 'SQLite',
+	docker: 'Docker',
+	'cloudflare-r2': 'Cloudflare R2',
+	mcp: 'MCP',
+} as const;
 
 /** Types of work, the client reader's view of a project. */
-export const SERVICES = { frontend: 'Frontend', 'api-design': 'API design' } as const;
+export const SERVICES = {
+	frontend: 'Frontend',
+	'api-design': 'API design',
+	backend: 'Backend',
+	infrastructure: 'Infrastructure',
+	'platform-engineering': 'Platform engineering',
+	'ci-cd': 'CI/CD',
+	observability: 'Observability',
+	security: 'Security',
+} as const;
 
 /** The kind of engagement, shown as a visible label. */
 export const KINDS = {
