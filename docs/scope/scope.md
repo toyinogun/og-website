@@ -196,13 +196,14 @@ What you offer and how an engagement actually runs. This needs a real decision f
   - [x] The design record and the checks: `design.md` rows and the style guide, the build test, browser tests (AC-4, AC-7, AC-10 to AC-15)
 - [x] Verify it: `/check verify services & how you work`
 
-spec [0008](../specs/0008-services-how-you-work/index.md) · decided: a `/services` page with a `Services` nav link, five offers grouped over the `SERVICES` vocabulary (every key in exactly one offer), a "Seen in" line of up to three project name links derived from each write up's `services`, five engagement steps, pricing as a day rate or a fixed price with no figures, remote for Netherlands and EU clients, `CallToAction` unchanged
+spec [0008](../specs/0008-services-how-you-work/index.md) · decided: a `/services` page with a `Services` nav link, five offers grouped over the `SERVICES` vocabulary (every key in exactly one offer), a "Seen in" line of up to three project name links derived from each write up's `services`, five engagement steps, pricing as a day rate or a fixed price with no figures, remote for Netherlands and EU clients, `CallToAction` unchanged · code in `src/pages/services.astro`, `src/components/OfferList.astro`, `src/lib/services.ts` (`SERVICES_PAGE`, `offerProof`), `src/lib/site.ts` (nav)
 
-### 14. Testimonials
+### 14. Testimonials · needs a decision
 Other people vouching for you, which persuades in a way your own words cannot. Worth knowing the build is the easy half here: collecting the quotes is on you and depends on other people replying.
 **Done when:** real quotes are displayed with attribution, and the section looks intentional rather than sparse when there are only one or two.
-- [ ] Build it: `/develop testimonials`
-- [ ] Verify it: `/check verify testimonials`
+From spec 0002: a testimonial may point at a project by its id, so a quote can sit beside the work it is about.
+Flagged on the replan after feature 13: where quotes live and where they show (home, services, project pages), what attribution each quote carries, and how you record the person's permission to publish their name are real choices, and the quote shape is hard to change once write ups point at it.
+- [ ] Design it (spec): `/architect testimonials`
 
 ## Release 3: publishing
 
