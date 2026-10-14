@@ -26,7 +26,7 @@ _These are recommendations to keep your build orderly, not requirements. Skip an
 | 9 | Project detail page | Release 1 | done |
 | 10 | About page | Release 1 | done |
 | 11 | Contact form | Release 1 | done |
-| 12 | Search metadata & share cards | Release 1 | in-progress |
+| 12 | Search metadata & share cards | Release 1 | done |
 | 13 | Services & how you work | Release 2 | planned |
 | 14 | Testimonials | Release 2 | planned |
 | 15 | Blog | Release 3 | planned |
@@ -167,7 +167,7 @@ From spec 0006: the deferred Privacy note and Error monitoring ship with this fe
 
 spec [0006](../specs/0006-contact-form/index.md) · decided: `/contact` posts in place to a Worker script that runs only for `/api/*` (no adapter, pages stay free), a 30 day KV copy then a free `send_email` to your verified inbox, Turnstile and 3 sends a minute, honest sent, not sent and uncertain messages that keep the text, an inline privacy note, a Monday self check plus a Healthchecks.io alarm, "Send me a message" to `/contact` and a Contact nav link · code in `src/pages/contact.astro`, `src/components/ContactForm.astro`, `src/lib/contact.ts`, `src/lib/site.ts`, `worker/` (`index.ts`, `contact.ts`, `turnstile.ts`, `weekly.ts`), `wrangler.jsonc`, `tests/contact-page.test.ts`, `tests/build/contact-build.test.ts`, `e2e/contact.spec.ts`
 
-### 12. Search metadata & share cards · in-progress
+### 12. Search metadata & share cards · done
 So your name finds your site, and so a pasted link looks deliberate rather than broken. You will share this link a lot, in applications and in messages, and the preview is often the first thing anyone sees of your work.
 **Done when:** every page has a title and description, a sitemap exists, structured data describes you as a person, and pasting any page link into a message shows a correct title, description and image.
 From spec 0004: build on the share tags already in `BaseLayout` (title and description), adding the image, sitemap and structured data, and decide the share image for each page.
@@ -178,7 +178,7 @@ From spec 0005: decide eager loading for the covers above the fold, and write si
   - [x] Search engines find the pages and know who you are: `@astrojs/sitemap`, the sitemap link, the `robots.txt` endpoint, `SITE.jobTitle` and `SITE.country`, and the Person and WebSite data block on the home page (AC-9 to AC-11, AC-13, AC-14)
   - [x] The main image loads first: `priority` on `ProjectCard` for the first card on home and work, and on the project page cover (AC-15)
   - [x] The checks and the design record: `tests/build/seo-build.test.ts`, the updated home, about, work and 404 tests, the stack contract, the `design.md` Share card row and the style guide (AC-1 to AC-11, AC-13 to AC-16)
-- [ ] Verify it: `/check verify search metadata & share cards` (includes the live `robots.txt` and sitemap checks and the LinkedIn Post Inspector and message app paste, AC-12, AC-17)
+- [x] Verify it: `/check verify search metadata & share cards` (includes the live `robots.txt` and sitemap checks and the LinkedIn Post Inspector and message app paste, AC-12, AC-17)
 
 spec [0007](../specs/0007-search-metadata-share-cards/index.md) · code in `src/lib/seo.ts`, `src/layouts/BaseLayout.astro`, `src/pages/robots.txt.ts`, `src/assets/share/` · decided: share images from Astro's own image step at build time (each project page its cover, every other page one site card drawn like the covers, 1200 by 630 JPEG), `@astrojs/sitemap`, a `robots.txt` that allows every crawler and keeps `/api/` out, WebSite and Person data on the home page only, one priority cover per page, `noindex` on the 404 page
 
