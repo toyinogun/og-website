@@ -205,13 +205,13 @@ From spec 0002: a testimonial may point at a project by its id, so a quote can s
 Flagged on the replan after feature 13: where quotes live and where they show (home, services, project pages), what attribution each quote carries, and how you record the person's permission to publish their name are real choices, and the quote shape is hard to change once write ups point at it.
 - [x] Design it (spec): `/architect testimonials`
 - [ ] Build it: `/develop testimonials`
-  - [ ] The collection and its checks: `testimonialSchema`, `findContactDetails`, `checkProjectRefs`, the `testimonials` loader that fails the build on a broken quote, and the empty folder (AC-1 to AC-5, AC-17)
-  - [ ] The section: the read helpers and `TestimonialView`, `Testimonials.astro` with the one quote and stacked sizes, the words in `HOME` and `PROJECT_PAGE`, placed on the home page after Selected work and on project pages after the write up (AC-6 to AC-10, AC-12, AC-17)
-  - [ ] The design record and the checks: build tests for the empty state and the permission record staying off the page, `design.md` rows, the style guide samples (AC-11, AC-13 to AC-16)
+  - [x] The collection and its checks: `testimonialSchema`, `findContactDetails`, `checkProjectRefs`, the `testimonials` loader that fails the build on a broken quote, and the empty folder (AC-1 to AC-5, AC-17)
+  - [x] The section: the read helpers and `TestimonialView`, `Testimonials.astro` with the one quote and stacked sizes, the words in `HOME` and `PROJECT_PAGE`, placed on the home page after Selected work and on project pages after the write up (AC-6 to AC-10, AC-12, AC-17)
+  - [x] The design record and the checks: build tests for the empty state and the permission record staying off the page, `design.md` rows, the style guide samples (AC-11, AC-13 to AC-16)
   - [ ] The first real quote, added by you with its recorded yes (AC-18)
 - [ ] Verify it: `/check verify testimonials`
 
-spec [0009](../specs/0009-testimonials/index.md) · decided: a `testimonials` content collection of one YAML file per quote (full name, role, company, optional profile link, optional project id, `order`, and a required `permission` date and channel with no contact details), checked at build time; up to three quotes stacked large on the home page after Selected work, and each quote on the page of the project it points at; nothing rendered with no quotes · how to add one: [authoring](../specs/0009-testimonials/authoring.md)
+spec [0009](../specs/0009-testimonials/index.md) · decided: a `testimonials` content collection of one YAML file per quote (full name, role, company, optional profile link, optional project id, `order`, and a required `permission` date and channel with no contact details), checked at build time; up to three quotes stacked large on the home page after Selected work, and each quote on the page of the project it points at; nothing rendered with no quotes · how to add one: [authoring](../specs/0009-testimonials/authoring.md) · code in `src/components/Testimonials.astro`, `src/lib/testimonials.ts`, `src/lib/testimonial-schema.ts`, `src/lib/testimonial-checks.ts`, `src/content.config.ts` (`testimonials`), `src/content/testimonials/`
 
 ## Release 3: publishing
 

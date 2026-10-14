@@ -18,6 +18,7 @@ const LIMITS: Readonly<Record<keyof ProjectPageCopy, readonly [min: number, max:
 	servicesTerm: [1, 24],
 	stackTerm: [1, 24],
 	metricsLabel: [1, 40],
+	testimonialsHeading: [1, 40],
 	closingHeading: [1, 40],
 	closingText: [1, 120],
 };

@@ -9,6 +9,8 @@ export interface HomeCopy {
 	readonly heading: string;
 	readonly lead: string;
 	readonly workHeading: string;
+	readonly testimonialsHeading: string;
+	readonly testimonialsProjectLabel: string;
 	readonly aboutHeading: string;
 	readonly aboutLink: string;
 	readonly closingHeading: string;
@@ -24,6 +26,8 @@ export const HOME: HomeCopy = {
 	heading: 'I build infrastructure that stays up.',
 	lead: 'DevOps and infrastructure engineer in the Netherlands, building Kubernetes platforms, delivery pipelines and monitoring as code for teams and clients.',
 	workHeading: 'Selected work',
+	testimonialsHeading: 'What people say',
+	testimonialsProjectLabel: 'On',
 	aboutHeading: 'About',
 	aboutLink: 'More about me',
 	closingHeading: 'Hiring, or need something built?',

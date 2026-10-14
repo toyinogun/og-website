@@ -9,6 +9,8 @@ const LIMITS: Readonly<Record<keyof HomeCopy, readonly [min: number, max: number
 	heading: [1, 60],
 	lead: [1, 160],
 	workHeading: [1, 40],
+	testimonialsHeading: [1, 40],
+	testimonialsProjectLabel: [1, 20],
 	aboutHeading: [1, 40],
 	aboutLink: [1, 40],
 	closingHeading: [1, 40],

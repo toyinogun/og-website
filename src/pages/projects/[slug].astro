@@ -1,7 +1,7 @@
 ---
 // One project's case study (feature 9): the intro and its links, the cover,
 // the at a glance panel built from the frontmatter (spec 0002, Value
-// sourcing), the write up through `Prose`, then the closing call to action.
+// sourcing), the write up through `Prose`, this project's quotes (spec 0009), then the closing call to action.
 // Images inside the write up go through Astro's own Markdown image pipeline,
 // which optimises every relative `![alt](./x.png)` at build time.
 import { getCollection, render } from 'astro:content';
@@ -13,6 +13,7 @@ import PageIntro from '../../components/PageIntro.astro';
 import Prose from '../../components/Prose.astro';
 import Section from '../../components/Section.astro';
 import Stack from '../../components/Stack.astro';
+import Testimonials from '../../components/Testimonials.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { PROJECT_PAGE, glanceRows, projectPageTitle } from '../../lib/project-page';
 import {
@@ -22,6 +23,7 @@ import {
 	visibleProjects,
 	type Project,
 } from '../../lib/projects';
+import { sortTestimonials, testimonialsFor, testimonialView } from '../../lib/testimonials';
 
 export const getStaticPaths = (async () => {
 	const projects = sortProjects(
@@ -42,6 +44,11 @@ const COVER_SIZES = '(min-width: 48rem) 38rem, calc(100vw - 2.5rem)';
 const { project } = Astro.props;
 const { title, summary, kind, cover, coverAlt, links, metrics } = project.data;
 const { Content } = await render(project);
+// Only this project's quotes, so the page never links to itself (spec 0009, AC-10).
+const quotes = testimonialsFor(
+	project.id,
+	sortTestimonials(await getCollection('testimonials')),
+).map((entry) => testimonialView(entry, []));
 ---
 
 <BaseLayout
@@ -118,6 +125,11 @@ const { Content } = await render(project);
 		<Prose>
 			<Content />
 		</Prose>
+		<Testimonials
+			id="testimonials"
+			heading={PROJECT_PAGE.testimonialsHeading}
+			testimonials={quotes}
+		/>
 		<Section id="contact" heading={PROJECT_PAGE.closingHeading}>
 			<Stack>
 				<p class="max-w-measure">{PROJECT_PAGE.closingText}</p>
