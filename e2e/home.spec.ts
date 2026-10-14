@@ -72,7 +72,7 @@ test.describe('home page from the static build', () => {
 		await expect(page.locator('#about a')).toHaveAttribute('href', '/about');
 
 		const ids = await main.locator('section').evaluateAll((sections) => sections.map((s) => s.id));
-		expect(ids).toEqual(['selected-work', 'about', 'contact']);
+		expect(ids).toEqual(['selected-work', 'testimonials', 'about', 'contact']);
 		await expect(page.locator('#contact')).toContainText(HOME.closingText);
 		expect(errors).toEqual([]);
 	});

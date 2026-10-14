@@ -1,7 +1,7 @@
 # Verify: testimonials · spec 0009 · updated 2026-10-14
 _Steps derived from spec 0009 acceptance criteria. `/check verify` runs these; `/test` locks the durable ones._
 ## UI / manual
-- [x] Build with no quotes, open `/` and each `/projects/<id>` → no `id="testimonials"`, no heading, no blockquote outside Prose, section order unchanged → AC-11
+- [x] Build with no quotes (fixture build; the live site now has two, so `home-build.test.ts` checks the filled section), open `/` and each `/projects/<id>` → no `id="testimonials"`, no heading, no blockquote outside Prose, section order unchanged → AC-11
 - [x] Build with four fixture quotes (not committed), open `/` → three figures after Selected work and before About, the fourth cut, project lines `On <title>` link to `/projects/<id>` → AC-9
 - [x] Same build, open the page of the project two quotes point at → both quotes, in order, no project line → AC-10
 - [x] One quote then several → `text-2xl` for one, `text-xl` for several, name link only with `profileUrl` → AC-7, AC-8
