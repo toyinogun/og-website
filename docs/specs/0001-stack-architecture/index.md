@@ -1,11 +1,11 @@
 # 0001. Astro static site on Cloudflare Workers
 
 **Date**: 2026-10-13
-**Status**: In Progress
+**Status**: Accepted
 
 ## Summary
 
-The site will be built with Astro (a web framework made for content heavy sites) and published as plain static files on Cloudflare Workers, using the domain `toyintest.org` that you already own. Write ups live as Markdown files in this repository with a type checked schema, so a malformed write up fails the build instead of rendering a blank page. Every push to the main branch rebuilds and redeploys itself. Serving the site costs nothing at any traffic volume, because Cloudflare does not charge for static file requests. Be careful about how far that claim stretches: it covers **delivery**, not the whole system. The build service allowance and any later server side code have their own quotas, and those are not yet confirmed, so "zero cost" is established for serving the site and still open for building and deploying it.
+The site will be built with Astro (a web framework made for content heavy sites) and published as plain static files on Cloudflare Workers, using the domain `toyintest.org` that you already own. Write ups live as Markdown files in this repository with a type checked schema, so a malformed write up fails the build instead of rendering a blank page. Every push to the main branch rebuilds and redeploys itself. Serving the site costs nothing at any traffic volume, because Cloudflare does not charge for static file requests. Be careful about how far that claim stretches: it covers **delivery**, not the whole system. The build service has its own allowance, confirmed on 2026-10-13 (see Follow-up): the account is on the free plan, which includes 3,000 build minutes a month, and at about a minute per build this site stays far inside it, so building and deploying cost nothing too. What happens if those minutes ever run out is not documented, and any later server side code will have its own quotas to check when it arrives.
 
 ## Decision
 
