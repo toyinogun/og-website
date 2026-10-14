@@ -129,6 +129,7 @@ The case study itself, built on the structure decided in the content model. This
 **Done when:** each project renders its full write up with images and links to live work or code, the structure reads well for both a hiring reader and a client reader, it works on a phone, and each page carries its own title, description and share card.
 From spec 0003: render the case study through `Prose`, and decide how figures inside the Markdown get optimised images.
 From spec 0004: make the card title link to `projectPath(id)` and keep the outside link.
+From spec 0005: add `src/pages/projects/[slug].astro`, link the card title without a trailing slash, and show the full stack (the cards show only the first five).
 - [ ] Build it: `/develop project detail page`
 - [ ] Verify it: `/check verify project detail page`
 
@@ -143,12 +144,14 @@ From spec 0004: add a "More about me" link to the home About section, and the `A
 The point of the whole site. A visitor sends you a message without leaving the page. Tagged for extra rigor because it is the one feature that can fail silently: a broken form loses you work and says nothing, and it is also the only place the site handles someone else's personal data.
 **Done when:** a submitted message reliably reaches you, the sender sees a clear success or failure, bad input and spam are handled, the form is usable by keyboard, and a delivery failure is visible rather than silent.
 From spec 0004: change `SITE.contact` to `/contact` with a new label, and revisit `HOME.closingText`.
+From spec 0005: revisit `WORK.closingText` alongside `HOME.closingText`.
 - [ ] Design it (spec): `/architect contact form`
 
 ### 12. Search metadata & share cards · needs a decision
 So your name finds your site, and so a pasted link looks deliberate rather than broken. You will share this link a lot, in applications and in messages, and the preview is often the first thing anyone sees of your work.
 **Done when:** every page has a title and description, a sitemap exists, structured data describes you as a person, and pasting any page link into a message shows a correct title, description and image.
 From spec 0004: build on the share tags already in `BaseLayout` (title and description), adding the image, sitemap and structured data, and decide the share image for each page.
+From spec 0005: decide eager loading for the covers above the fold, and write sitemap addresses without a trailing slash.
 - [ ] Design it (spec): `/architect search metadata & share cards`
 
 ## Release 2: make the case stronger
