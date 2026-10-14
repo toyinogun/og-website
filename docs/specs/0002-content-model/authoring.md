@@ -2,16 +2,16 @@
 
 _The authoring guide for spec 0002. Follow it when you add a project to the site (feature 6). The build checks every rule here, so if you break one, `npm run build` stops and names the file, the rule and what to fix._
 
-## 1. Start from the example
+## 1. Start from a real entry
 
-1. Copy the folder `src/content/projects/example-project/` and rename the copy. The folder name becomes the page address: `my-new-project` is served at `/projects/my-new-project`.
+1. Copy any real entry, such as `src/content/projects/mool/`, and rename the copy. The folder name becomes the page address: `my-new-project` is served at `/projects/my-new-project`.
    - Use lowercase letters, digits and single dashes between words (`^[a-z0-9]+(-[a-z0-9]+)*$`). `My_Project` or `my--project` fails the build.
    - Renaming a folder later changes the address and breaks links people already shared. Pick the name once.
-2. Replace `cover.png` with your own cover and swap `screenshot.png` for your own images (or delete it).
-3. Edit `index.md`: the frontmatter at the top, then the case study body.
-4. Keep `draft: true` while you write. Remove it, or set it to `false`, when the write up is ready to publish.
+2. Replace `cover.png` with your own cover, and add any inline images beside it (section 4).
+3. Edit `index.md`: the frontmatter at the top, then the case study body. Give it an `order` no other entry uses, since no two entries may share one.
+4. Add `draft: true` while you write. Remove it, or set it to `false`, when the write up is ready to publish.
 
-**The first real entry replaces the example.** Delete `example-project/` when your first real project lands. That also frees `order: 1`, since no two entries may share an order.
+**The example is retired.** The draft `example-project/` entry served as the template until the first real entry landed; feature 6 deleted it. Do not bring it back: a contract test checks that it stays gone.
 
 ## 2. Every field, with an example
 

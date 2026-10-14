@@ -52,16 +52,17 @@ describe('real project entries (spec 0002)', () => {
 		expect(await collectionProblems(facts, root)).toEqual([]);
 	});
 
-	// covers: AC-14
-	it('keeps the example entry as a complete draft template', () => {
-		const example = entries.find(({ id }) => id === 'example-project');
+	// covers: AC-14 (feature 6 retired the example once real entries landed,
+	// as authoring.md section 1 says; the real entries are now the template)
+	it('has retired the example entry', () => {
+		expect(entries.map(({ id }) => id)).not.toContain('example-project');
+	});
 
-		expect(example?.frontmatter).toMatchObject({ draft: true, order: 1 });
-		const parsed = schema.parse(example?.frontmatter);
-		expect(parsed).toHaveProperty('client.name');
-		expect(parsed).toHaveProperty('team');
-		expect(parsed).toHaveProperty('end');
-		expect(parsed.metrics.length).toBeGreaterThan(0);
-		expect(parsed.links.length).toBeGreaterThan(0);
+	it('has at least one published, featured entry', () => {
+		const featured = entries
+			.map(({ frontmatter }) => schema.parse(frontmatter))
+			.filter(({ draft, featured }) => featured && !draft);
+
+		expect(featured.length).toBeGreaterThan(0);
 	});
 });
