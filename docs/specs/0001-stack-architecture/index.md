@@ -1,7 +1,7 @@
 # 0001. Astro static site on Cloudflare Workers
 
 **Date**: 2026-10-13
-**Status**: Accepted
+**Status**: Accepted (amended by [0006](../0006-contact-form/index.md): the Worker gains a script for `/api/*` only, every page stays a free static asset)
 
 ## Summary
 
