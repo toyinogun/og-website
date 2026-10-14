@@ -1,6 +1,7 @@
 ---
 // The home page (spec 0004): what you do and how to reach you first, then the
-// featured projects, the first bio paragraph and the closing call to action.
+// featured projects, the first bio paragraph with a link to the About page,
+// and the closing call to action.
 // The words live in `HOME` (src/lib/home.ts), the bio in src/content/bio.md.
 import { getCollection } from 'astro:content';
 import CallToAction from '../components/CallToAction.astro';
@@ -27,7 +28,10 @@ const featured = featuredProjects(
 		</PageIntro>
 		<SelectedWork projects={featured} heading={HOME.workHeading} />
 		<Section id="about" heading={HOME.aboutHeading}>
-			<p class="max-w-measure">{firstParagraph(bioSource)}</p>
+			<Stack>
+				<p class="max-w-measure">{firstParagraph(bioSource)}</p>
+				<a href="/about" class="inline-flex min-h-6 items-center self-start">{HOME.aboutLink}</a>
+			</Stack>
 		</Section>
 		<Section id="contact" heading={HOME.closingHeading}>
 			<Stack>

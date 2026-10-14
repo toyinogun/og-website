@@ -29,6 +29,13 @@ describe('Button', () => {
 		expect(html).toMatch(/^<button type="submit"/);
 	});
 
+	it('asks the browser to save a linked file only when download is set', async () => {
+		expect(await render({ href: '/cv.pdf', download: true })).toMatch(
+			/^<a href="\/cv\.pdf" download[\s>]/,
+		);
+		expect(await render({ href: '/work' })).not.toContain('download');
+	});
+
 	// covers: AC-14
 	it('renders a link when given href, with no type attribute', async () => {
 		const html = await render({ href: '/work' });

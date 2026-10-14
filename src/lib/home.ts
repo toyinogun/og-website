@@ -10,6 +10,7 @@ export interface HomeCopy {
 	readonly lead: string;
 	readonly workHeading: string;
 	readonly aboutHeading: string;
+	readonly aboutLink: string;
 	readonly closingHeading: string;
 	readonly closingText: string;
 }
@@ -24,6 +25,7 @@ export const HOME: HomeCopy = {
 	lead: 'DevOps and infrastructure engineer in the Netherlands, building Kubernetes platforms, delivery pipelines and monitoring as code for teams and clients.',
 	workHeading: 'Selected work',
 	aboutHeading: 'About',
+	aboutLink: 'More about me',
 	closingHeading: 'Hiring, or need something built?',
 	closingText: 'Tell me about the role or the project, and I will get back to you.',
 };

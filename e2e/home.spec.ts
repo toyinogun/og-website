@@ -68,6 +68,8 @@ test.describe('home page from the static build', () => {
 		await expect(page.locator('#about p')).toHaveCount(1);
 		await expect(page.locator('#about p')).toContainText("I'm Toyin Ogunseinde");
 		await expect(main).not.toContainText("I didn't start here");
+		await expect(page.locator('#about a')).toHaveText(HOME.aboutLink);
+		await expect(page.locator('#about a')).toHaveAttribute('href', '/about');
 
 		const ids = await main.locator('section').evaluateAll((sections) => sections.map((s) => s.id));
 		expect(ids).toEqual(['selected-work', 'about', 'contact']);
