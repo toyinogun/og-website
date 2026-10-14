@@ -195,7 +195,7 @@ Skateboard: the first milestone alone gives the live site its whole look (theme,
 
 - [ ] Footer links: you supply the label and URL of each link out (for example GitHub, LinkedIn, email). Empty until then.
 - [ ] Each page feature (7 home, 8 work, 9 project detail, 10 about, 11 contact) adds its `SITE.nav` entry when its page ships, and its spec says so.
-- [ ] Feature 8 designs the project card and tag chip on these tokens; feature 9 renders case studies through `Prose` and decides how figures in Markdown get optimised images.
+- [ ] Feature 8 designs the tag chip on these tokens (the project card moved to feature 7, [spec 0004](../0004-home-page/index.md)); feature 9 renders case studies through `Prose` and decides how figures in Markdown get optimised images.
 - [ ] If a Content Security Policy is ever added, it needs the hash of the inline theme script.
 - [ ] `/sync`: record `design.md`, `src/dev/` and `npm run test:build` in `AGENTS.md`.
 
