@@ -71,9 +71,8 @@ Chosen by `/audit`, installed by `/develop tooling`:
 
 ## Agent skills
 
-Adopted in spec 0001, waiting for import under Paperclip Skills, Sources: `cloudflare/skills` wrangler, `cloudflare/skills` workers-best-practices.
-Adopted in spec 0006, offered to the board for import (JSM-55): `cloudflare/skills` turnstile-spin, `cloudflare/skills` cloudflare-email-service.
-Declined: `astrolicious/agent-skills` astro, `wshobson/agents` tailwind-design-system, `morinokami/astro-mcp`, a Tailwind utilities MCP server, `secondsky/claude-skills` cloudflare-workers-security, `secondsky/claude-skills` cloudflare-cron-triggers
+Imported under Paperclip Skills and attached to the Engineer (JSM-55): `cloudflare/skills` wrangler, `cloudflare/skills` workers-best-practices (spec 0001), `cloudflare/skills` cloudflare-email-service (spec 0006).
+Declined: `astrolicious/agent-skills` astro, `wshobson/agents` tailwind-design-system, `morinokami/astro-mcp`, a Tailwind utilities MCP server, `secondsky/claude-skills` cloudflare-workers-security, `secondsky/claude-skills` cloudflare-cron-triggers, `cloudflare/skills` turnstile-spin (Paperclip refuses skills that ship scripts; skipped on JSM-55, the Turnstile check is already built)
 MCP servers: Cloudflare documentation (connected), Astro documentation (recommended)
 
 ## Context files
