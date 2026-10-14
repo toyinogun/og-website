@@ -33,7 +33,7 @@ describe('work listing head (AC-10, AC-11)', () => {
 		expect(head).toContain(
 			`<meta property="og:description" content="${escapeHtml(WORK.description)}">`,
 		);
-		expect(head).not.toMatch(/og:image|twitter:image/);
+		expect(head).toContain('<meta property="og:image" content="https://toyintest.org/_astro/');
 	});
 
 	// covers: AC-10

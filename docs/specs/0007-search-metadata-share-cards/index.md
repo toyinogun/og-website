@@ -1,7 +1,7 @@
 # 0007. Search metadata and share cards
 
 **Date**: 2026-10-14
-**Status**: Proposed
+**Status**: In Progress
 
 ## Summary
 

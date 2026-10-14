@@ -173,14 +173,14 @@ So your name finds your site, and so a pasted link looks deliberate rather than 
 From spec 0004: build on the share tags already in `BaseLayout` (title and description), adding the image, sitemap and structured data, and decide the share image for each page.
 From spec 0005: decide eager loading for the covers above the fold, and write sitemap addresses without a trailing slash.
 - [x] Design it (spec): `/architect search metadata & share cards`
-- [ ] Build it: `/develop search metadata & share cards`
-  - [ ] Every pasted link shows an image: the site card source image, `src/lib/seo.ts` with `getImage` in `BaseLayout`, the project cover passed from the project page, the 404 page's `NOT_FOUND` words and `noindex` (AC-1 to AC-8)
-  - [ ] Search engines find the pages and know who you are: `@astrojs/sitemap`, the sitemap link, the `robots.txt` endpoint, `SITE.jobTitle` and `SITE.country`, and the Person and WebSite data block on the home page (AC-9 to AC-11, AC-13, AC-14)
-  - [ ] The main image loads first: `priority` on `ProjectCard` for the first card on home and work, and on the project page cover (AC-15)
-  - [ ] The checks and the design record: `tests/build/seo-build.test.ts`, the updated home, about, work and 404 tests, the stack contract, the `design.md` Share card row and the style guide (AC-1 to AC-11, AC-13 to AC-16)
+- [x] Build it: `/develop search metadata & share cards`
+  - [x] Every pasted link shows an image: the site card source image, `src/lib/seo.ts` with `getImage` in `BaseLayout`, the project cover passed from the project page, the 404 page's `NOT_FOUND` words and `noindex` (AC-1 to AC-8)
+  - [x] Search engines find the pages and know who you are: `@astrojs/sitemap`, the sitemap link, the `robots.txt` endpoint, `SITE.jobTitle` and `SITE.country`, and the Person and WebSite data block on the home page (AC-9 to AC-11, AC-13, AC-14)
+  - [x] The main image loads first: `priority` on `ProjectCard` for the first card on home and work, and on the project page cover (AC-15)
+  - [x] The checks and the design record: `tests/build/seo-build.test.ts`, the updated home, about, work and 404 tests, the stack contract, the `design.md` Share card row and the style guide (AC-1 to AC-11, AC-13 to AC-16)
 - [ ] Verify it: `/check verify search metadata & share cards` (includes the live `robots.txt` and sitemap checks and the LinkedIn Post Inspector and message app paste, AC-12, AC-17)
 
-spec [0007](../specs/0007-search-metadata-share-cards/index.md) · decided: share images from Astro's own image step at build time (each project page its cover, every other page one site card drawn like the covers, 1200 by 630 JPEG), `@astrojs/sitemap`, a `robots.txt` that allows every crawler and keeps `/api/` out, WebSite and Person data on the home page only, one priority cover per page, `noindex` on the 404 page
+spec [0007](../specs/0007-search-metadata-share-cards/index.md) · code in `src/lib/seo.ts`, `src/layouts/BaseLayout.astro`, `src/pages/robots.txt.ts`, `src/assets/share/` · decided: share images from Astro's own image step at build time (each project page its cover, every other page one site card drawn like the covers, 1200 by 630 JPEG), `@astrojs/sitemap`, a `robots.txt` that allows every crawler and keeps `/api/` out, WebSite and Person data on the home page only, one priority cover per page, `noindex` on the 404 page
 
 ## Release 2: make the case stronger
 

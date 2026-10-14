@@ -5,6 +5,8 @@
 // integration in astro.config.mjs; it lives outside src/pages/ so the
 // production build never sees it.
 import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
+import siteCard from '../assets/share/site-card.png';
 import Button from '../components/Button.astro';
 import CallToAction from '../components/CallToAction.astro';
 import ContactForm from '../components/ContactForm.astro';
@@ -19,6 +21,7 @@ import WorkList from '../components/WorkList.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { CONTACT } from '../lib/contact';
 import { sortProjects, visibleProjects } from '../lib/projects';
+import { SHARE } from '../lib/seo';
 import { LINKEDIN_URL } from '../lib/site';
 import { Content as Sample } from './sample.md';
 
@@ -217,6 +220,19 @@ const listed = sortProjects(visibleProjects(projects, { includeDrafts: import.me
 				<WorkList projects={listed} emptyText="Write ups are on their way." />
 				<code class="text-sm text-muted">{'projects={[]}'}</code>
 				<WorkList projects={[]} emptyText="Write ups are on their way." />
+			</Stack>
+		</Section>
+
+		<Section heading="Share card" id="share-card" class="border-t border-line">
+			<Stack>
+				<code class="text-sm text-muted">src/assets/share/site-card.png</code>
+				<Image
+					src={siteCard}
+					alt={SHARE.siteCardAlt}
+					widths={[640, 1000]}
+					sizes="(min-width: 48rem) 38rem, calc(100vw - 2.5rem)"
+					class="h-auto w-full max-w-measure rounded-md"
+				/>
 			</Stack>
 		</Section>
 
