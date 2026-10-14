@@ -78,6 +78,8 @@ Every page gets a share image, so a pasted link shows a picture as well as a tit
 
 `BaseLayout` gains two optional props (`image`, `noindex`) and an optional `structuredData`; every value comes from `SITE`, the page's own constant, or the project's frontmatter, through pure helpers in `src/lib/seo.ts`.
 
+**Implementation skills**: `astro-seo` (`jdevalk/skills`, a Paperclip company skill attached to the Engineer). Where it disagrees with this spec, the spec wins.
+
 ## Feature design
 
 **Data model sketch**: no persisted data. Constants, props and one committed image:
@@ -219,7 +221,7 @@ Skateboard: the share image first, because it is the part people see, then each 
 
 - [ ] After the merge deploys: a `Board:` task to verify `toyintest.org` in Google Search Console with the Cloudflare DNS record and submit `https://toyintest.org/sitemap-index.xml` (your pick on 2026-10-14). Created by the Tech Lead at ship.
 - [ ] Record `@astrojs/sitemap` in `AGENTS.md` (Stack key dependencies) and the new `BaseLayout` props and `src/lib/seo.ts` in its Rules; `/sync` owns that.
-- [ ] Agent Skills and MCP servers for `@astrojs/sitemap`: offered to you on JSM-68 from the discovery search.
+- [ ] Record in `AGENTS.md` `## Agent skills`: `jdevalk/skills` astro-seo imported and attached to the Engineer (JSM-68); declined `fabiensalles/claude-marketplace` astro-sitemap, `kostja94/marketing-skills` open-graph, `aaron-he-zhu/aaron-marketing-skills` serp-markup-builder, `soborbo/claudeskills` astro-seo, and the MCP servers seo-mcp and OpenGraph.io MCP. `/sync` owns that.
 
 ## Rationale
 
