@@ -134,7 +134,7 @@ From spec 0005: add `src/pages/projects/[slug].astro`, link the card title witho
   - [x] The case study pages: `src/pages/projects/[slug].astro` from `visibleProjects` and `sortProjects`, the `PROJECT_PAGE` words and `glanceRows`, the intro with the write up's links, the cover, the at a glance panel with the full stack and the headline numbers, the write up through `Prose`, the closing call to action
   - [x] Card titles link to `projectPath(id)` with no trailing slash, and the outside link stays
   - [x] The checks: unit tests for the words and the panel, the build test for every project page, browser tests for card titles to pages, the phone layout, accessibility, widths and target sizes
-- [ ] Verify it: `/check verify project detail page`
+- [x] Verify it: `/check verify project detail page`
 
 no spec of its own: built on spec [0002](../specs/0002-content-model/index.md) (Value sourcing), with figures in the write up optimised by Astro's own Markdown image pipeline (a relative `![alt](./x.png)`, wrapped in `<figure>` with a `<figcaption>` for a caption) · code in `src/pages/projects/[slug].astro`, `src/lib/project-page.ts`, `src/components/ProjectCard.astro`, `tests/build/project-build.test.ts`, `e2e/project.spec.ts`
 
