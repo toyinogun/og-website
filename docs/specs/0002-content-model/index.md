@@ -51,7 +51,7 @@ Every project on the site is one folder holding a Markdown file and its images. 
   - the alt text is not empty after trimming.
 
   Raw HTML containing `<img` or `<h1` (any letter case) also fails. This applies to drafts too.
-- **AC-14**: A complete example entry exists as a draft and doubles as the authoring template, and the authoring rules are written down beside the spec, so feature 6 can copy a folder and start writing.
+- **AC-14**: The authoring rules are written down beside the spec, and any real entry (for example `src/content/projects/mool/`) doubles as the authoring template, so a new project starts by copying a folder. The draft `example-project/` entry that served as the template until the first real entry landed is retired, and stays gone. (Restated on 2026-10-14, after feature 6 retired the example.)
 
 ## Decision
 
@@ -353,7 +353,7 @@ Skateboard: build the thinnest whole model end to end (schema, checks, helpers, 
 
 ## Follow-up
 
-- [ ] Feature 6 (Bio & project write ups) writes real entries from `authoring.md`, adds real `STACK` and `SERVICES` values, and deletes the example once the first real entry lands.
+- [x] Feature 6 (Bio & project write ups) writes real entries from `authoring.md`, adds real `STACK` and `SERVICES` values, and deletes the example once the first real entry lands.
 - [ ] Features 7 to 9 render images through Astro's image pipeline and verify that the optimised renditions are produced (AC-11 hands this to them).
 - [ ] Feature 8 (Work listing) decides the listing address (`/projects` suggested) and the empty state, using `visibleProjects` and `sortProjects`.
 - [ ] Feature 9 (Project detail page) renders the at a glance panel and body from this model, owns `getStaticPaths` for `/projects/<slug>`, and confirms that draft routes are absent from the production build.
