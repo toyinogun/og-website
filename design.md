@@ -142,6 +142,8 @@ Built by feature 4, plus the shared page pieces from the home page (feature 7, [
 | Project page | `src/pages/projects/[slug].astro` | one case study per visible project, in the reading column: intro with the write up's links, cover, the at a glance panel, the write up through `Prose`, the closing call to action (feature 9). The one place a project shows outside `ProjectCard` |
 | Tag chip | inside `ProjectCard` | one stack technology as a small outlined label; only when the card gets `showStack` (the work listing), at most 5 per card (spec 0005) |
 | Work list | `src/components/WorkList.astro` | the work listing's cards in a 3 column grid, or one line when no project is published; takes `projects` and `emptyText` (spec 0005) |
+| Contact form | `src/components/ContactForm.astro` | the status area, then the form: name, email, the topic radios, the message with its hint and counter, the Turnstile container and the submit Button. Its script checks with `validateContact`, sends to `/api/contact` and shows one outcome in the status area (spec 0006) |
+| Contact page | `src/pages/contact.astro` | the intro, then a `Section` without a heading: the noscript line, `ContactForm`, the privacy note and the LinkedIn line. No `CallToAction`: the form is the page's one action (spec 0006) |
 
 ### Component values
 
@@ -161,6 +163,13 @@ Built by feature 4, plus the shared page pieces from the home page (feature 7, [
 | Tag chip | an `<li>` in a `<ul aria-label="Stack">`. `--text-sm` Inter 400, `muted` text, 1px `line` border, `--radius-sm`, padding `0.125rem 0.5rem`, no background, no accent, not interactive. The list wraps with a `0.5rem` gap and no bullets |
 | Work list | a `Section` without a heading: a 3 column `Grid` as a `<ul>` of cards at `headingLevel` 2, or one `max-w-measure` paragraph when empty |
 | Project card | no border, background or shadow. Stack gap `sm`. Cover first, full card width, `--radius-md`, its natural 1600 by 840 ratio. Kind `--text-sm` `muted`. Title serif 600 `--text-xl`, and the whole title is a link to `projectPath(id)` (no trailing slash) in `text` colour with no underline at rest, underlined on hover; the card itself is not a link. Outcome `--text-base` `text`. With `showStack`, the tag chips sit between the outcome and the link. The link uses the in text link style, with a visually hidden "for <title>" so each card's link has its own name |
+| Text input, email input, textarea | full width, `--text-base` Inter 400, `text` on `bg`, 1px `line` border, `--radius-sm`, padding `0.625rem 0.75rem`, min height `2.75rem`; the textarea resizes vertically only. Focus: the site focus ring. Invalid (`aria-invalid="true"`): 2px `text` border. Read only while sending: same look, `cursor: progress` |
+| Field label and hint | label `--text-base` Inter 600 `text`; hint `--text-sm` `muted`, between the label and the control, tied by `aria-describedby` |
+| Radio | native radio at `1.25rem` with `accent-color: var(--color-accent)`, one per line; the whole label row (radio plus text) is the target, at least `2.75rem` tall |
+| Field error text | `--text-sm` Inter 600 `text`, under its control, starting with `CONTACT.errorPrefix` in a visually hidden span; shown in text and weight, never by colour alone |
+| Status area | `<div id="contact-status" tabindex="-1">` above the form, empty and no height at rest. Filled: `--color-surface` background, `--radius-sm`, padding `1rem`, a 3px left border in `accent` (sent) or `text` (everything else), message `--text-base` `text`; it holds one `role="status"` (sent) or `role="alert"` (every other outcome) child, and takes focus |
+| Character counter | `--text-sm` `muted`, under the textarea, shown from 4,500 characters, text from `CONTACT.charactersLeft`; not a live region |
+| Turnstile container | `<div id="contact-turnstile">` between the message and the button, no height unless Cloudflare asks the visitor to tick a box; `flexible` from 300px wide, else `compact` |
 
 ### Project page
 
@@ -176,6 +185,18 @@ The case study (feature 9), top to bottom. The whole page is one `Container` at 
 | Closing | a `Section` with its own heading, a Stack gap `md`: one `max-w-measure` paragraph, then `CallToAction`, full width below `sm` and left aligned from `sm` (`w-full sm:w-auto sm:self-start`) |
 
 The accent stays within its three places: the intro links and the write up's links (links), the focus ring, and the one primary button at the end.
+
+### Contact page
+
+The contact form (feature 11, [spec 0006](docs/specs/0006-contact-form/index.md)), top to bottom, in one `Container` at `measure` width. Every word comes from `CONTACT` in `src/lib/contact.ts`.
+
+| Part | Values |
+|---|---|
+| Intro | `PageIntro` at `page` size: heading and lead, no actions |
+| Form section | a `Section` without a heading: the `<noscript>` line (with the LinkedIn link), `ContactForm`, the privacy note (`--text-sm` `muted`, `3rem` below the form), then the LinkedIn line (`1.5rem` below) |
+| Form layout | one column at every width; fields `1.5rem` apart; controls fill the column; the submit Button is full width below `sm` and natural width from `sm` |
+
+The accent stays within its three places: the LinkedIn links, the focus ring, and the submit button. The checked radio also shows it, through `accent-color`, as spec 0006 chose.
 
 ### Prose
 

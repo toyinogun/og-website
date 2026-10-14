@@ -158,14 +158,14 @@ From spec 0004: change `SITE.contact` to `/contact` with a new label, and revisi
 From spec 0005: revisit `WORK.closingText` alongside `HOME.closingText`.
 From spec 0006: the deferred Privacy note and Error monitoring ship with this feature; before the build merges, you set up Email Routing, the Turnstile widget, the `CONTACT_OUTBOX` KV namespace and secrets, and a Healthchecks.io check (the spec's Follow-up).
 - [x] Design it (spec): `/architect contact form`
-- [ ] Build it: `/develop contact form`
+- [x] Build it: `/develop contact form`
   - [x] A message reaches you, with a 30 day copy: `src/lib/contact.ts` (words, validation, outcomes, email text), the Worker for `/api/*` (exit table, KV copy, `send_email`, Turnstile, rate limit, one log line), `wrangler.jsonc` and the contract test, the Worker tooling in `build`, the `/contact` page and form, `SITE.contact` and the Contact nav link (AC-1 to AC-20, AC-22, AC-24)
   - [x] You hear when it breaks: the Monday self check, the Turnstile secret probe, the week's message list and the Healthchecks.io pings (AC-21)
-  - [ ] The checks and the design record: `design.md` form rows and the style guide, page and build tests, the browser tests with stubbed endpoint and Turnstile, the generated types check in CI (AC-1 to AC-3, AC-6 to AC-8, AC-11, AC-19, AC-20, AC-23, AC-24)
+  - [x] The checks and the design record: `design.md` form rows and the style guide, page and build tests, the browser tests with stubbed endpoint and Turnstile, the generated types check in CI (AC-1 to AC-3, AC-6 to AC-8, AC-11, AC-19, AC-20, AC-23, AC-24)
 - [ ] Verify it: `/check verify contact form` (includes the local `wrangler dev` proof and the real Turnstile challenge by keyboard)
 - [ ] Test it: `/test contact form`
 
-spec [0006](../specs/0006-contact-form/index.md) · decided: `/contact` posts in place to a Worker script that runs only for `/api/*` (no adapter, pages stay free), a 30 day KV copy then a free `send_email` to your verified inbox, Turnstile and 3 sends a minute, honest sent, not sent and uncertain messages that keep the text, an inline privacy note, a Monday self check plus a Healthchecks.io alarm, "Send me a message" to `/contact` and a Contact nav link
+spec [0006](../specs/0006-contact-form/index.md) · decided: `/contact` posts in place to a Worker script that runs only for `/api/*` (no adapter, pages stay free), a 30 day KV copy then a free `send_email` to your verified inbox, Turnstile and 3 sends a minute, honest sent, not sent and uncertain messages that keep the text, an inline privacy note, a Monday self check plus a Healthchecks.io alarm, "Send me a message" to `/contact` and a Contact nav link · code in `src/pages/contact.astro`, `src/components/ContactForm.astro`, `src/lib/contact.ts`, `src/lib/site.ts`, `worker/` (`index.ts`, `contact.ts`, `turnstile.ts`, `weekly.ts`), `wrangler.jsonc`, `tests/contact-page.test.ts`, `tests/build/contact-build.test.ts`, `e2e/contact.spec.ts`
 
 ### 12. Search metadata & share cards · needs a decision
 So your name finds your site, and so a pasted link looks deliberate rather than broken. You will share this link a lot, in applications and in messages, and the preview is often the first thing anyone sees of your work.

@@ -23,6 +23,8 @@ jobs:
       - run: npm run lint
       - run: npm run format:check
       - run: npm run check
+      # The Worker's generated types must match wrangler.jsonc (spec 0006, AC-20).
+      - run: npx wrangler types worker/worker-configuration.d.ts --check
       - run: npm test
       - run: npm run build
       - run: npm run test:build

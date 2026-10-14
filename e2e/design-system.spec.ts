@@ -1,8 +1,14 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test, type Page } from '@playwright/test';
+import { stubTurnstile } from './turnstile-stub';
 
 // Spec 0003 in a real browser, against the production build served from dist/
-// (see playwright.config.ts).
+// (see playwright.config.ts). The contact page's Turnstile script is stubbed,
+// so no test here calls Cloudflare (spec 0006).
+
+test.beforeEach(async ({ page }) => {
+	await stubTurnstile(page);
+});
 
 const DARK_BG = 'oklch(17% 0.006 65)';
 const LIGHT_BG = 'oklch(98.5% 0.006 85)';
@@ -266,7 +272,7 @@ test.describe('keyboard (AC-9, AC-10)', () => {
 
 	for (const scheme of ['light', 'dark'] as const) {
 		// covers: AC-9, AC-10
-		test(`tabs through skip link, wordmark, Home, Work and toggle, each with the ring (${scheme})`, async ({
+		test(`tabs through skip link, wordmark, Home, Work, About, Contact and toggle, each with the ring (${scheme})`, async ({
 			page,
 		}) => {
 			await page.emulateMedia({ colorScheme: scheme });
@@ -297,10 +303,15 @@ test.describe('keyboard (AC-9, AC-10)', () => {
 			expect(about.inHeader).toBe(true);
 
 			await page.keyboard.press('Tab');
+			const contact = await focused(page);
+			expect(contact.text).toBe('Contact');
+			expect(contact.inHeader).toBe(true);
+
+			await page.keyboard.press('Tab');
 			const toggleFocus = await focused(page);
 			expect(toggleFocus.tag).toBe('BUTTON');
 
-			for (const state of [skip, home, work, about, toggleFocus]) {
+			for (const state of [skip, home, work, about, contact, toggleFocus]) {
 				expect(state.outlineStyle).toBe('solid');
 				expect(state.outlineWidth).toBe('2px');
 			}
@@ -352,6 +363,7 @@ test.describe('layout (AC-13)', () => {
 			'/',
 			'/projects',
 			'/about',
+			'/contact',
 			'/projects/hetzner-talos-cluster',
 			'/projects/deployer',
 			'/no-such-page',
@@ -400,12 +412,17 @@ test.describe('layout (AC-13)', () => {
 		}
 	});
 
-	// covers: spec 0004, AC-10; spec 0005, AC-9; feature 10
+	// covers: spec 0004, AC-10; spec 0005, AC-9; feature 10; AC-4 (spec 0006)
 	test('marks only the nav link for the page you are on as current', async ({ page }) => {
 		const nav = page.getByRole('navigation', { name: 'Main' });
-		const links = { '/': 'Home', '/projects': 'Work', '/about': 'About' } as const;
+		const links = {
+			'/': 'Home',
+			'/projects': 'Work',
+			'/about': 'About',
+			'/contact': 'Contact',
+		} as const;
 
-		for (const path of ['/', '/projects', '/about', '/no-such-page']) {
+		for (const path of ['/', '/projects', '/about', '/contact', '/no-such-page']) {
 			await page.goto(path);
 			for (const [href, name] of Object.entries(links)) {
 				const link = nav.getByRole('link', { name });
@@ -483,6 +500,7 @@ test.describe('accessibility, WCAG 2.2 AA (AC-20)', () => {
 			'/',
 			'/projects',
 			'/about',
+			'/contact',
 			'/projects/hetzner-talos-cluster',
 			'/projects/deployer',
 			'/no-such-page',
@@ -513,6 +531,7 @@ test.describe('accessibility, WCAG 2.2 AA (AC-20)', () => {
 			'/',
 			'/projects',
 			'/about',
+			'/contact',
 			'/projects/hetzner-talos-cluster',
 			'/projects/deployer',
 			'/no-such-page',
