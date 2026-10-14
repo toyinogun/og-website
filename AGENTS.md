@@ -19,7 +19,8 @@ The personal site of Toyin Ogunseinde. Scope: `docs/scope/scope.md`.
 ```bash
 npm ci                # Install
 npm run dev           # Dev server (agents: `astro dev --background`, see Development below)
-npm run build         # astro check (type gate), then astro build into dist/
+npm run build         # astro check and the Worker type check (`tsc -p worker`), then astro build into dist/
+npm run build:local   # build with Turnstile's test site key, for `npx wrangler dev` (see worker/AGENTS.md)
 npm test              # Vitest unit and contract tests
 npm run test:build    # Vitest against dist/ (`tests/build/`); run `npm run build` first
 npm run test:e2e      # Playwright against the production build (desktop and mobile widths)
@@ -33,18 +34,19 @@ Stored in `docs/specs/`. Format: `docs/specs/NNNN-title/index.md`, with `rationa
 
 - Functional style: pure functions by default, data in and HTML out. No classes where a plain function works, and no shared mutable state (module level values are constants only).
 - Data is immutable: `const`, `readonly` props and arrays, never mutate in place. Prefer `map`, `filter`, `reduce` where it reads better than a loop.
-- Side effects (file reads, network, the future contact form handler) live at the edges, never inside helpers or components. Expected failures are explicit return values, not thrown exceptions.
+- Side effects (file reads, network, the contact form Worker's fetch, clock and log, wired in `worker/index.ts`) live at the edges, never inside helpers or components. Expected failures are explicit return values, not thrown exceptions.
 - Astro folder convention in `src/`: `pages/` (routes only), `layouts/`, `components/`, `content/`, `lib/` (pure TypeScript helpers), `styles/`.
 - Design system: build all UI to `design.md` (the quiet editorial look from spec 0003, its rules and tokens); token values live in CSS.
 - `src/dev/` holds dev server only pages (the style guide at `/styleguide`, injected in `astro.config.mjs` when `command === 'dev'`); the static build never emits them (spec 0003).
 - Keep every page pre rendered. Never add `@astrojs/cloudflare` or on demand rendering: it turns free static requests into metered Worker invocations (spec 0001).
+- Worker script (spec 0006): the one piece of server code lives in `worker/` and runs only for `/api/*` (`assets.run_worker_first` in `wrangler.jsonc`); every page stays a free static asset. Its rules are in `worker/AGENTS.md`.
 - Projects (spec 0002): one folder per project at `src/content/projects/<slug>/index.md`, written to `docs/specs/0002-content-model/authoring.md`; the build fails on any rule break. Pages get entries from `getCollection('projects')`, then filter and sort only through the helpers in `src/lib/projects.ts` (`visibleProjects` with `includeDrafts: import.meta.env.DEV`, `sortProjects`, `featuredProjects`), never on their own.
 - Project pages (feature 9): `src/pages/projects/[slug].astro` builds one page per visible project, the one place a project shows outside `ProjectCard`. Link to it only through `projectPath(id)` in `src/lib/projects.ts`.
 - Bio: `src/content/bio.md`, plain Markdown with no frontmatter, outside any content collection. Pages that show the bio import it from there rather than copying the text.
 - Resume (feature 10): the CV is a cleaned PDF at `public/toyin-ogunseinde-cv.pdf` (`RESUME_PATH` in `src/lib/about.ts`), with no phone number or street address, since the repository is public. The About page shows its download button only while that file exists, so adding or removing it needs no code change.
-- Call to action (spec 0004): `SITE.contact` in `src/lib/site.ts` is the one contact target, and every page shows it only through `CallToAction`, so repointing it (to the contact form, feature 11) stays a one line change.
+- Call to action (spec 0004): `SITE.contact` in `src/lib/site.ts` is the one contact target, and every page shows it only through `CallToAction`, now `/contact` (feature 11, spec 0006), so repointing it stays a one line change.
 - Page building blocks (spec 0004): a page opens with `PageIntro` (its one `<h1>`), shows projects only through `ProjectCard`, and passes its own `title` and `description` to `BaseLayout`, which builds the share tags from them.
-- Page words (spec 0004, spec 0005): each page keeps every word in one constant in its own `src/lib/<page>.ts` (`HOME`, `WORK`, `PROJECT_PAGE` in `project-page.ts`, `ABOUT`), held to its length limits by the test beside it.
+- Page words (spec 0004, spec 0005): each page keeps every word in one constant in its own `src/lib/<page>.ts` (`HOME`, `WORK`, `PROJECT_PAGE` in `project-page.ts`, `ABOUT`, `CONTACT`), held to its length limits by the test beside it.
 - Addresses never end in a slash (spec 0005): `trailingSlash: 'never'` in `astro.config.mjs` and `html_handling: drop-trailing-slash` in `wrangler.jsonc`, so internal `href`s are written as `/projects`, never `/projects/` (that one costs a redirect).
 - New tags: add the value to `STACK` or `SERVICES` in `src/lib/vocabulary.ts` before an entry uses it; an unknown tag fails the build.
 - Naming: PascalCase `.astro` components, kebab case routes and content files, camelCase functions and variables.
@@ -54,12 +56,12 @@ Stored in `docs/specs/`. Format: `docs/specs/NNNN-title/index.md`, with `rationa
 
 ## Tooling
 
-Chosen by `/audit`, installed by `/develop tooling` (not installed yet):
+Chosen by `/audit`, installed by `/develop tooling`:
 
 - Lint: ESLint flat config with `typescript-eslint`, `eslint-plugin-astro` and `eslint-plugin-jsx-a11y`.
 - Format: Prettier with `prettier-plugin-astro` and `prettier-plugin-tailwindcss`.
 - Before each commit: lint and format the staged files, plus `astro check`.
-- CI: GitHub Actions on push and pull request running lint, `astro check` and Vitest. Workers Builds separately gates every deploy of `main` on `astro check && astro build`.
+- CI: GitHub Actions on push and pull request running lint, the format check, `npm run check` (`astro check` plus `tsc -p worker`), `npx wrangler types worker/worker-configuration.d.ts --check`, Vitest, the build and the build tests. Workers Builds separately gates every deploy of `main` on `astro check && astro build`.
 
 ## Git
 
@@ -69,13 +71,14 @@ Chosen by `/audit`, installed by `/develop tooling` (not installed yet):
 
 ## Agent skills
 
-Adopted in spec 0001, waiting for import under Paperclip Skills, Sources: `cloudflare/skills` wrangler, `cloudflare/skills` workers-best-practices.
-Declined: `astrolicious/agent-skills` astro, `wshobson/agents` tailwind-design-system, `morinokami/astro-mcp`, a Tailwind utilities MCP server
+Imported under Paperclip Skills and attached to the Engineer (JSM-55): `cloudflare/skills` wrangler, `cloudflare/skills` workers-best-practices (spec 0001), `cloudflare/skills` cloudflare-email-service (spec 0006).
+Declined: `astrolicious/agent-skills` astro, `wshobson/agents` tailwind-design-system, `morinokami/astro-mcp`, a Tailwind utilities MCP server, `secondsky/claude-skills` cloudflare-workers-security, `secondsky/claude-skills` cloudflare-cron-triggers, `cloudflare/skills` turnstile-spin (Paperclip refuses skills that ship scripts; skipped on JSM-55, the Turnstile check is already built)
 MCP servers: Cloudflare documentation (connected), Astro documentation (recommended)
 
 ## Context files
 
 <!-- Nested AGENTS.md files are listed here as they are created -->
+- [worker/AGENTS.md](worker/AGENTS.md): the contact form Worker for `/api/*`, its bindings, secrets, tests and local proof (spec 0006)
 
 ## Development
 

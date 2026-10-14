@@ -34,14 +34,14 @@ export interface Site {
 /** The pattern every `SITE.nav` href matches: a plain path, no query, hash or trailing slash. */
 export const NAV_HREF_PATTERN = /^\/([a-z0-9-]+(\/[a-z0-9-]+)*)?$/;
 
-/** The owner's LinkedIn profile, written once for the footer and the call to action. */
-const LINKEDIN_URL = 'https://linkedin.com/in/toyin-ogunseinde';
+/** The owner's LinkedIn profile, written once for the footer and the contact page. */
+export const LINKEDIN_URL = 'https://linkedin.com/in/toyin-ogunseinde';
 
 /**
  * The site's name, header nav, footer links and call to action.
  * Each page feature adds its nav entry when its page ships, so the live site
- * never links to a missing page. `contact` moves to `/contact` when the
- * contact form ships (feature 11).
+ * never links to a missing page. `contact` opens the contact form
+ * (feature 11, spec 0006).
  */
 export const SITE: Site = {
 	name: 'Toyin Ogunseinde',
@@ -49,12 +49,13 @@ export const SITE: Site = {
 		{ label: 'Home', href: '/' },
 		{ label: 'Work', href: '/projects' },
 		{ label: 'About', href: '/about' },
+		{ label: 'Contact', href: '/contact' },
 	],
 	links: [
 		{ label: 'LinkedIn', href: LINKEDIN_URL, kind: 'profile' },
 		{ label: 'GitHub', href: 'https://github.com/toyinogun', kind: 'profile' },
 	],
-	contact: { label: 'Message me on LinkedIn', href: LINKEDIN_URL },
+	contact: { label: 'Send me a message', href: '/contact' },
 };
 
 /**

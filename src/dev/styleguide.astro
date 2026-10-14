@@ -7,6 +7,7 @@
 import { getCollection } from 'astro:content';
 import Button from '../components/Button.astro';
 import CallToAction from '../components/CallToAction.astro';
+import ContactForm from '../components/ContactForm.astro';
 import Container from '../components/Container.astro';
 import Grid from '../components/Grid.astro';
 import PageIntro from '../components/PageIntro.astro';
@@ -16,7 +17,9 @@ import Section from '../components/Section.astro';
 import Stack from '../components/Stack.astro';
 import WorkList from '../components/WorkList.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { CONTACT } from '../lib/contact';
 import { sortProjects, visibleProjects } from '../lib/projects';
+import { LINKEDIN_URL } from '../lib/site';
 import { Content as Sample } from './sample.md';
 
 const COLOURS = [
@@ -43,6 +46,29 @@ const SIZES = [
 const STACK_GAPS = ['sm', 'md', 'lg', 'xl'] as const;
 const GRID_COLS = [1, 2, 3] as const;
 const GRID_GAPS = ['md', 'lg'] as const;
+
+/** One filled status area per outcome the form can show (spec 0006, AC-8). */
+const STATUS_EXAMPLES: readonly {
+	readonly note: string;
+	readonly tone: 'sent' | 'problem';
+	readonly text: string;
+	readonly linkedin?: boolean;
+	readonly list?: readonly string[];
+}[] = [
+	{ note: 'sent (role="status")', tone: 'sent', text: CONTACT.sent },
+	{
+		note: 'fix fields (role="alert")',
+		tone: 'problem',
+		text: CONTACT.errorSummary,
+		list: [CONTACT.errors.nameRequired, CONTACT.errors.messageShort],
+	},
+	{ note: 'wait', tone: 'problem', text: CONTACT.errors.rateLimited },
+	{ note: 'check again', tone: 'problem', text: CONTACT.errors.verification },
+	{ note: 'bot check pending', tone: 'problem', text: CONTACT.errors.checkPending },
+	{ note: 'bot check failed', tone: 'problem', text: CONTACT.errors.checkFailed, linkedin: true },
+	{ note: 'not sent', tone: 'problem', text: CONTACT.errors.notSent, linkedin: true },
+	{ note: 'uncertain', tone: 'problem', text: CONTACT.errors.uncertain, linkedin: true },
+];
 
 // Real entries for the card examples: one with a link, one without, and the
 // longest stack with chips, to show the chip limit (spec 0005).
@@ -199,6 +225,62 @@ const listed = sortProjects(visibleProjects(projects, { includeDrafts: import.me
 				A <a href="/">link in text</a> is the accent with a thin underline; hover thickens it. Tab through
 				this page to see the focus ring on every control.
 			</p>
+		</Section>
+
+		<Section heading="Contact form" id="contact-form-guide" class="border-t border-line">
+			<Stack gap="lg">
+				<div class="max-w-measure">
+					<code class="mb-3 block text-sm text-muted">At rest (the live form, test site key)</code>
+					<ContactForm />
+				</div>
+				<div class="flex max-w-measure flex-col gap-1.5">
+					<code class="mb-3 block text-sm text-muted">A field showing its error</code>
+					<label for="guide-email" class="font-sans text-base font-semibold text-text"
+						>{CONTACT.emailLabel}</label
+					>
+					<input
+						id="guide-email"
+						type="email"
+						value="ada@example"
+						aria-invalid="true"
+						aria-describedby="guide-email-error"
+						class="block min-h-11 w-full rounded-sm border border-line bg-bg px-3 py-2.5 font-sans text-base text-text aria-invalid:border-2 aria-invalid:border-text"
+					/>
+					<p id="guide-email-error" class="font-sans text-sm font-semibold text-text">
+						<span class="sr-only">{CONTACT.errorPrefix} </span>{CONTACT.errors.emailInvalid}
+					</p>
+				</div>
+				{
+					STATUS_EXAMPLES.map(({ note, tone, text, linkedin, list }) => (
+						<div class="max-w-measure">
+							<code class="mb-3 block text-sm text-muted">{note}</code>
+							<div
+								data-tone={tone}
+								class="rounded-sm border-l-3 border-text bg-surface p-4 text-base text-text data-[tone=sent]:border-accent"
+							>
+								<p>
+									{text}
+									{linkedin && (
+										<>
+											{' '}
+											<a href={LINKEDIN_URL}>{CONTACT.linkedinLink}</a>
+										</>
+									)}
+								</p>
+								{list && (
+									<ul>
+										{list.map((item) => (
+											<li>
+												<a href="#contact-name">{item}</a>
+											</li>
+										))}
+									</ul>
+								)}
+							</div>
+						</div>
+					))
+				}
+			</Stack>
 		</Section>
 
 		<Section heading="Stack" id="stack" class="border-t border-line">

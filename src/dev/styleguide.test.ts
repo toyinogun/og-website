@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { experimental_AstroContainer as AstroContainer } from 'astro/container';
 import { beforeAll, describe, expect, it, vi } from 'vitest';
+import { CONTACT } from '../lib/contact';
 import StyleGuide from './styleguide.astro';
 
 // The container API cannot render the real collection's covers, so the two
@@ -149,7 +150,7 @@ describe('style guide', () => {
 
 	// covers: AC-18 (spec 0004)
 	it('shows the call to action', () => {
-		expect(html).toContain(`>${'Message me on LinkedIn'}</a>`);
+		expect(html).toContain(`>${'Send me a message'}</a>`);
 	});
 
 	// covers: AC-18 (spec 0004)
@@ -190,5 +191,26 @@ describe('style guide', () => {
 		expect(titles).toEqual(['Cluster example', 'ShipSafe example']);
 		expect(lists[1]).toContain('<p class="max-w-measure">Write ups are on their way.</p>');
 		expect(lists[1]).not.toContain('<ul');
+	});
+
+	// covers: AC-3, AC-23 (spec 0006)
+	it('shows ContactForm at rest, a field with its error, and every outcome message', () => {
+		const guide = between('contact-form-guide', 'stack');
+
+		expect(guide).toContain('<form id="contact-form"');
+		expect(guide).toMatch(/<input id="guide-email"[^>]*aria-invalid="true"/);
+		expect(guide).toContain(CONTACT.errors.emailInvalid);
+		for (const text of [
+			CONTACT.sent,
+			CONTACT.errorSummary,
+			CONTACT.errors.rateLimited,
+			CONTACT.errors.verification,
+			CONTACT.errors.checkPending,
+			CONTACT.errors.checkFailed,
+			CONTACT.errors.notSent,
+			CONTACT.errors.uncertain,
+		]) {
+			expect(guide).toContain(text.replaceAll("'", '&#39;'));
+		}
 	});
 });

@@ -8,8 +8,9 @@
 	},
 	"scripts": {
 		"dev": "astro dev",
-		"check": "astro check",
-		"build": "astro check && astro build",
+		"check": "astro check && tsc -p worker",
+		"build": "astro check && tsc -p worker && astro build",
+		"build:local": "PUBLIC_TURNSTILE_SITE_KEY=1x00000000000000000000AA astro build",
 		"preview": "astro build && astro preview",
 		"astro": "astro",
 		"deploy": "npm run build && wrangler deploy",

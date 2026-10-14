@@ -1,10 +1,12 @@
 {
-	// Purely static site: no `main` entry point and no Worker script, so there is
-	// nothing to observe and no bindings to declare (spec 0001).
+	// The static site plus one small Worker script for the contact form (spec
+	// 0006). The script runs only for /api/*; every page, image, font and
+	// unknown path is still a free static asset request (spec 0001).
 	// `compatibility_date` is the scaffold date and stays put, so a future
 	// platform change cannot alter the site without a deliberate update.
 	"$schema": "./node_modules/wrangler/config-schema.json",
 	"name": "og-website",
+	"main": "./worker/index.ts",
 	"compatibility_date": "2026-10-13",
 	"assets": {
 		"directory": "./dist",
@@ -13,5 +15,27 @@
 		// Serve /projects directly and redirect /projects/ to it, so the address
 		// matches astro.config.mjs `trailingSlash: 'never'` (spec 0005, AC-10).
 		"html_handling": "drop-trailing-slash",
+		// Only the form's endpoint runs the Worker (spec 0006, AC-20).
+		"run_worker_first": ["/api/*"],
 	},
+	// Unrestricted on purpose: naming the inbox here would publish it. It can
+	// only reach addresses verified in Email Routing (spec 0006, Security model).
+	"send_email": [{ "name": "EMAIL" }],
+	// 3 sends a minute per visitor (spec 0006, AC-9).
+	"ratelimits": [
+		{ "name": "CONTACT_LIMITER", "namespace_id": "1001", "simple": { "limit": 3, "period": 60 } },
+	],
+	// The 30 day copy of each message (spec 0006, AC-12). The namespace is
+	// titled CONTACT_OUTBOX on the account; the board supplied its id on JSM-53.
+	"kv_namespaces": [{ "binding": "CONTACT_OUTBOX", "id": "2b2b7d3849a047619d5ab51bb2e476ae" }],
+	// The weekly self check, Mondays 08:00 UTC (spec 0006, AC-21).
+	"triggers": { "crons": ["0 8 * * 1"] },
+	"vars": {
+		"TURNSTILE_EXPECTED_HOSTNAME": "toyintest.org",
+		"ALLOWED_ORIGINS": "https://toyintest.org",
+	},
+	// Set with `npx wrangler secret put <name>`, never written here. Listing
+	// them keeps `wrangler types` the same with or without a local .dev.vars.
+	"secrets": { "required": ["CONTACT_TO", "TURNSTILE_SECRET_KEY", "HEALTHCHECK_URL"] },
+	"observability": { "enabled": true },
 }
