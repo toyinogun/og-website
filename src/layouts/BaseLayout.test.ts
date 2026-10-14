@@ -1,5 +1,7 @@
 import { experimental_AstroContainer as AstroContainer } from 'astro/container';
 import { beforeEach, describe, expect, it } from 'vitest';
+import cover from '../content/projects/shipsafe/cover.png';
+import type { JsonLdGraph } from '../lib/seo';
 import BaseLayout from './BaseLayout.astro';
 
 const SITE = 'https://toyintest.org';
@@ -11,7 +13,16 @@ describe('BaseLayout', () => {
 		container = await AstroContainer.create({ astroConfig: { site: SITE } });
 	});
 
-	async function render(props: { title: string; description?: string }, path = '/') {
+	async function render(
+		props: {
+			title: string;
+			description?: string;
+			image?: { src: ImageMetadata; alt: string };
+			noindex?: boolean;
+			structuredData?: JsonLdGraph;
+		},
+		path = '/',
+	) {
 		return container.renderToString(BaseLayout, {
 			props,
 			request: new Request(new URL(path, 'http://localhost:4321')),
@@ -148,7 +159,12 @@ describe('BaseLayout', () => {
 			'<meta property="og:title" content="Home"',
 			'<meta property="og:description" content="Personal site."',
 			`<meta property="og:url" content="${SITE}/"`,
-			'<meta name="twitter:card" content="summary"',
+			'<meta property="og:image" content="https://toyintest.org/',
+			'<meta property="og:image:type" content="image/jpeg"',
+			'<meta property="og:image:width" content="1200"',
+			'<meta property="og:image:height" content="630"',
+			'<meta property="og:image:alt" content="Toyin Ogunseinde, DevOps',
+			'<meta name="twitter:card" content="summary_large_image"',
 		];
 		for (const tag of tags) {
 			expect(head.indexOf(tag), tag).toBeGreaterThan(canonical);
@@ -172,10 +188,53 @@ describe('BaseLayout', () => {
 		expect(html).toContain(`<meta property="og:url" content="${SITE}/writing/first-post/"`);
 	});
 
-	// covers: AC-13 (spec 0004)
-	it('writes no share image, structured data or sitemap link', async () => {
-		const html = await render({ title: 'Home', description: 'Personal site.' });
+	// covers: AC-3, AC-4 (spec 0007)
+	it('uses the site card when no image is given, and the given image when one is', async () => {
+		const plain = await render({ title: 'Home', description: 'Personal site.' });
+		const own = await render({
+			title: 'Home',
+			image: { src: cover, alt: 'A cover of its own' },
+		});
 
-		expect(html).not.toMatch(/og:image|twitter:image|application\/ld\+json|sitemap/);
+		expect(plain).toContain('og:image:alt" content="Toyin Ogunseinde, DevOps');
+		expect(own).toContain('<meta property="og:image:alt" content="A cover of its own"');
+		expect(own).not.toContain('og:image:alt" content="Toyin Ogunseinde');
+	});
+
+	// covers: AC-7 (spec 0007)
+	it('with noindex writes the robots meta and no canonical, og:url or image tags', async () => {
+		const html = await render({ title: 'Gone', description: 'Nothing here.', noindex: true });
+
+		expect(html).toContain('<meta name="robots" content="noindex"');
+		expect(html).not.toMatch(/rel="canonical"|og:url|og:image/);
+		expect(html).toContain('<meta name="twitter:card" content="summary"');
+	});
+
+	// covers: AC-7 (spec 0007)
+	it('writes no robots meta on an ordinary page', async () => {
+		const html = await render({ title: 'Home' });
+
+		expect(html).not.toContain('name="robots"');
+	});
+
+	// covers: AC-10 (spec 0007)
+	it('links the sitemap on every page', async () => {
+		const html = await render({ title: 'Home' });
+
+		expect(html).toContain('<link rel="sitemap" href="/sitemap-index.xml"');
+	});
+
+	// covers: AC-14 (spec 0007)
+	it('writes structured data as an escaped data block, only when given', async () => {
+		const none = await render({ title: 'Home' });
+		const html = await render({
+			title: 'Home',
+			structuredData: { '@context': 'https://schema.org', '@graph': [{ name: '</script>' }] },
+		});
+
+		expect(none).not.toContain('application/ld+json');
+		expect(html).toContain('<script type="application/ld+json">');
+		expect(html).toContain('\\u003c/script>');
+		expect(html.match(/<script[^>]*ld\+json/g)).toHaveLength(1);
 	});
 });

@@ -24,7 +24,7 @@ describe('about page head', () => {
 			`<meta property="og:description" content="${escapeHtml(ABOUT.description)}">`,
 		);
 		expect(head).toContain('<meta property="og:url" content="https://toyintest.org/about">');
-		expect(head).not.toMatch(/og:image|twitter:image/);
+		expect(head).toContain('<meta property="og:image" content="https://toyintest.org/_astro/');
 	});
 });
 

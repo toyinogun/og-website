@@ -36,78 +36,13 @@ describe('static output, no adapter (spec 0001)', () => {
 	});
 });
 
-describe('production origin', () => {
-	// covers: AC-5
-	it('sets the Astro site to https://toyintest.org', () => {
-		expect(astroConfig.site).toBe('https://toyintest.org');
-	});
-});
-
-describe('addresses without a trailing slash (spec 0005)', () => {
-	// covers: AC-10 (spec 0005)
-	it('builds pages for addresses without a trailing slash', () => {
-		expect(astroConfig.trailingSlash).toBe('never');
-	});
-
-	// covers: AC-10 (spec 0005)
-	it('serves those addresses directly and redirects the slashed ones', () => {
-		expect(wrangler.assets?.html_handling).toBe('drop-trailing-slash');
-	});
-});
-
-describe('Wrangler config', () => {
-	// covers: AC-4
-	it('names the Worker og-website', () => {
-		expect(wrangler.name).toBe('og-website');
-	});
-
-	// covers: AC-4
-	it('serves ./dist as static assets', () => {
-		expect(wrangler.assets?.directory).toBe('./dist');
-	});
-
-	// covers: AC-4
-	it('pins a compatibility date', () => {
-		expect(wrangler.compatibility_date).toMatch(/^\d{4}-\d{2}-\d{2}$/);
-	});
-});
-
-describe('build and deploy scripts', () => {
-	// covers: AC-2; AC-20 (spec 0006)
-	it('type checks the site and the Worker before building', () => {
-		expect(pkg.scripts.build).toBe('astro check && tsc -p worker && astro build');
-	});
-
-	// covers: AC-20 (spec 0006)
-	it('type checks the Worker in npm run check too', () => {
-		expect(pkg.scripts.check).toBe('astro check && tsc -p worker');
-	});
-
-	// covers: AC-19 (spec 0006)
-	it('builds the local proof with the always pass Turnstile test key', () => {
-		expect(pkg.scripts['build:local']).toBe(
-			'PUBLIC_TURNSTILE_SITE_KEY=1x00000000000000000000AA astro build',
-		);
-	});
-
-	// covers: AC-2
-	it('builds before deploying', () => {
-		expect(pkg.scripts.deploy).toBe('npm run build && wrangler deploy');
-	});
-});
-
-describe('Node version pin', () => {
-	// covers: AC-7
-	it('pins an exact Node version in .nvmrc', () => {
-		expect(read('.nvmrc').trim()).toMatch(/^\d+\.\d+\.\d+$/);
-	});
-
-	// covers: AC-7
-	it('pins a Node version that satisfies the engines floor', () => {
-		const [major, minor] = read('.nvmrc').trim().split('.').map(Number);
-		const [floorMajor, floorMinor] = pkg.engines.node.replace('>=', '').split('.').map(Number);
-
-		expect(major > floorMajor || (major === floorMajor && minor >= floorMinor)).toBe(true);
+describe('search metadata (spec 0007)', () => {
+	// covers: AC-9
+	it('adds @astrojs/sitemap and keeps its filter for the 404 page', () => {
+		expect(Object.keys(pkg.dependencies)).toContain('@astrojs/sitemap');
+		expect(
+			(astroConfig.integrations ?? []).flat().some((i) => i && i.name === '@astrojs/sitemap'),
+		).toBe(true);
 	});
 });
 

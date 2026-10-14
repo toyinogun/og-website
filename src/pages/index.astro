@@ -12,16 +12,22 @@ import SelectedWork from '../components/SelectedWork.astro';
 import Stack from '../components/Stack.astro';
 import bioSource from '../content/bio.md?raw';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import siteCard from '../assets/share/site-card.png';
+import { getImage } from 'astro:assets';
 import { HOME } from '../lib/home';
+import { absoluteUrl, personGraph, SHARE_IMAGE_OPTIONS } from '../lib/seo';
 import { featuredProjects, visibleProjects } from '../lib/projects';
 import { firstParagraph } from '../lib/text';
 
 const featured = featuredProjects(
 	visibleProjects(await getCollection('projects'), { includeDrafts: import.meta.env.DEV }),
 );
+const site = Astro.site ?? Astro.url;
+const cardImage = await getImage({ src: siteCard, ...SHARE_IMAGE_OPTIONS });
+const graph = personGraph({ site, imageUrl: absoluteUrl(cardImage.src, site) });
 ---
 
-<BaseLayout title={HOME.title} description={HOME.description}>
+<BaseLayout title={HOME.title} description={HOME.description} structuredData={graph}>
 	<Container>
 		<PageIntro size="display" eyebrow={HOME.availability} heading={HOME.heading} lead={HOME.lead}>
 			<CallToAction class="w-full sm:w-auto sm:self-start" />

@@ -171,6 +171,10 @@ Built by feature 4, plus the shared page pieces from the home page (feature 7, [
 | Character counter | `--text-sm` `muted`, under the textarea, shown from 4,500 characters, text from `CONTACT.charactersLeft`; not a live region |
 | Turnstile container | `<div id="contact-turnstile">` between the message and the button, no height unless Cloudflare asks the visitor to tick a box; `flexible` from 300px wide, else `compact` |
 
+### Share card
+
+Every page's share image (spec 0007) is its project cover or the one site card. The site card is `src/assets/share/site-card.png` (1600 by 840, drawn from `site-card.svg` beside it), in the covers' style: paper `#FBF8F2` background, a 1px `#E1DBD1` hairline frame inset `40px`, the eyebrow `TOYIN OGUNSEINDE` letterspaced in blue, the serif 700 heading `I build infrastructure that stays up.` on two lines, and the muted line `DevOps and infrastructure engineer`. It has no dark version. Astro's image step makes each share image a 1200 by 630 JPEG, centre cropped, with `SHARE_IMAGE_OPTIONS`.
+
 ### Project page
 
 The case study (feature 9), top to bottom. The whole page is one `Container` at `measure` width rendered as an `<article>`, so every part shares the reading column. The fixed words come from `PROJECT_PAGE` in `src/lib/project-page.ts`; the project's own words come from its write up.

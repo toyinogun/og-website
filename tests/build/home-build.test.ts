@@ -30,17 +30,19 @@ describe('home head (AC-12, AC-13)', () => {
 			`<meta property="og:title" content="${escapeHtml(HOME.title)}">`,
 			`<meta property="og:description" content="${escapeHtml(HOME.description)}">`,
 			'<meta property="og:url" content="https://toyintest.org/">',
-			'<meta name="twitter:card" content="summary">',
+			'<meta name="twitter:card" content="summary_large_image">',
 		];
 
 		expect(canonical).toBeGreaterThan(-1);
 		for (const tag of tags) expect(head.indexOf(tag), tag).toBeGreaterThan(canonical);
 	});
 
-	// covers: AC-13
-	it('writes no share image, structured data or sitemap', () => {
-		expect(head).not.toMatch(/og:image|twitter:image|application\/ld\+json|sitemap/);
-		expect(existsSync(new URL('sitemap-index.xml', dist))).toBe(false);
+	// covers: AC-4, AC-10, AC-13 (spec 0007)
+	it('writes the share image, the sitemap link and one structured data block', () => {
+		expect(head).toMatch(/<meta property="og:image" content="https:\/\/toyintest\.org\/_astro\//);
+		expect(head).toContain('<link rel="sitemap" href="/sitemap-index.xml">');
+		expect(head.match(/application\/ld\+json/g)).toHaveLength(1);
+		expect(existsSync(new URL('sitemap-index.xml', dist))).toBe(true);
 	});
 
 	// covers: AC-13
@@ -49,6 +51,7 @@ describe('home head (AC-12, AC-13)', () => {
 
 		expect(notFound).toContain('<meta property="og:title" content="Page not found">');
 		expect(notFound).toContain('<meta name="twitter:card" content="summary">');
+		expect(notFound).toContain('<meta name="robots" content="noindex">');
 	});
 });
 
@@ -81,8 +84,10 @@ describe('home cards (AC-4, AC-6)', () => {
 			expect(img).toContain(
 				'sizes="(min-width: 64rem) 22rem, (min-width: 48rem) calc(50vw - 3rem), calc(100vw - 2.5rem)"',
 			);
-			expect(img).toContain('loading="lazy"');
 		}
+		// covers: AC-15 (spec 0007): only the first cover loads eagerly
+		expect(images[0]).toContain('fetchpriority="high"');
+		for (const img of images.slice(1)) expect(img).toContain('loading="lazy"');
 	});
 
 	// covers: AC-17
@@ -110,10 +115,12 @@ describe('home cards (AC-4, AC-6)', () => {
 	});
 });
 
-describe('home scripts (AC-17)', () => {
-	// covers: AC-17
-	it('holds only the two spec 0003 scripts: the theme script and the toggle', () => {
-		const scripts = home.match(/<script[^>]*>/g) ?? [];
+describe('home scripts (AC-17, restated by AC-14 of spec 0007)', () => {
+	// covers: AC-17, AC-14 (spec 0007)
+	it('holds only the two spec 0003 executable scripts, plus the one data block', () => {
+		const scripts = (home.match(/<script[^>]*>/g) ?? []).filter(
+			(tag) => !tag.includes('application/ld+json'),
+		);
 
 		expect(scripts).toEqual(['<script>', '<script type="module">']);
 		expect(home).toMatch(/<script>\(function\(\)\{try\{var t=localStorage/);

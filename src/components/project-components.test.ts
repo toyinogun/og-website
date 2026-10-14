@@ -228,6 +228,21 @@ describe('ProjectCard', () => {
 	});
 });
 
+describe('ProjectCard priority', () => {
+	// covers: AC-15 (spec 0007)
+	it('loads the cover lazily by default and eagerly with priority', async () => {
+		const lazy = await container.renderToString(ProjectCard, { props: { project: project('a') } });
+		const eager = await container.renderToString(ProjectCard, {
+			props: { project: project('a'), priority: true },
+		});
+
+		expect(lazy).toContain('loading="lazy"');
+		expect(lazy).not.toContain('fetchpriority');
+		expect(eager).toContain('loading="eager"');
+		expect(eager).toContain('fetchpriority="high"');
+	});
+});
+
 describe('SelectedWork', () => {
 	const render = (props: Record<string, unknown>) =>
 		container.renderToString(SelectedWork, { props });
@@ -247,6 +262,18 @@ describe('SelectedWork', () => {
 			(m) => m[1],
 		);
 		expect(titles).toEqual(['Title of first', 'Title of with-links', 'Title of third']);
+	});
+
+	// covers: AC-15 (spec 0007)
+	it('gives priority to the first card only', async () => {
+		const html = await render({
+			projects: [project('a'), project('b'), project('c')],
+			heading: 'X',
+		});
+
+		expect(html.match(/fetchpriority="high"/g)).toHaveLength(1);
+		expect(html.indexOf('fetchpriority="high"')).toBeLessThan(html.indexOf('Title of b'));
+		expect(html.match(/loading="lazy"/g)).toHaveLength(2);
 	});
 
 	// covers: AC-5
@@ -278,6 +305,18 @@ describe('WorkList', () => {
 		expect(html).not.toMatch(/<h3[\s>]/);
 		expect(html.match(/<ul aria-label="Stack"/g)).toHaveLength(3);
 		expect(html).not.toContain('Nothing yet.');
+	});
+
+	// covers: AC-15 (spec 0007)
+	it('gives priority to the first card only', async () => {
+		const html = await render({
+			projects: [project('a'), project('b'), project('c')],
+			emptyText: 'Nothing yet.',
+		});
+
+		expect(html.match(/fetchpriority="high"/g)).toHaveLength(1);
+		expect(html.indexOf('fetchpriority="high"')).toBeLessThan(html.indexOf('Title of b'));
+		expect(html.match(/loading="lazy"/g)).toHaveLength(2);
 	});
 
 	// covers: AC-3 (spec 0005)

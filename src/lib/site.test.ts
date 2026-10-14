@@ -6,6 +6,12 @@ describe('SITE', () => {
 		expect(SITE.name).toBe('Toyin Ogunseinde');
 	});
 
+	// covers: AC-13 (spec 0007)
+	it('names the job title and the country for the Person data', () => {
+		expect(SITE.jobTitle).toBe('DevOps and infrastructure engineer');
+		expect(SITE.country).toBe('NL');
+	});
+
 	// covers: AC-11
 	it('uses only plain path hrefs in the nav', () => {
 		for (const item of SITE.nav) {

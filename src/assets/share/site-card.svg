@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="840" viewBox="0 0 1600 840">
+  <rect width="1600" height="840" fill="#FBF8F2"/>
+  <rect x="40.5" y="40.5" width="1519" height="759" fill="none" stroke="#E1DBD1" stroke-width="2"/>
+  <text x="120" y="190" font-family="DejaVu Sans, Inter, sans-serif" font-size="32" letter-spacing="4" fill="#2F55A4">TOYIN OGUNSEINDE</text>
+  <text font-family="DejaVu Serif, Source Serif 4, Georgia, serif" font-size="96" font-weight="700" fill="#2A241E">
+    <tspan x="120" y="340">I build infrastructure</tspan>
+    <tspan x="120" y="450">that stays up.</tspan>
+  </text>
+  <text x="120" y="620" font-family="DejaVu Sans, Inter, sans-serif" font-size="36" fill="#6B645C">DevOps and infrastructure engineer</text>
+</svg>

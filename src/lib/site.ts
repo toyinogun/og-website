@@ -26,6 +26,10 @@ export interface ContactAction {
 /** The shape of `SITE`. */
 export interface Site {
 	readonly name: string;
+	/** What the Person structured data calls the owner's work (spec 0007). */
+	readonly jobTitle: string;
+	/** ISO 3166 two letter country code, for the Person address (spec 0007). */
+	readonly country: string;
 	readonly nav: readonly NavItem[];
 	readonly links: readonly OutLink[];
 	readonly contact: ContactAction;
@@ -45,6 +49,8 @@ export const LINKEDIN_URL = 'https://linkedin.com/in/toyin-ogunseinde';
  */
 export const SITE: Site = {
 	name: 'Toyin Ogunseinde',
+	jobTitle: 'DevOps and infrastructure engineer',
+	country: 'NL',
 	nav: [
 		{ label: 'Home', href: '/' },
 		{ label: 'Work', href: '/projects' },

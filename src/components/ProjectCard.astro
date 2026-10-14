@@ -15,13 +15,15 @@ interface Props {
 	headingLevel?: 2 | 3;
 	/** Show the first stack technologies as tag chips. Defaults to false (the home cards). */
 	showStack?: boolean;
+	/** Load the cover straight away (the first card on a page), not lazily. Defaults to false. */
+	priority?: boolean;
 }
 
 /** Cover widths across the grid: one column on phones, two from md, three from lg. */
 const COVER_SIZES =
 	'(min-width: 64rem) 22rem, (min-width: 48rem) calc(50vw - 3rem), calc(100vw - 2.5rem)';
 
-const { project, headingLevel = 3, showStack = false } = Astro.props;
+const { project, headingLevel = 3, showStack = false, priority = false } = Astro.props;
 const { title, cover, coverAlt, kind, outcome, links, stack } = project.data;
 const Heading = headingLevel === 2 ? 'h2' : 'h3';
 const link = links[0];
@@ -34,6 +36,7 @@ const link = links[0];
 			alt={coverAlt}
 			widths={[400, 800, 1200]}
 			sizes={COVER_SIZES}
+			priority={priority}
 			class="h-auto w-full rounded-md"
 		/>
 		<p class="text-sm text-muted">{kindLabel(kind)}</p>

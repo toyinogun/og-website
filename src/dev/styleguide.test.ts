@@ -108,6 +108,12 @@ describe('style guide', () => {
 		expect(html).toMatch(/<a href="\/"[^>]*border-line[^>]*>Secondary link/);
 	});
 
+	// covers: AC-2 (spec 0007)
+	it('shows the site card image', () => {
+		expect(html).toContain('id="share-card"');
+		expect(html).toMatch(/<img [^>]*alt="Toyin Ogunseinde, DevOps and infrastructure engineer/);
+	});
+
 	// covers: AC-18
 	it('shows every Stack gap and every Grid column count and gap', () => {
 		for (const gap of ['gap-3', 'gap-6', 'gap-12', 'gap-20']) expect(html).toContain(gap);
