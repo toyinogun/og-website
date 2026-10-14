@@ -185,6 +185,18 @@ describe('style guide', () => {
 		expect(chips.match(/<li[\s>]/g)).toHaveLength(5);
 	});
 
+	// covers: AC-15 (spec 0008)
+	it('shows OfferList with one offer that has proof and one that has none', () => {
+		const list = between('offer-list', 'share-card');
+		const items =
+			list.match(/<h3 class="text-xl">[\s\S]*?(?=<h3 class="text-xl">|<\/section>)/g) ?? [];
+
+		expect(items).toHaveLength(2);
+		expect(items[0]).toContain('Seen in');
+		expect(items[0]).toContain('Cluster example');
+		expect(items[1]).not.toContain('Seen in');
+	});
+
 	// covers: AC-8 (spec 0005)
 	it('shows WorkList filled, in order, and empty', () => {
 		const lists =

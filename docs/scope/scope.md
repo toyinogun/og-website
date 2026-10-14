@@ -27,7 +27,7 @@ _These are recommendations to keep your build orderly, not requirements. Skip an
 | 10 | About page | Release 1 | done |
 | 11 | Contact form | Release 1 | done |
 | 12 | Search metadata & share cards | Release 1 | done |
-| 13 | Services & how you work | Release 2 | planned |
+| 13 | Services & how you work | Release 2 | in-progress |
 | 14 | Testimonials | Release 2 | planned |
 | 15 | Blog | Release 3 | planned |
 | 16 | Newsletter signup | Release 3 | planned |
@@ -186,10 +186,17 @@ spec [0007](../specs/0007-search-metadata-share-cards/index.md) · code in `src/
 
 The site is already live and usable at this point. These two make it more persuasive, especially for the contracting half of your audience.
 
-### 13. Services & how you work · needs a decision
+### 13. Services & how you work
 What you offer and how an engagement actually runs. This needs a real decision from you about rates and engagement models before it can be built, which is why it is flagged.
 **Done when:** a prospective client can tell what you offer, roughly what it costs or how pricing works, and what working with you looks like.
-- [ ] Design it (spec): `/architect services & how you work`
+- [x] Design it (spec): `/architect services & how you work`
+- [x] Build it: `/develop services & how you work`
+  - [x] The page, live and linked: the `SERVICES_PAGE` words with the five offers, steps and pricing, `OfferList`, the `/services` page with its intro and closing call to action, the `Services` nav link and the updated nav checks (AC-1 to AC-3, AC-5 to AC-12)
+  - [x] The proof: `offerProof` and the "Seen in" links to project pages, drafts kept out of production (AC-4, AC-5, AC-14)
+  - [x] The design record and the checks: `design.md` rows and the style guide, the build test, browser tests (AC-4, AC-7, AC-10 to AC-15)
+- [x] Verify it: `/check verify services & how you work`
+
+spec [0008](../specs/0008-services-how-you-work/index.md) · decided: a `/services` page with a `Services` nav link, five offers grouped over the `SERVICES` vocabulary (every key in exactly one offer), a "Seen in" line of up to three project name links derived from each write up's `services`, five engagement steps, pricing as a day rate or a fixed price with no figures, remote for Netherlands and EU clients, `CallToAction` unchanged
 
 ### 14. Testimonials
 Other people vouching for you, which persuades in a way your own words cannot. Worth knowing the build is the easy half here: collecting the quotes is on you and depends on other people replying.

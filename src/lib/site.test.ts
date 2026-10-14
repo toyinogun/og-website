@@ -20,10 +20,11 @@ describe('SITE', () => {
 	});
 
 	// covers: AC-9 (spec 0005); feature 10; AC-4 (spec 0006)
-	it('has Home, then Work at /projects, then About, then Contact, in the nav', () => {
+	it('has Home, then Work at /projects, then Services at /services, then About, then Contact, in the nav', () => {
 		expect(SITE.nav).toEqual([
 			{ label: 'Home', href: '/' },
 			{ label: 'Work', href: '/projects' },
+			{ label: 'Services', href: '/services' },
 			{ label: 'About', href: '/about' },
 			{ label: 'Contact', href: '/contact' },
 		]);

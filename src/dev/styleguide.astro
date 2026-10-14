@@ -17,11 +17,13 @@ import ProjectCard from '../components/ProjectCard.astro';
 import Prose from '../components/Prose.astro';
 import Section from '../components/Section.astro';
 import Stack from '../components/Stack.astro';
+import OfferList from '../components/OfferList.astro';
 import WorkList from '../components/WorkList.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { CONTACT } from '../lib/contact';
 import { sortProjects, visibleProjects } from '../lib/projects';
 import { SHARE } from '../lib/seo';
+import { SERVICES_PAGE } from '../lib/services';
 import { LINKEDIN_URL } from '../lib/site';
 import { Content as Sample } from './sample.md';
 
@@ -96,6 +98,10 @@ const CARD_EXAMPLES = [
 	{ project: longestStack, headingLevel: 2, showStack: true, note: 'showStack, chips capped at 5' },
 ] as const;
 const listed = sortProjects(visibleProjects(projects, { includeDrafts: import.meta.env.DEV }));
+const [offerWithProof, offerWithoutProof] = [
+	{ ...SERVICES_PAGE.offers[0], proof: listed },
+	{ ...SERVICES_PAGE.offers[2], proof: [] },
+] as const;
 ---
 
 <BaseLayout title="Style guide" description="Every token and component, on the dev server only.">
@@ -220,6 +226,17 @@ const listed = sortProjects(visibleProjects(projects, { includeDrafts: import.me
 				<WorkList projects={listed} emptyText="Write ups are on their way." />
 				<code class="text-sm text-muted">{'projects={[]}'}</code>
 				<WorkList projects={[]} emptyText="Write ups are on their way." />
+			</Stack>
+		</Section>
+
+		<Section heading="Offer list" id="offer-list" class="border-t border-line">
+			<Stack>
+				<code class="text-sm text-muted">{'an offer with proof, then one without'}</code>
+				<OfferList
+					heading={SERVICES_PAGE.offersHeading}
+					proofLabel={SERVICES_PAGE.proofLabel}
+					offers={[offerWithProof, offerWithoutProof]}
+				/>
 			</Stack>
 		</Section>
 

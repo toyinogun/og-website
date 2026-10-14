@@ -1,0 +1,76 @@
+---
+// The Services page (feature 13, spec 0008): the intro with the call to
+// action, the offers with their "Seen in" project links, how a project runs,
+// how pricing works, then the closing call to action. The words live in
+// `SERVICES_PAGE` (src/lib/services.ts); the proof is drawn from the visible
+// write ups through `offerProof`, so drafts stay out of production.
+import { getCollection } from 'astro:content';
+import CallToAction from '../components/CallToAction.astro';
+import Container from '../components/Container.astro';
+import OfferList from '../components/OfferList.astro';
+import PageIntro from '../components/PageIntro.astro';
+import Section from '../components/Section.astro';
+import Stack from '../components/Stack.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { sortProjects, visibleProjects } from '../lib/projects';
+import { offerProof, SERVICES_PAGE } from '../lib/services';
+
+const projects = sortProjects(
+	visibleProjects(await getCollection('projects'), { includeDrafts: import.meta.env.DEV }),
+);
+const offers = SERVICES_PAGE.offers.map((offer) => ({
+	...offer,
+	proof: offerProof(offer, projects),
+}));
+---
+
+<BaseLayout title={SERVICES_PAGE.title} description={SERVICES_PAGE.description}>
+	<Container width="measure">
+		<PageIntro
+			size="page"
+			eyebrow={SERVICES_PAGE.availability}
+			heading={SERVICES_PAGE.heading}
+			lead={SERVICES_PAGE.lead}
+		>
+			<CallToAction class="w-full sm:w-auto sm:self-start" />
+		</PageIntro>
+		<OfferList
+			heading={SERVICES_PAGE.offersHeading}
+			proofLabel={SERVICES_PAGE.proofLabel}
+			offers={offers}
+		/>
+		<Section id="how" heading={SERVICES_PAGE.stepsHeading}>
+			<ol class="flex list-decimal flex-col gap-6 pl-6 marker:text-muted">
+				{
+					SERVICES_PAGE.steps.map((step) => (
+						<li>
+							<h3 class="font-sans text-lg font-semibold">{step.title}</h3>
+							<p class="max-w-measure">{step.text}</p>
+						</li>
+					))
+				}
+			</ol>
+		</Section>
+		<Section id="pricing" heading={SERVICES_PAGE.pricingHeading}>
+			<Stack>
+				<ul class="flex flex-col gap-6">
+					{
+						SERVICES_PAGE.pricing.map((model) => (
+							<li>
+								<h3 class="font-sans text-lg font-semibold">{model.title}</h3>
+								<p class="max-w-measure">{model.text}</p>
+							</li>
+						))
+					}
+				</ul>
+				<p class="max-w-measure text-muted">{SERVICES_PAGE.pricingNote}</p>
+			</Stack>
+		</Section>
+		<Section id="contact" heading={SERVICES_PAGE.closingHeading}>
+			<Stack>
+				<p class="max-w-measure">{SERVICES_PAGE.closingText}</p>
+				<CallToAction class="w-full sm:w-auto sm:self-start" />
+			</Stack>
+		</Section>
+	</Container>
+</BaseLayout>

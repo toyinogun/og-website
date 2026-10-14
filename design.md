@@ -142,6 +142,8 @@ Built by feature 4, plus the shared page pieces from the home page (feature 7, [
 | Project page | `src/pages/projects/[slug].astro` | one case study per visible project, in the reading column: intro with the write up's links, cover, the at a glance panel, the write up through `Prose`, the closing call to action (feature 9). The one place a project shows outside `ProjectCard` |
 | Tag chip | inside `ProjectCard` | one stack technology as a small outlined label; only when the card gets `showStack` (the work listing), at most 5 per card (spec 0005) |
 | Work list | `src/components/WorkList.astro` | the work listing's cards in a 3 column grid, or one line when no project is published; takes `projects` and `emptyText` (spec 0005) |
+| Services page | `src/pages/services.astro` | the offers, how a project runs and how pricing works: intro with the availability eyebrow and `CallToAction`, `OfferList`, a numbered steps section, a pricing section, the closing call to action (feature 13, [spec 0008](docs/specs/0008-services-how-you-work/index.md)) |
+| Offer list | `src/components/OfferList.astro` | the Services page's offers, each with name, summary and a derived "Seen in" line of name links to project pages; takes `heading`, `proofLabel` and `offers` with their `proof` (spec 0008) |
 | Contact form | `src/components/ContactForm.astro` | the status area, then the form: name, email, the topic radios, the message with its hint and counter, the Turnstile container and the submit Button. Its script checks with `validateContact`, sends to `/api/contact` and shows one outcome in the status area (spec 0006) |
 | Contact page | `src/pages/contact.astro` | the intro, then a `Section` without a heading: the noscript line, `ContactForm`, the privacy note and the LinkedIn line. No `CallToAction`: the form is the page's one action (spec 0006) |
 
@@ -189,6 +191,21 @@ The case study (feature 9), top to bottom. The whole page is one `Container` at 
 | Closing | a `Section` with its own heading, a Stack gap `md`: one `max-w-measure` paragraph, then `CallToAction`, full width below `sm` and left aligned from `sm` (`w-full sm:w-auto sm:self-start`) |
 
 The accent stays within its three places: the intro links and the write up's links (links), the focus ring, and the one primary button at the end.
+
+### Services page
+
+The offers, steps and pricing (feature 13, [spec 0008](docs/specs/0008-services-how-you-work/index.md)), top to bottom, in one `Container` at `measure` width. Every word comes from `SERVICES_PAGE` in `src/lib/services.ts`.
+
+| Part | Values |
+|---|---|
+| Intro | `PageIntro` at `page` size with the availability eyebrow, the heading, the lead and `CallToAction` (`w-full sm:w-auto sm:self-start`) |
+| Offer list | an unbulleted `<ul>` with Stack gap `lg` (3rem) between offers. Offer name `<h3>` at `--text-xl` Source Serif 4 (the base `h3`); summary `--text-base` `text` in a `max-w-measure` paragraph |
+| Seen in line | below the summary: the label a `<p>` at `--text-sm` Inter `muted`; the links a `<ul aria-label="Seen in: <offer>">` with `flex flex-wrap gap-x-4 gap-y-1`, each link `inline-flex min-h-6 items-center text-sm` in the in text link style, no chip border; titles wrap rather than truncate. Not shown for an offer with no proof |
+| Steps | an `<ol class="list-decimal pl-6">` with markers in `muted`, step `<h3>` at `--text-lg` Inter 600, text `--text-base`, `1.5rem` between steps |
+| Pricing | an unbulleted `<ul>`, model `<h3>` at `--text-lg` Inter 600, text `--text-base`, then the note in `muted`. No figures anywhere |
+| Closing | as the other pages: a `Section` with its own heading, a `max-w-measure` paragraph, then `CallToAction` |
+
+The accent stays within its places: the "Seen in" links, the focus ring and the two primary buttons (intro and closing), which are the same one contact action.
 
 ### Contact page
 
