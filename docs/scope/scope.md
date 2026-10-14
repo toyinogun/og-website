@@ -24,7 +24,7 @@ _These are recommendations to keep your build orderly, not requirements. Skip an
 | 7 | Home page | Release 1 | done |
 | 8 | Work listing | Release 1 | done |
 | 9 | Project detail page | Release 1 | done |
-| 10 | About page | Release 1 | in-progress |
+| 10 | About page | Release 1 | done |
 | 11 | Contact form | Release 1 | planned |
 | 12 | Search metadata & share cards | Release 1 | planned |
 | 13 | Services & how you work | Release 2 | planned |
@@ -138,7 +138,7 @@ From spec 0005: add `src/pages/projects/[slug].astro`, link the card title witho
 
 no spec of its own: built on spec [0002](../specs/0002-content-model/index.md) (Value sourcing), with figures in the write up optimised by Astro's own Markdown image pipeline (a relative `![alt](./x.png)`, wrapped in `<figure>` with a `<figcaption>` for a caption) · code in `src/pages/projects/[slug].astro`, `src/lib/project-page.ts`, `src/components/ProjectCard.astro`, `tests/build/project-build.test.ts`, `e2e/project.spec.ts`
 
-### 10. About page
+### 10. About page · done
 The longer version of who you are, plus the resume download. The resume is cheap to add here and uses content you already have, so it does not need its own feature.
 **Done when:** the page tells your story in your voice, the resume downloads correctly, your links out are present, it works on a phone, and it carries its own title, description and share card.
 From spec 0004: add a "More about me" link to the home About section, and the `About` nav link.
