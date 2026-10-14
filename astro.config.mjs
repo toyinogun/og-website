@@ -3,6 +3,8 @@ import { defineConfig, fontProviders } from 'astro/config';
 
 import tailwindcss from '@tailwindcss/vite';
 
+import sitemap from '@astrojs/sitemap';
+
 // https://astro.build/config
 // Fully pre rendered static output, deliberately with no Cloudflare adapter:
 // an adapter would turn free static asset requests into metered Worker
@@ -84,6 +86,8 @@ export default defineConfig({
 				},
 			},
 		},
+		// sitemap-index.xml and sitemap-0.xml for every built page but the 404 (spec 0007).
+		sitemap({ filter: (page) => !page.endsWith('/404') }),
 	],
 
 	vite: {
