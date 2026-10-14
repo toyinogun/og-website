@@ -36,8 +36,14 @@ const setup = (
 		readonly putFails?: readonly boolean[];
 		readonly sendFails?: boolean;
 		readonly limit?: () => Promise<{ success: boolean }>;
+		/** How long the email send takes on the fake clock. */
+		readonly sendMs?: number;
 	} = {},
 ) => {
+	// A fake clock: `sleep` and a slow send move it forward, nothing waits for real.
+	let clock = NOW.getTime();
+	const sleeps: number[] = [];
+	const lastWrite = new Map<string, number>();
 	const puts: Put[] = [];
 	const sends: OutgoingEmail[] = [];
 	const logs: { line: Readonly<Record<string, unknown>>; level: string }[] = [];
@@ -47,6 +53,7 @@ const setup = (
 		EMAIL: {
 			send: async (message) => {
 				sends.push(message);
+				clock += options.sendMs ?? 0;
 				if (options.sendFails) throw new Error('send failed for zee@example.com');
 				return { messageId: 'm-1' };
 			},
@@ -61,6 +68,11 @@ const setup = (
 			put: async (key, value, putOptions) => {
 				puts.push({ key, value, options: putOptions });
 				if (putFails.shift()) throw new Error('kv down');
+				// Cloudflare KV: one write a second to the same key.
+				const previous = lastWrite.get(key);
+				if (previous !== undefined && clock - previous < 1000)
+					throw new Error('KV PUT failed: 429 Too Many Requests');
+				lastWrite.set(key, clock);
 			},
 			list: async () => ({ keys: [], list_complete: true }),
 		},
@@ -75,12 +87,16 @@ const setup = (
 	const alarm = vi.fn();
 	const deps: ContactDeps = {
 		verifyTurnstile,
-		now: () => NOW,
+		now: () => new Date(clock),
 		uuid: () => 'uuid-1',
 		log: (line, level) => logs.push({ line, level }),
 		alarm,
+		sleep: async (ms) => {
+			sleeps.push(ms);
+			clock += ms;
+		},
 	};
-	return { env, deps, puts, sends, logs, limits, verifyTurnstile, alarm };
+	return { env, deps, puts, sends, logs, limits, verifyTurnstile, alarm, sleeps };
 };
 
 const post = (
@@ -330,6 +346,41 @@ describe('handleContact, delivery outcomes', () => {
 			outcome: 'sent',
 			reason: 'outbox_failed',
 		});
+	});
+
+	// covers: AC-12 (review M1)
+	it.each([
+		['succeeds', false, 'sent'],
+		['is rejected', true, 'failed'],
+	] as const)(
+		'waits out the KV one write a second limit when the email quickly %s',
+		async (_label, sendFails, status) => {
+			const fakes = setup({ sendFails, sendMs: 200 });
+			await send(post(), fakes);
+
+			expect(fakes.sleeps).toEqual([900]);
+			expect(fakes.puts).toHaveLength(2);
+			expect(JSON.parse(fakes.puts[1].value).emailStatus).toBe(status);
+			expect(fakes.logs.map((entry) => entry.line.event)).toEqual(['contact']);
+		},
+	);
+
+	// covers: AC-12 (review M1)
+	it('does not wait when the email took longer than the gap', async () => {
+		const fakes = setup({ sendMs: 1500 });
+		await send(post(), fakes);
+
+		expect(fakes.sleeps).toEqual([]);
+		expect(JSON.parse(fakes.puts[1].value).emailStatus).toBe('sent');
+	});
+
+	// covers: AC-12
+	it('does not wait or rewrite when the copy was never saved', async () => {
+		const fakes = setup({ putFails: [true] });
+		await send(post(), fakes);
+
+		expect(fakes.sleeps).toEqual([]);
+		expect(fakes.puts).toHaveLength(1);
 	});
 
 	// covers: AC-13
@@ -663,6 +714,28 @@ describe('handleContact, spam and abuse (AC-9, AC-10)', () => {
 			statuses.push((await handleContact(post(), env, fakes.deps)).status);
 
 		expect(statuses).toEqual([200, 200, 200, 429]);
+	});
+
+	// covers: AC-9 (review m1)
+	it('fails closed with 503 when the limiter throws before returning a promise', async () => {
+		const fakes = setup();
+		const env: ContactEnv = {
+			...fakes.env,
+			CONTACT_LIMITER: {
+				limit: () => {
+					throw new Error('limiter not bound');
+				},
+			},
+		};
+		const response = await handleContact(post(), env, fakes.deps);
+
+		expect(response.status).toBe(503);
+		expect(fakes.logs[0].line).toEqual({
+			event: 'contact',
+			outcome: 'unavailable',
+			reason: 'limiter_error',
+		});
+		expect(fakes.alarm).toHaveBeenCalledOnce();
 	});
 
 	// covers: AC-9, AC-21

@@ -82,7 +82,15 @@ export interface ContactDeps {
 	readonly log: (line: Readonly<Record<string, unknown>>, level: LogLevel) => void;
 	/** Sends the Healthchecks failure signal, with no personal data. */
 	readonly alarm: () => void;
+	/** Waits this many milliseconds; spaces the two writes to one KV key. */
+	readonly sleep: (ms: number) => Promise<void>;
 }
+
+/**
+ * The gap kept between the two writes to one outbox key. Cloudflare KV
+ * allows one write a second to the same key; the margin covers clock skew.
+ */
+export const SAME_KEY_GAP_MS = 1100;
 
 /** One row of the *Exit table*. */
 interface Exit {
@@ -252,6 +260,7 @@ const deliver = async (
 		});
 
 	const saved = await attempt(save(record));
+	const savedAt = deps.now().getTime();
 	const sent = await attempt(() =>
 		env.EMAIL.send({
 			from: FORM_SENDER,
@@ -262,6 +271,8 @@ const deliver = async (
 		}),
 	);
 	if (saved) {
+		const wait = SAME_KEY_GAP_MS - (deps.now().getTime() - savedAt);
+		if (wait > 0) await deps.sleep(wait);
 		const updated = await attempt(save({ ...record, emailStatus: sent ? 'sent' : 'failed' }));
 		if (!updated) deps.log({ event: 'contact_outbox_update', ok: false }, 'error');
 	}
@@ -309,10 +320,14 @@ const run = async (
 
 	// 7: the rate limit, failing closed.
 	const ip = request.headers.get('CF-Connecting-IP');
-	const limited = await CONTACT_LIMITER.limit({ key: `contact:${ip ?? 'unknown'}` }).then(
-		(outcome) => !outcome.success,
-		() => null,
-	);
+	// A limiter that throws before returning a promise also fails closed.
+	const limited = await (async () => {
+		try {
+			return !(await CONTACT_LIMITER.limit({ key: `contact:${ip ?? 'unknown'}` })).success;
+		} catch {
+			return null;
+		}
+	})();
 	if (limited === null) return end('limiter_error');
 	if (limited) return end('rate_limited');
 

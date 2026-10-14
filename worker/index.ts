@@ -28,6 +28,7 @@ const contactDeps = (env: ContactEnv, ctx: ExecutionContext): ContactDeps => ({
 	uuid: () => crypto.randomUUID(),
 	log: writeLog,
 	alarm: alarm(env, ctx),
+	sleep: (ms) => new Promise((resolve) => setTimeout(resolve, ms)),
 });
 
 export default {
