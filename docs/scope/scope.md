@@ -23,7 +23,7 @@ _These are recommendations to keep your build orderly, not requirements. Skip an
 | 6 | Bio & project write ups | Release 1 | done |
 | 7 | Home page | Release 1 | done |
 | 8 | Work listing | Release 1 | done |
-| 9 | Project detail page | Release 1 | in-progress |
+| 9 | Project detail page | Release 1 | done |
 | 10 | About page | Release 1 | planned |
 | 11 | Contact form | Release 1 | planned |
 | 12 | Search metadata & share cards | Release 1 | planned |
@@ -124,7 +124,7 @@ From spec 0004: the project card is already built (`ProjectCard`), so this page 
 
 spec [0005](../specs/0005-work-listing/index.md) · decided: `/projects` lists every published project in `order`, three cards per row, the first 5 stack technologies as quiet outlined chips on this page only, one closing call to action, a one line empty state, the `Work` nav link, and addresses without a trailing slash · code in `src/pages/projects/index.astro`, `src/components/` (`WorkList`, `ProjectCard` `showStack`), `src/lib/` (`work.ts`, `projects.ts` `cardStackLabels`, `site.ts` nav), `astro.config.mjs` and `wrangler.jsonc` (no trailing slash), `tests/work-page.test.ts`, `tests/build/work-build.test.ts`, `e2e/work.spec.ts`
 
-### 9. Project detail page · in-progress
+### 9. Project detail page · done
 The case study itself, built on the structure decided in the content model. This is where a reader finds out how you think, which is the thing a resume cannot show.
 **Done when:** each project renders its full write up with images and links to live work or code, the structure reads well for both a hiring reader and a client reader, it works on a phone, and each page carries its own title, description and share card.
 From spec 0003: render the case study through `Prose`, and decide how figures inside the Markdown get optimised images.
