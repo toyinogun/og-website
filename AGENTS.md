@@ -42,6 +42,8 @@ Stored in `docs/specs/`. Format: `docs/specs/NNNN-title/index.md`, with `rationa
 - Bio: `src/content/bio.md`, plain Markdown with no frontmatter, outside any content collection. Pages that show the bio import it from there rather than copying the text.
 - Call to action (spec 0004): `SITE.contact` in `src/lib/site.ts` is the one contact target, and every page shows it only through `CallToAction`, so repointing it (to the contact form, feature 11) stays a one line change.
 - Page building blocks (spec 0004): a page opens with `PageIntro` (its one `<h1>`), shows projects only through `ProjectCard`, and passes its own `title` and `description` to `BaseLayout`, which builds the share tags from them.
+- Page words (spec 0004, spec 0005): each page keeps every word in one constant in its own `src/lib/<page>.ts` (`HOME`, `WORK`), held to its length limits by the test beside it.
+- Addresses never end in a slash (spec 0005): `trailingSlash: 'never'` in `astro.config.mjs` and `html_handling: drop-trailing-slash` in `wrangler.jsonc`, so internal `href`s are written as `/projects`, never `/projects/` (that one costs a redirect).
 - New tags: add the value to `STACK` or `SERVICES` in `src/lib/vocabulary.ts` before an entry uses it; an unknown tag fails the build.
 - Naming: PascalCase `.astro` components, kebab case routes and content files, camelCase functions and variables.
 - Documented public APIs: a doc comment on every exported helper and on each component's `Props` interface.
