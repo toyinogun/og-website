@@ -14,26 +14,43 @@ export interface OutLink {
 	readonly kind: 'profile' | 'email';
 }
 
+/**
+ * The site's one call to action: what the button says and where it goes.
+ * `href` is an `https://` address or a plain site path (spec 0004).
+ */
+export interface ContactAction {
+	readonly label: string;
+	readonly href: string;
+}
+
 /** The shape of `SITE`. */
 export interface Site {
 	readonly name: string;
 	readonly nav: readonly NavItem[];
 	readonly links: readonly OutLink[];
+	readonly contact: ContactAction;
 }
 
 /** The pattern every `SITE.nav` href matches: a plain path, no query, hash or trailing slash. */
 export const NAV_HREF_PATTERN = /^\/([a-z0-9-]+(\/[a-z0-9-]+)*)?$/;
 
+/** The owner's LinkedIn profile, written once for the footer and the call to action. */
+const LINKEDIN_URL = 'https://linkedin.com/in/toyin-ogunseinde';
+
 /**
- * The site's name, header nav and footer links.
- * `nav` starts empty: each page feature adds its entry when its page ships,
- * so the live site never links to a missing page. `links` stays empty until
- * the owner supplies profile and email links.
+ * The site's name, header nav, footer links and call to action.
+ * Each page feature adds its nav entry when its page ships, so the live site
+ * never links to a missing page. `contact` moves to `/contact` when the
+ * contact form ships (feature 11).
  */
 export const SITE: Site = {
 	name: 'Toyin Ogunseinde',
-	nav: [],
-	links: [],
+	nav: [{ label: 'Home', href: '/' }],
+	links: [
+		{ label: 'LinkedIn', href: LINKEDIN_URL, kind: 'profile' },
+		{ label: 'GitHub', href: 'https://github.com/toyinogun', kind: 'profile' },
+	],
+	contact: { label: 'Message me on LinkedIn', href: LINKEDIN_URL },
 };
 
 /**

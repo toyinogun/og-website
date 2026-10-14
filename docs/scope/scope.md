@@ -103,7 +103,7 @@ The page that decides whether a visitor keeps reading. It says who you are, what
 **Done when:** a first time visitor can tell within seconds what you do and who for, the strongest work is visible without scrolling far, there is one obvious call to action, the page works on a phone, and it carries its own title, description and share card.
 - [x] Design it (spec): `/architect home page`
 - [ ] Build it: `/develop home page`
-  - [ ] Who you are and how to reach you, live: site constants (Home nav link, LinkedIn call to action, footer links), the `HOME` words, share tags in the base layout, `PageIntro` and `CallToAction`, the intro and closing sections (AC-1, AC-2, AC-3, AC-9, AC-10, AC-11, AC-12, AC-13)
+  - [x] Who you are and how to reach you, live: site constants (Home nav link, LinkedIn call to action, footer links), the `HOME` words, share tags in the base layout, `PageIntro` and `CallToAction`, the intro and closing sections (AC-1, AC-2, AC-3, AC-9, AC-10, AC-11, AC-12, AC-13)
   - [ ] The proof and the rest of the page: `firstParagraph`, `ProjectCard`, `SelectedWork`, the Selected work and About sections, the style guide entries (AC-4, AC-5, AC-6, AC-7, AC-8, AC-18)
   - [ ] The checks: build test for head tags, images and scripts; the home browser tests (above the fold, phone, widths, accessibility); spec 0003 browser tests updated for the non empty nav (AC-6, AC-10, AC-13 to AC-17)
 - [ ] Verify it: `/check verify home page`

@@ -66,8 +66,8 @@ describe('BaseLayout', () => {
 	it('escapes markup in the title and description', async () => {
 		const html = await render({ title: '<script>x</script>', description: '"quoted" & <b>' });
 
-		expect(html).not.toContain('<script>x</script>');
-		expect(html).toContain('&lt;script&gt;x&lt;/script&gt;');
+		expect(html).not.toContain('<title><script>x</script>');
+		expect(html).toContain('<title>&lt;script&gt;x&lt;/script&gt;</title>');
 		// A quote that breaks out of the attribute is the real risk there.
 		expect(html).toContain('content="&quot;quoted&quot; &amp; <b>"');
 	});
@@ -134,5 +134,48 @@ describe('BaseLayout', () => {
 		expect(html).toContain('<link rel="icon" type="image/svg+xml" href="/favicon.svg"');
 		expect(html).toContain('<link rel="apple-touch-icon" href="/apple-touch-icon.png"');
 		expect(html).not.toContain('favicon.ico');
+	});
+
+	// covers: AC-13 (spec 0004)
+	it('writes the share tags after the canonical link, from the title and description', async () => {
+		const html = await render({ title: 'Home', description: 'Personal site.' }, '/');
+		const head = html.slice(html.indexOf('<head>'), html.indexOf('</head>'));
+		const canonical = head.indexOf('<link rel="canonical"');
+
+		const tags = [
+			'<meta property="og:type" content="website"',
+			'<meta property="og:site_name" content="Toyin Ogunseinde"',
+			'<meta property="og:title" content="Home"',
+			'<meta property="og:description" content="Personal site."',
+			`<meta property="og:url" content="${SITE}/"`,
+			'<meta name="twitter:card" content="summary"',
+		];
+		for (const tag of tags) {
+			expect(head.indexOf(tag), tag).toBeGreaterThan(canonical);
+		}
+	});
+
+	// covers: AC-13 (spec 0004)
+	it('omits og:description when there is no description', async () => {
+		for (const description of [undefined, '']) {
+			const html = await render({ title: 'Home', description });
+
+			expect(html).not.toContain('og:description');
+			expect(html).toContain('<meta property="og:title" content="Home"');
+		}
+	});
+
+	// covers: AC-13 (spec 0004)
+	it('uses the canonical URL of nested pages for og:url', async () => {
+		const html = await render({ title: 'Writing' }, '/writing/first-post/');
+
+		expect(html).toContain(`<meta property="og:url" content="${SITE}/writing/first-post/"`);
+	});
+
+	// covers: AC-13 (spec 0004)
+	it('writes no share image, structured data or sitemap link', async () => {
+		const html = await render({ title: 'Home', description: 'Personal site.' });
+
+		expect(html).not.toMatch(/og:image|twitter:image|application\/ld\+json|sitemap/);
 	});
 });

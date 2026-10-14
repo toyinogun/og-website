@@ -1,8 +1,9 @@
 ---
 // The document every page sits in (spec 0003): theme script, fonts, skip
 // link, header, the one <main>, footer. Pages put their content straight into
-// the slot and never add their own <main>. Feature 12 owns share cards and
-// structured data.
+// the slot and never add their own <main>. Basic share tags come from the
+// title and description (spec 0004, AC-13); feature 12 adds the share image,
+// sitemap and structured data.
 import { Font } from 'astro:assets';
 import SiteFooter from '../components/SiteFooter.astro';
 import SiteHeader from '../components/SiteHeader.astro';
@@ -36,6 +37,12 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
 		<title>{title}</title>
 		{description && <meta name="description" content={description} />}
 		<link rel="canonical" href={canonical} />
+		<meta property="og:type" content="website" />
+		<meta property="og:site_name" content={SITE.name} />
+		<meta property="og:title" content={title} />
+		{description && <meta property="og:description" content={description} />}
+		<meta property="og:url" content={canonical} />
+		<meta name="twitter:card" content="summary" />
 	</head>
 	<body class="flex min-h-dvh flex-col">
 		<a

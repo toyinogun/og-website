@@ -1,0 +1,17 @@
+---
+// The site's one contact action (design.md, Component values: Call to action):
+// a primary Button to `SITE.contact`. Every page shows the action only
+// through this component, so repointing it is a change in `site.ts` alone.
+import { SITE } from '../lib/site';
+import Button from './Button.astro';
+
+/** Props for `CallToAction`. */
+interface Props {
+	/** Extra layout classes, for example `w-full sm:w-auto sm:self-start`; never colour. */
+	class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<Button href={SITE.contact.href} class={className}>{SITE.contact.label}</Button>

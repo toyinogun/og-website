@@ -1,22 +1,25 @@
 ---
-// Placeholder home page. It exists so the dev server and the production build
-// have something real to render; feature 7 designs and builds the actual home
-// page.
+// The home page (spec 0004): what you do and how to reach you first, then the
+// closing call to action. The words live in `HOME` (src/lib/home.ts).
+import CallToAction from '../components/CallToAction.astro';
 import Container from '../components/Container.astro';
+import PageIntro from '../components/PageIntro.astro';
+import Section from '../components/Section.astro';
 import Stack from '../components/Stack.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { HOME } from '../lib/home';
 ---
 
-<BaseLayout
-	title="Toyin Ogunseinde"
-	description="Personal site of Toyin Ogunseinde. Under construction."
->
-	<Container width="measure" class="py-16 md:py-24">
-		<Stack>
-			<h1>Toyin Ogunseinde</h1>
-			<p class="text-muted">
-				This site is being built. My work, and a way to get in touch, are coming soon.
-			</p>
-		</Stack>
+<BaseLayout title={HOME.title} description={HOME.description}>
+	<Container>
+		<PageIntro size="display" eyebrow={HOME.availability} heading={HOME.heading} lead={HOME.lead}>
+			<CallToAction class="w-full sm:w-auto sm:self-start" />
+		</PageIntro>
+		<Section id="contact" heading={HOME.closingHeading}>
+			<Stack>
+				<p class="max-w-measure">{HOME.closingText}</p>
+				<CallToAction class="w-full sm:w-auto sm:self-start" />
+			</Stack>
+		</Section>
 	</Container>
 </BaseLayout>
