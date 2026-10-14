@@ -272,7 +272,7 @@ test.describe('keyboard (AC-9, AC-10)', () => {
 
 	for (const scheme of ['light', 'dark'] as const) {
 		// covers: AC-9, AC-10
-		test(`tabs through skip link, wordmark, Home, Work, About, Contact and toggle, each with the ring (${scheme})`, async ({
+		test(`tabs through skip link, wordmark, Home, Work, Services, About, Contact and toggle, each with the ring (${scheme})`, async ({
 			page,
 		}) => {
 			await page.emulateMedia({ colorScheme: scheme });
@@ -298,6 +298,11 @@ test.describe('keyboard (AC-9, AC-10)', () => {
 			expect(work.inHeader).toBe(true);
 
 			await page.keyboard.press('Tab');
+			const services = await focused(page);
+			expect(services.text).toBe('Services');
+			expect(services.inHeader).toBe(true);
+
+			await page.keyboard.press('Tab');
 			const about = await focused(page);
 			expect(about.text).toBe('About');
 			expect(about.inHeader).toBe(true);
@@ -311,7 +316,7 @@ test.describe('keyboard (AC-9, AC-10)', () => {
 			const toggleFocus = await focused(page);
 			expect(toggleFocus.tag).toBe('BUTTON');
 
-			for (const state of [skip, home, work, about, contact, toggleFocus]) {
+			for (const state of [skip, home, work, services, about, contact, toggleFocus]) {
 				expect(state.outlineStyle).toBe('solid');
 				expect(state.outlineWidth).toBe('2px');
 			}
@@ -362,6 +367,7 @@ test.describe('layout (AC-13)', () => {
 		for (const path of [
 			'/',
 			'/projects',
+			'/services',
 			'/about',
 			'/contact',
 			'/projects/hetzner-talos-cluster',
@@ -418,11 +424,12 @@ test.describe('layout (AC-13)', () => {
 		const links = {
 			'/': 'Home',
 			'/projects': 'Work',
+			'/services': 'Services',
 			'/about': 'About',
 			'/contact': 'Contact',
 		} as const;
 
-		for (const path of ['/', '/projects', '/about', '/contact', '/no-such-page']) {
+		for (const path of ['/', '/projects', '/services', '/about', '/contact', '/no-such-page']) {
 			await page.goto(path);
 			for (const [href, name] of Object.entries(links)) {
 				const link = nav.getByRole('link', { name });
@@ -499,6 +506,7 @@ test.describe('accessibility, WCAG 2.2 AA (AC-20)', () => {
 		for (const path of [
 			'/',
 			'/projects',
+			'/services',
 			'/about',
 			'/contact',
 			'/projects/hetzner-talos-cluster',
@@ -530,6 +538,7 @@ test.describe('accessibility, WCAG 2.2 AA (AC-20)', () => {
 		for (const path of [
 			'/',
 			'/projects',
+			'/services',
 			'/about',
 			'/contact',
 			'/projects/hetzner-talos-cluster',

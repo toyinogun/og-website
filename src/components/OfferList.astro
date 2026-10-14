@@ -1,0 +1,58 @@
+---
+// The Services page's offers (spec 0008; design.md, Component values:
+// Services page): a Section with an <h2> holding one <li> per offer, each with
+// its name, summary and, only when it has proof, a "Seen in" line of name
+// links to the project pages. The page's <h2>s sit under its one <h1>, so each
+// offer name is an <h3>.
+import { projectPath, type Project } from '../lib/projects';
+import type { ServiceOffer } from '../lib/services';
+import Section from './Section.astro';
+import Stack from './Stack.astro';
+
+/** Props for `OfferList`. */
+interface Props {
+	/** The section's <h2>. */
+	heading: string;
+	/** The label before the proof links, for example `Seen in`. */
+	proofLabel: string;
+	/** The offers in the order to show, each with the projects `offerProof` picked for it. */
+	offers: readonly (ServiceOffer & { readonly proof: readonly Project[] })[];
+}
+
+const { heading, proofLabel, offers } = Astro.props;
+---
+
+<Section id="offers" heading={heading}>
+	<Stack as="ul" gap="lg">
+		{
+			offers.map((offer) => (
+				<li>
+					<Stack gap="sm">
+						<h3 class="text-xl">{offer.name}</h3>
+						<p class="max-w-measure">{offer.summary}</p>
+						{offer.proof.length > 0 && (
+							<div>
+								<p class="text-sm text-muted">{proofLabel}</p>
+								<ul
+									aria-label={`${proofLabel}: ${offer.name}`}
+									class="flex flex-wrap gap-x-4 gap-y-1"
+								>
+									{offer.proof.map((project) => (
+										<li>
+											<a
+												href={projectPath(project.id)}
+												class="inline-flex min-h-6 items-center text-sm"
+											>
+												{project.data.title}
+											</a>
+										</li>
+									))}
+								</ul>
+							</div>
+						)}
+					</Stack>
+				</li>
+			))
+		}
+	</Stack>
+</Section>
