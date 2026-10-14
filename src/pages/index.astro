@@ -1,13 +1,23 @@
 ---
 // The home page (spec 0004): what you do and how to reach you first, then the
-// closing call to action. The words live in `HOME` (src/lib/home.ts).
+// featured projects, the first bio paragraph and the closing call to action.
+// The words live in `HOME` (src/lib/home.ts), the bio in src/content/bio.md.
+import { getCollection } from 'astro:content';
 import CallToAction from '../components/CallToAction.astro';
 import Container from '../components/Container.astro';
 import PageIntro from '../components/PageIntro.astro';
 import Section from '../components/Section.astro';
+import SelectedWork from '../components/SelectedWork.astro';
 import Stack from '../components/Stack.astro';
+import bioSource from '../content/bio.md?raw';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { HOME } from '../lib/home';
+import { featuredProjects, visibleProjects } from '../lib/projects';
+import { firstParagraph } from '../lib/text';
+
+const featured = featuredProjects(
+	visibleProjects(await getCollection('projects'), { includeDrafts: import.meta.env.DEV }),
+);
 ---
 
 <BaseLayout title={HOME.title} description={HOME.description}>
@@ -15,6 +25,10 @@ import { HOME } from '../lib/home';
 		<PageIntro size="display" eyebrow={HOME.availability} heading={HOME.heading} lead={HOME.lead}>
 			<CallToAction class="w-full sm:w-auto sm:self-start" />
 		</PageIntro>
+		<SelectedWork projects={featured} heading={HOME.workHeading} />
+		<Section id="about" heading={HOME.aboutHeading}>
+			<p class="max-w-measure">{firstParagraph(bioSource)}</p>
+		</Section>
 		<Section id="contact" heading={HOME.closingHeading}>
 			<Stack>
 				<p class="max-w-measure">{HOME.closingText}</p>

@@ -1,12 +1,19 @@
 // Lives here, not beside the page: Astro turns every .ts file under src/pages/
-// into a route, so a test file there would be built as an endpoint. The cards
-// read the projects collection, which the container API cannot load, so they
-// are checked against the build (tests/build/) and in the browser (e2e/).
+// into a route, so a test file there would be built as an endpoint. The
+// container API cannot render the real collection's covers, so the collection
+// is empty here (the page with no featured project, AC-5); the real cards are
+// checked against the build (tests/build/) and in the browser (e2e/).
+import { readFileSync } from 'node:fs';
 import { experimental_AstroContainer as AstroContainer } from 'astro/container';
-import { beforeAll, describe, expect, it } from 'vitest';
+import { beforeAll, describe, expect, it, vi } from 'vitest';
 import Index from '../src/pages/index.astro';
 import { HOME } from '../src/lib/home';
 import { SITE } from '../src/lib/site';
+import { firstParagraph } from '../src/lib/text';
+
+vi.mock('astro:content', () => ({ getCollection: async () => [] }));
+
+const bio = readFileSync(new URL('../src/content/bio.md', import.meta.url), 'utf8');
 
 const escapeHtml = (text: string) => text.replaceAll('&', '&amp;').replaceAll("'", '&#39;');
 
@@ -108,5 +115,29 @@ describe('home page', () => {
 	// covers: key invariant (spec 0004): no link to a page that does not exist yet
 	it('links to no page that has not shipped', () => {
 		expect(html).not.toMatch(/href="\/(work|projects|about|contact)\b/);
+	});
+
+	// covers: AC-7
+	it('shows the first bio paragraph, and nothing after it, in the About section', () => {
+		const about = main.slice(
+			main.indexOf('<section id="about"'),
+			main.indexOf('<section id="contact"'),
+		);
+		const secondParagraph = bio.trim().split(/\n\s*\n/)[1] ?? '';
+
+		expect(about).toMatch(/^<section id="about" aria-labelledby="about-heading"/);
+		expect(about).toContain(`>${escapeHtml(HOME.aboutHeading)}</h2>`);
+		expect(about.match(/<p[\s>]/g)).toHaveLength(1);
+		expect(about).toContain(`<p class="max-w-measure">${escapeHtml(firstParagraph(bio))}</p>`);
+		expect(secondParagraph.length).toBeGreaterThan(0);
+		expect(html).not.toContain(escapeHtml(secondParagraph.split('. ')[0] ?? ''));
+		expect(about).not.toContain('<a ');
+	});
+
+	// covers: AC-5
+	it('keeps the intro, About and closing sections, and no work section, with no featured project', () => {
+		expect(main).not.toContain('selected-work');
+		expect(main.match(/<section /g)).toHaveLength(2);
+		expect(main.indexOf('<h1')).toBeLessThan(main.indexOf('<section id="about"'));
 	});
 });

@@ -9,6 +9,7 @@ import { z } from 'astro/zod';
 import { describe, expect, it } from 'vitest';
 import { collectionProblems, PROJECTS_BASE, type EntryFacts } from '../src/content.config';
 import { projectSchema } from '../src/lib/project-schema';
+import { firstParagraph } from '../src/lib/text';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
 const base = new URL(`../${PROJECTS_BASE}/`, import.meta.url);
@@ -64,5 +65,20 @@ describe('real project entries (spec 0002)', () => {
 			.filter(({ draft, featured }) => featured && !draft);
 
 		expect(featured.length).toBeGreaterThan(0);
+	});
+});
+
+describe('bio (spec 0004)', () => {
+	const bio = readFileSync(new URL('../src/content/bio.md', import.meta.url), 'utf8');
+	const first = firstParagraph(bio);
+
+	// covers: AC-8
+	it('has a first paragraph', () => {
+		expect(first).not.toBe('');
+	});
+
+	// covers: AC-8 (the home page shows it as plain text, so Markdown would show as symbols)
+	it('keeps its first paragraph free of Markdown formatting', () => {
+		expect([...first].filter((char) => '*_`[<#'.includes(char))).toEqual([]);
 	});
 });
