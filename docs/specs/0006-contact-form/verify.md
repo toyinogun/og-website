@@ -53,7 +53,7 @@ Local proof setup (you may run it yourself): copy `.dev.vars.example` to `.dev.v
 - [x] Logs: outcome and reason only from the Exit table → AC-18
 
 ## After deploy (the ship issue, not this build)
-- [ ] Within one hour, send one real message through the real widget → it arrives in your inbox and appears in KV (the first proof of the action check: a `403 verification` here means `npx wrangler rollback`); page and unknown path visits add no Worker invocations → AC-10, AC-12, AC-13, AC-14, AC-20
+- [x] Within one hour, send one real message through the real widget → it arrives in your inbox and appears in KV (the first proof of the action check: a `403 verification` here means `npx wrangler rollback`); page and unknown path visits add no Worker invocations → AC-10, AC-12, AC-13, AC-14, AC-20 (2026-10-14: deployed `f094fd7` as version `04e8e3a0`, the board's real message reached the inbox, JSM-49)
 - [ ] The next Monday → the weekly email arrives with the Turnstile line `working` (state `ok`, the real secret replaced the test one), and Healthchecks.io shows the ping → AC-21
 
 ## Acceptance-criteria coverage
