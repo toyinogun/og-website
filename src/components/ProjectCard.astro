@@ -1,0 +1,49 @@
+---
+// One project as a card (design.md, Component values: Project card): cover,
+// kind, title, outcome and the write up's first link. The card itself is not
+// a link and shows no metrics or tags; feature 8 adds tag chips and feature 9
+// links the title to the project page.
+import { Image } from 'astro:assets';
+import { kindLabel, linkLabel, type Project } from '../lib/projects';
+import Stack from './Stack.astro';
+
+/** Props for `ProjectCard`. */
+interface Props {
+	/** The project entry, read through the spec 0002 helpers. */
+	project: Project;
+	/** The title's heading level, one below the section it sits in. Defaults to 3. */
+	headingLevel?: 2 | 3;
+}
+
+/** Cover widths across the grid: one column on phones, two from md, three from lg. */
+const COVER_SIZES =
+	'(min-width: 64rem) 22rem, (min-width: 48rem) calc(50vw - 3rem), calc(100vw - 2.5rem)';
+
+const { project, headingLevel = 3 } = Astro.props;
+const { title, cover, coverAlt, kind, outcome, links } = project.data;
+const Heading = headingLevel === 2 ? 'h2' : 'h3';
+const link = links[0];
+---
+
+<article>
+	<Stack gap="sm">
+		<Image
+			src={cover}
+			alt={coverAlt}
+			widths={[400, 800, 1200]}
+			sizes={COVER_SIZES}
+			class="h-auto w-full rounded-md"
+		/>
+		<p class="text-sm text-muted">{kindLabel(kind)}</p>
+		<Heading class="text-xl">{title}</Heading>
+		<p class="text-base">{outcome}</p>
+		{
+			link && (
+				<a href={link.url} class="inline-flex min-h-6 items-center self-start text-base">
+					{linkLabel(link)}
+					<span class="sr-only">&nbsp;for {title}</span>
+				</a>
+			)
+		}
+	</Stack>
+</article>

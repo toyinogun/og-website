@@ -1,7 +1,24 @@
 import { readFileSync } from 'node:fs';
 import { experimental_AstroContainer as AstroContainer } from 'astro/container';
-import { beforeAll, describe, expect, it } from 'vitest';
+import { beforeAll, describe, expect, it, vi } from 'vitest';
 import StyleGuide from './styleguide.astro';
+
+// The container API cannot render the real collection's covers, so the two
+// entries the card examples use are stood in for, with a real cover import.
+vi.mock('astro:content', async () => {
+	const cover = (await import('../content/projects/shipsafe/cover.png')).default;
+	const entry = (id: string, title: string, links: readonly unknown[]) => ({
+		id,
+		collection: 'projects',
+		data: { title, outcome: `Outcome of ${id}.`, kind: 'personal', cover, coverAlt: title, links },
+	});
+	return {
+		getCollection: async () => [
+			entry('hetzner-talos-cluster', 'Cluster example', []),
+			entry('shipsafe', 'ShipSafe example', [{ kind: 'code', url: 'https://github.com/x/y' }]),
+		],
+	};
+});
 
 const design = readFileSync(new URL('../../design.md', import.meta.url), 'utf8');
 const tokensIn = (table: string) => {
@@ -84,5 +101,32 @@ describe('style guide', () => {
 		expect(prose).toContain('<table');
 		expect(prose).toMatch(/<figure>[\s\S]*<figcaption>/);
 		expect(prose).toContain('https://toyintest.org/a/very/long/path');
+	});
+
+	// covers: AC-18 (spec 0004)
+	it('shows PageIntro at both sizes, with and without eyebrow and lead', () => {
+		expect(html).toContain('<h1 class="text-display">A display size page heading.</h1>');
+		expect(html).toContain('<h1 class="text-3xl">An inner page heading</h1>');
+		expect(html).toMatch(/<h1 class="text-3xl">A heading on its own<\/h1>\s*<\/div>/);
+		expect(html).toContain('<p class="text-sm text-muted">Open to new roles and contract work</p>');
+		expect(html).toContain(
+			'<p class="text-lg text-muted">A lead line under an inner page heading.</p>',
+		);
+	});
+
+	// covers: AC-18 (spec 0004)
+	it('shows the call to action', () => {
+		expect(html).toContain(`>${'Message me on LinkedIn'}</a>`);
+	});
+
+	// covers: AC-18 (spec 0004)
+	it('shows ProjectCard at both heading levels, with and without a link', () => {
+		const cards = html.match(/<article>[\s\S]*?<\/article>/g) ?? [];
+
+		expect(cards).toHaveLength(2);
+		expect(cards[0]).toContain('<h3 class="text-xl">ShipSafe example</h3>');
+		expect(cards[0]).toContain('<a href="https://github.com/x/y"');
+		expect(cards[1]).toContain('<h2 class="text-xl">Cluster example</h2>');
+		expect(cards[1]).not.toContain('<a ');
 	});
 });

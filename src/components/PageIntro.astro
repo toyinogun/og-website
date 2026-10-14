@@ -1,0 +1,29 @@
+---
+// The top of a page (design.md, Component values: Page intro): an optional
+// eyebrow, the page's one <h1>, an optional lead, then a slot for actions.
+// Sits inside the page's Container; never wraps one.
+import Stack from './Stack.astro';
+
+/** Props for `PageIntro`. */
+interface Props {
+	/** The page's one `<h1>`. */
+	heading: string;
+	/** A short line under the heading, in the muted colour. */
+	lead?: string;
+	/** A small line above the heading, in the muted colour. */
+	eyebrow?: string;
+	/** `display` for the home hero, `page` for inner pages. Defaults to `page`. */
+	size?: 'display' | 'page';
+}
+
+const { heading, lead, eyebrow, size = 'page' } = Astro.props;
+---
+
+<div class="pt-12 md:pt-20">
+	<Stack class="max-w-measure">
+		{eyebrow && <p class="text-sm text-muted">{eyebrow}</p>}
+		<h1 class={size === 'display' ? 'text-display' : 'text-3xl'}>{heading}</h1>
+		{lead && <p class="text-lg text-muted">{lead}</p>}
+		<slot />
+	</Stack>
+</div>

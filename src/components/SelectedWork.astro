@@ -1,0 +1,33 @@
+---
+// The home page's featured projects (spec 0004): a labelled Section holding
+// one card per project, in the order given. Renders nothing for an empty
+// list, so the page never shows an empty box.
+import type { Project } from '../lib/projects';
+import Grid from './Grid.astro';
+import ProjectCard from './ProjectCard.astro';
+import Section from './Section.astro';
+
+/** Props for `SelectedWork`. */
+interface Props {
+	/** The projects to show, already picked and ordered by `featuredProjects`. */
+	projects: readonly Project[];
+	/** The section's `<h2>`. */
+	heading: string;
+}
+
+const { projects, heading } = Astro.props;
+---
+
+{
+	projects.length > 0 && (
+		<Section id="selected-work" heading={heading}>
+			<Grid cols={3} as="ul">
+				{projects.map((project) => (
+					<li>
+						<ProjectCard project={project} headingLevel={3} />
+					</li>
+				))}
+			</Grid>
+		</Section>
+	)
+}

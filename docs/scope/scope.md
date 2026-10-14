@@ -21,7 +21,7 @@ _These are recommendations to keep your build orderly, not requirements. Skip an
 | 4 | Design system & UI foundation | Foundation | done |
 | 5 | Live on your domain | Foundation | done |
 | 6 | Bio & project write ups | Release 1 | done |
-| 7 | Home page | Release 1 | planned |
+| 7 | Home page | Release 1 | done |
 | 8 | Work listing | Release 1 | planned |
 | 9 | Project detail page | Release 1 | planned |
 | 10 | About page | Release 1 | planned |
@@ -98,15 +98,23 @@ From spec 0003: also collect your links out (a label and URL for each, for examp
 - [x] Build it: `/develop bio & project write ups` (bio in `src/content/bio.md`, entries in `src/content/projects/`)
 - [x] Verify it: `/check verify bio & project write ups`
 
-### 7. Home page · needs a decision
+### 7. Home page · done
 The page that decides whether a visitor keeps reading. It says who you are, what you do, shows a taste of the proof, and points at one clear next step. It also sets the page patterns the rest of the site follows.
 **Done when:** a first time visitor can tell within seconds what you do and who for, the strongest work is visible without scrolling far, there is one obvious call to action, the page works on a phone, and it carries its own title, description and share card.
-- [ ] Design it (spec): `/architect home page`
+- [x] Design it (spec): `/architect home page`
+- [x] Build it: `/develop home page`
+  - [x] Who you are and how to reach you, live: site constants (Home nav link, LinkedIn call to action, footer links), the `HOME` words, share tags in the base layout, `PageIntro` and `CallToAction`, the intro and closing sections (AC-1, AC-2, AC-3, AC-9, AC-10, AC-11, AC-12, AC-13)
+  - [x] The proof and the rest of the page: `firstParagraph`, `ProjectCard`, `SelectedWork`, the Selected work and About sections, the style guide entries (AC-4, AC-5, AC-6, AC-7, AC-8, AC-18)
+  - [x] The checks: build test for head tags, images and scripts; the home browser tests (above the fold, phone, widths, accessibility); spec 0003 browser tests updated for the non empty nav (AC-6, AC-10, AC-13 to AC-17)
+- [x] Verify it: `/check verify home page`
+
+spec [0004](../specs/0004-home-page/index.md) · decided: what you do as the heading, open to roles and contracts, one "Message me on LinkedIn" action (repointed to the contact form later), featured projects as equal cards linking to their own code until feature 9, the first bio paragraph, basic share tags from each page's title and description (image, sitemap and structured data stay with feature 12), and the shared `PageIntro`, `ProjectCard` and `CallToAction` · code in `src/pages/index.astro`, `src/components/` (`PageIntro`, `CallToAction`, `ProjectCard`, `SelectedWork`), `src/lib/` (`home.ts`, `text.ts`, `site.ts`), `src/layouts/BaseLayout.astro`, `tests/build/home-build.test.ts`, `e2e/home.spec.ts`
 
 ### 8. Work listing
 The index of your work. This is the page both of your readers go to first to judge you, so it has to make each project easy to scan and easy to open.
 **Done when:** every featured project appears with a title, a one line outcome and an image, the order is deliberate rather than accidental, the empty and loading states look intentional, it works on a phone, and it carries its own title, description and share card.
 From spec 0003: design the project card and the tag chip on the design tokens.
+From spec 0004: the project card is already built (`ProjectCard`), so this page uses `PageIntro size="page"` and `ProjectCard headingLevel={2}`, adds the tag chip, and adds its `Work` nav link.
 - [ ] Build it: `/develop work listing`
 - [ ] Verify it: `/check verify work listing`
 
@@ -114,23 +122,27 @@ From spec 0003: design the project card and the tag chip on the design tokens.
 The case study itself, built on the structure decided in the content model. This is where a reader finds out how you think, which is the thing a resume cannot show.
 **Done when:** each project renders its full write up with images and links to live work or code, the structure reads well for both a hiring reader and a client reader, it works on a phone, and each page carries its own title, description and share card.
 From spec 0003: render the case study through `Prose`, and decide how figures inside the Markdown get optimised images.
+From spec 0004: make the card title link to `projectPath(id)` and keep the outside link.
 - [ ] Build it: `/develop project detail page`
 - [ ] Verify it: `/check verify project detail page`
 
 ### 10. About page
 The longer version of who you are, plus the resume download. The resume is cheap to add here and uses content you already have, so it does not need its own feature.
 **Done when:** the page tells your story in your voice, the resume downloads correctly, your links out are present, it works on a phone, and it carries its own title, description and share card.
+From spec 0004: add a "More about me" link to the home About section, and the `About` nav link.
 - [ ] Build it: `/develop about page`
 - [ ] Verify it: `/check verify about page`
 
 ### 11. Contact form · needs a decision · Beta
 The point of the whole site. A visitor sends you a message without leaving the page. Tagged for extra rigor because it is the one feature that can fail silently: a broken form loses you work and says nothing, and it is also the only place the site handles someone else's personal data.
 **Done when:** a submitted message reliably reaches you, the sender sees a clear success or failure, bad input and spam are handled, the form is usable by keyboard, and a delivery failure is visible rather than silent.
+From spec 0004: change `SITE.contact` to `/contact` with a new label, and revisit `HOME.closingText`.
 - [ ] Design it (spec): `/architect contact form`
 
 ### 12. Search metadata & share cards · needs a decision
 So your name finds your site, and so a pasted link looks deliberate rather than broken. You will share this link a lot, in applications and in messages, and the preview is often the first thing anyone sees of your work.
 **Done when:** every page has a title and description, a sitemap exists, structured data describes you as a person, and pasting any page link into a message shows a correct title, description and image.
+From spec 0004: build on the share tags already in `BaseLayout` (title and description), adding the image, sitemap and structured data, and decide the share image for each page.
 - [ ] Design it (spec): `/architect search metadata & share cards`
 
 ## Release 2: make the case stronger

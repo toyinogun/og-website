@@ -13,6 +13,37 @@ describe('SITE', () => {
 		}
 	});
 
+	// covers: AC-10 (spec 0004)
+	it('has Home as its one nav entry', () => {
+		expect(SITE.nav).toEqual([{ label: 'Home', href: '/' }]);
+	});
+
+	// covers: AC-11 (spec 0004)
+	it('links out to LinkedIn, then GitHub, both as profiles', () => {
+		expect(SITE.links).toEqual([
+			{ label: 'LinkedIn', href: 'https://linkedin.com/in/toyin-ogunseinde', kind: 'profile' },
+			{ label: 'GitHub', href: 'https://github.com/toyinogun', kind: 'profile' },
+		]);
+	});
+
+	// covers: AC-3 (spec 0004)
+	it('sends the call to action to LinkedIn', () => {
+		expect(SITE.contact).toEqual({
+			label: 'Message me on LinkedIn',
+			href: 'https://linkedin.com/in/toyin-ogunseinde',
+		});
+	});
+
+	// covers: AC-11 (spec 0004)
+	it('uses the same LinkedIn address for the footer and the call to action', () => {
+		expect(SITE.links.find((link) => link.label === 'LinkedIn')?.href).toBe(SITE.contact.href);
+	});
+
+	// covers: AC-3 (spec 0004)
+	it('points the call to action at an https address or a plain site path', () => {
+		expect(SITE.contact.href).toMatch(/^(https:\/\/|\/)/);
+	});
+
 	it('uses https profile links and mailto email links in the footer', () => {
 		for (const link of SITE.links) {
 			expect(link.href).toMatch(link.kind === 'profile' ? /^https:\/\// : /^mailto:/);

@@ -4,9 +4,13 @@
 // /styleguide on the dev server only by the `og-website:styleguide`
 // integration in astro.config.mjs; it lives outside src/pages/ so the
 // production build never sees it.
+import { getCollection } from 'astro:content';
 import Button from '../components/Button.astro';
+import CallToAction from '../components/CallToAction.astro';
 import Container from '../components/Container.astro';
 import Grid from '../components/Grid.astro';
+import PageIntro from '../components/PageIntro.astro';
+import ProjectCard from '../components/ProjectCard.astro';
 import Prose from '../components/Prose.astro';
 import Section from '../components/Section.astro';
 import Stack from '../components/Stack.astro';
@@ -37,6 +41,15 @@ const SIZES = [
 const STACK_GAPS = ['sm', 'md', 'lg', 'xl'] as const;
 const GRID_COLS = [1, 2, 3] as const;
 const GRID_GAPS = ['md', 'lg'] as const;
+
+// Real entries for the card examples: one with a link, one without.
+const projects = await getCollection('projects');
+const withLink = projects.find((entry) => entry.id === 'shipsafe');
+const withoutLink = projects.find((entry) => entry.id === 'hetzner-talos-cluster');
+const CARD_EXAMPLES = [
+	{ project: withLink, headingLevel: 3, note: 'headingLevel={3}, with a link' },
+	{ project: withoutLink, headingLevel: 2, note: 'headingLevel={2}, without a link' },
+] as const;
 ---
 
 <BaseLayout title="Style guide" description="Every token and component, on the dev server only.">
@@ -97,6 +110,58 @@ const GRID_GAPS = ['md', 'lg'] as const;
 					<Button href="/" variant="secondary">Secondary link</Button>
 				</div>
 			</Stack>
+		</Section>
+
+		<Section heading="Page intro" id="page-intro" class="border-t border-line">
+			<Stack gap="lg">
+				<div class="rounded-md border border-line px-4 pb-8">
+					<code class="text-sm text-muted">size="display", with eyebrow, lead and an action</code>
+					<PageIntro
+						size="display"
+						eyebrow="Open to new roles and contract work"
+						heading="A display size page heading."
+						lead="A lead line in the large muted size, never wider than the reading column."
+					>
+						<CallToAction class="w-full sm:w-auto sm:self-start" />
+					</PageIntro>
+				</div>
+				<div class="rounded-md border border-line px-4 pb-8">
+					<code class="text-sm text-muted">size="page", with eyebrow and lead</code>
+					<PageIntro
+						size="page"
+						eyebrow="An eyebrow line"
+						heading="An inner page heading"
+						lead="A lead line under an inner page heading."
+					/>
+				</div>
+				<div class="rounded-md border border-line px-4 pb-8">
+					<code class="text-sm text-muted">size="page" (the default), heading only</code>
+					<PageIntro heading="A heading on its own" />
+				</div>
+			</Stack>
+		</Section>
+
+		<Section heading="Call to action" id="call-to-action" class="border-t border-line">
+			<Stack>
+				<p class="text-muted">The one contact action, from SITE.contact. Full width below sm:</p>
+				<CallToAction class="w-full sm:w-auto sm:self-start" />
+			</Stack>
+		</Section>
+
+		<Section heading="Project card" id="project-card" class="border-t border-line">
+			<Grid cols={2} as="ul">
+				{
+					CARD_EXAMPLES.map(
+						({ project, headingLevel, note }) =>
+							project && (
+								<li>
+									<code class="mb-3 block text-sm text-muted">{note}</code>
+									<ProjectCard project={project} headingLevel={headingLevel} />
+								</li>
+							),
+					)
+				}
+			</Grid>
 		</Section>
 
 		<Section heading="Links and focus" id="links" class="border-t border-line">
