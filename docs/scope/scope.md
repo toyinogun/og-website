@@ -20,7 +20,7 @@ _These are recommendations to keep your build orderly, not requirements. Skip an
 | 3 | Content model | Foundation | done |
 | 4 | Design system & UI foundation | Foundation | done |
 | 5 | Live on your domain | Foundation | done |
-| 6 | Bio & project write ups | Release 1 | in-progress |
+| 6 | Bio & project write ups | Release 1 | done |
 | 7 | Home page | Release 1 | planned |
 | 8 | Work listing | Release 1 | planned |
 | 9 | Project detail page | Release 1 | planned |
