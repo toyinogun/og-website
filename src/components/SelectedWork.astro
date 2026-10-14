@@ -22,9 +22,9 @@ const { projects, heading } = Astro.props;
 	projects.length > 0 && (
 		<Section id="selected-work" heading={heading}>
 			<Grid cols={3} as="ul">
-				{projects.map((project) => (
+				{projects.map((project, index) => (
 					<li>
-						<ProjectCard project={project} headingLevel={3} />
+						<ProjectCard project={project} headingLevel={3} priority={index === 0} />
 					</li>
 				))}
 			</Grid>
