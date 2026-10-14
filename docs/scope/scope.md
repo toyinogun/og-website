@@ -28,7 +28,7 @@ _These are recommendations to keep your build orderly, not requirements. Skip an
 | 11 | Contact form | Release 1 | done |
 | 12 | Search metadata & share cards | Release 1 | done |
 | 13 | Services & how you work | Release 2 | done |
-| 14 | Testimonials | Release 2 | planned |
+| 14 | Testimonials | Release 2 | in-progress |
 | 15 | Blog | Release 3 | planned |
 | 16 | Newsletter signup | Release 3 | planned |
 
@@ -198,12 +198,20 @@ What you offer and how an engagement actually runs. This needs a real decision f
 
 spec [0008](../specs/0008-services-how-you-work/index.md) · decided: a `/services` page with a `Services` nav link, five offers grouped over the `SERVICES` vocabulary (every key in exactly one offer), a "Seen in" line of up to three project name links derived from each write up's `services`, five engagement steps, pricing as a day rate or a fixed price with no figures, remote for Netherlands and EU clients, `CallToAction` unchanged · code in `src/pages/services.astro`, `src/components/OfferList.astro`, `src/lib/services.ts` (`SERVICES_PAGE`, `offerProof`), `src/lib/site.ts` (nav)
 
-### 14. Testimonials · needs a decision
+### 14. Testimonials · in-progress
 Other people vouching for you, which persuades in a way your own words cannot. Worth knowing the build is the easy half here: collecting the quotes is on you and depends on other people replying.
 **Done when:** real quotes are displayed with attribution, and the section looks intentional rather than sparse when there are only one or two.
 From spec 0002: a testimonial may point at a project by its id, so a quote can sit beside the work it is about.
 Flagged on the replan after feature 13: where quotes live and where they show (home, services, project pages), what attribution each quote carries, and how you record the person's permission to publish their name are real choices, and the quote shape is hard to change once write ups point at it.
-- [ ] Design it (spec): `/architect testimonials`
+- [x] Design it (spec): `/architect testimonials`
+- [ ] Build it: `/develop testimonials`
+  - [ ] The collection and its checks: `testimonialSchema`, `findContactDetails`, `checkProjectRefs`, the `testimonials` loader that fails the build on a broken quote, and the empty folder (AC-1 to AC-5, AC-17)
+  - [ ] The section: the read helpers and `TestimonialView`, `Testimonials.astro` with the one quote and stacked sizes, the words in `HOME` and `PROJECT_PAGE`, placed on the home page after Selected work and on project pages after the write up (AC-6 to AC-10, AC-12, AC-17)
+  - [ ] The design record and the checks: build tests for the empty state and the permission record staying off the page, `design.md` rows, the style guide samples (AC-11, AC-13 to AC-16)
+  - [ ] The first real quote, added by you with its recorded yes (AC-18)
+- [ ] Verify it: `/check verify testimonials`
+
+spec [0009](../specs/0009-testimonials/index.md) · decided: a `testimonials` content collection of one YAML file per quote (full name, role, company, optional profile link, optional project id, `order`, and a required `permission` date and channel with no contact details), checked at build time; up to three quotes stacked large on the home page after Selected work, and each quote on the page of the project it points at; nothing rendered with no quotes · how to add one: [authoring](../specs/0009-testimonials/authoring.md)
 
 ## Release 3: publishing
 
