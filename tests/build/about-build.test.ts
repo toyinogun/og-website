@@ -30,14 +30,18 @@ describe('about page head', () => {
 
 describe('about page resume', () => {
 	const file = new URL(RESUME_PATH.slice(1), dist);
+	const hasResume = existsSync(new URL(`../../public${RESUME_PATH}`, import.meta.url));
 
-	it('ships the resume PDF the download button points at', () => {
+	it.runIf(hasResume)('ships the resume PDF the download button points at', () => {
 		expect(page).toContain(`href="${RESUME_PATH}"`);
-		expect(existsSync(file), `${RESUME_PATH} is missing from public/`).toBe(true);
+		expect(existsSync(file)).toBe(true);
+		expect(readFileSync(file).subarray(0, 5).toString('latin1')).toBe('%PDF-');
 	});
 
-	it('ships a real PDF', () => {
-		expect(readFileSync(file).subarray(0, 5).toString('latin1')).toBe('%PDF-');
+	it.runIf(!hasResume)('links to no resume while the PDF is not in public/', () => {
+		expect(existsSync(file)).toBe(false);
+		expect(page).not.toContain(RESUME_PATH);
+		expect(page).not.toContain(escapeHtml(ABOUT.resumeLabel));
 	});
 });
 

@@ -2,7 +2,11 @@
 // The About page (feature 10): the intro and the resume download, the whole
 // bio through `Prose`, the links out, then the closing call to action. The
 // words live in `ABOUT` (src/lib/about.ts), the story in src/content/bio.md,
-// which is imported here and never copied.
+// which is imported here and never copied. The resume button shows only
+// while the cleaned PDF sits in public/, so the page never links to a
+// missing file; adding the file brings it back with no code change.
+import { existsSync } from 'node:fs';
+import { join } from 'node:path';
 import Button from '../components/Button.astro';
 import CallToAction from '../components/CallToAction.astro';
 import Container from '../components/Container.astro';
@@ -14,19 +18,25 @@ import { Content as Bio } from '../content/bio.md';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { ABOUT, RESUME_PATH } from '../lib/about';
 import { SITE } from '../lib/site';
+
+const hasResume = existsSync(join(process.cwd(), 'public', RESUME_PATH));
 ---
 
 <BaseLayout title={ABOUT.title} description={ABOUT.description}>
 	<Container width="measure">
 		<PageIntro heading={ABOUT.heading} lead={ABOUT.lead}>
-			<Button
-				variant="secondary"
-				href={RESUME_PATH}
-				download
-				class="w-full sm:w-auto sm:self-start"
-			>
-				{ABOUT.resumeLabel}
-			</Button>
+			{
+				hasResume && (
+					<Button
+						variant="secondary"
+						href={RESUME_PATH}
+						download
+						class="w-full sm:w-auto sm:self-start"
+					>
+						{ABOUT.resumeLabel}
+					</Button>
+				)
+			}
 		</PageIntro>
 		<Prose class="mt-12">
 			<Bio />

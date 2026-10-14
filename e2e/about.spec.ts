@@ -1,3 +1,4 @@
+import { existsSync } from 'node:fs';
 import { expect, test, type Page } from '@playwright/test';
 import { ABOUT, RESUME_PATH } from '../src/lib/about';
 import { HOME } from '../src/lib/home';
@@ -6,6 +7,9 @@ import { SITE } from '../src/lib/site';
 // Feature 10 in a real browser, against the production build served from
 // dist/ (see playwright.config.ts). About current, axe, target sizes and the
 // width sweep for /about live in the shared lists in design-system.spec.ts.
+
+/** Whether the cleaned resume is in public/: the button shows only then. */
+const hasResume = existsSync(`public${RESUME_PATH}`);
 
 /** Opens `/about` at the given size, after the fonts have loaded. */
 const open = async (page: Page, width: number, height = 800) => {
@@ -22,7 +26,7 @@ test.describe('about page from the static build', () => {
 		expect((await request.get('/about')).status()).toBe(200);
 	});
 
-	test('shows the intro and resume, the whole story, the links out, then the closing action', async ({
+	test('shows the intro, the whole story, the links out, then the closing action', async ({
 		page,
 	}) => {
 		const errors: string[] = [];
@@ -32,10 +36,6 @@ test.describe('about page from the static build', () => {
 
 		await expect(main.getByRole('heading', { level: 1 })).toHaveText(ABOUT.heading);
 		await expect(main.getByText(ABOUT.lead)).toBeVisible();
-		await expect(main.getByRole('link', { name: ABOUT.resumeLabel })).toHaveAttribute(
-			'href',
-			RESUME_PATH,
-		);
 		await expect(main.locator('.prose p').first()).toContainText('I’m Toyin Ogunseinde');
 		await expect(main.locator('.prose')).toContainText('I didn’t start here');
 
@@ -51,13 +51,21 @@ test.describe('about page from the static build', () => {
 		expect(errors).toEqual([]);
 	});
 
-	test('downloads the resume as a PDF', async ({ page }) => {
+	test('downloads the resume as a PDF, or shows no resume button while the file is missing', async ({
+		page,
+		request,
+	}) => {
 		await page.goto('/about');
+		const resume = page.getByRole('main').getByRole('link', { name: ABOUT.resumeLabel });
 
-		const [download] = await Promise.all([
-			page.waitForEvent('download'),
-			page.getByRole('main').getByRole('link', { name: ABOUT.resumeLabel }).click(),
-		]);
+		if (!hasResume) {
+			await expect(resume).toHaveCount(0);
+			await expect(page.locator(`a[href="${RESUME_PATH}"]`)).toHaveCount(0);
+			expect((await request.get(RESUME_PATH)).status()).toBe(404);
+			return;
+		}
+		await expect(resume).toHaveAttribute('href', RESUME_PATH);
+		const [download] = await Promise.all([page.waitForEvent('download'), resume.click()]);
 		expect(download.suggestedFilename()).toMatch(/\.pdf$/);
 		expect(await download.failure()).toBeNull();
 	});
@@ -77,13 +85,15 @@ test.describe('about page from the static build', () => {
 });
 
 test.describe('phone layout', () => {
-	test('stretches both buttons to the content width below 640px, natural width from 640', async ({
+	test('stretches the buttons to the content width below 640px, natural width from 640', async ({
 		page,
 	}) => {
 		desktopOnly();
 		for (const width of [375, 639, 640, 1024]) {
 			await open(page, width);
-			for (const name of [ABOUT.resumeLabel, SITE.contact.label]) {
+			for (const name of hasResume
+				? [ABOUT.resumeLabel, SITE.contact.label]
+				: [SITE.contact.label]) {
 				const [own, parent] = await page
 					.getByRole('main')
 					.getByRole('link', { name })
@@ -98,14 +108,17 @@ test.describe('phone layout', () => {
 		}
 	});
 
-	test('shows the heading and the resume button on a 375 by 667 first screen', async ({ page }) => {
+	test('shows the heading, and the resume button when there is one, on a 375 by 667 first screen', async ({
+		page,
+	}) => {
 		desktopOnly();
 		await open(page, 375, 667);
 
 		await expect(page.getByRole('heading', { level: 1 })).toBeInViewport({ ratio: 1 });
-		await expect(
-			page.getByRole('main').getByRole('link', { name: ABOUT.resumeLabel }),
-		).toBeInViewport({ ratio: 1 });
+		if (hasResume)
+			await expect(
+				page.getByRole('main').getByRole('link', { name: ABOUT.resumeLabel }),
+			).toBeInViewport({ ratio: 1 });
 	});
 });
 

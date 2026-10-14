@@ -30,5 +30,6 @@ export const ABOUT: AboutCopy = {
 /**
  * The cleaned resume's address on the site: a file in `public/`, with no
  * phone number or street address in it, since the repository is public.
+ * The About page shows its download button only while that file exists.
  */
 export const RESUME_PATH = '/toyin-ogunseinde-cv.pdf';

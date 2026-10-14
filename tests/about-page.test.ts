@@ -1,6 +1,6 @@
 // Lives here, not beside the page: Astro turns every .ts file under src/pages/
 // into a route, so a test file there would be built as an endpoint.
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { experimental_AstroContainer as AstroContainer } from 'astro/container';
 import { beforeAll, describe, expect, it } from 'vitest';
 import About from '../src/pages/about.astro';
@@ -8,6 +8,9 @@ import { ABOUT, RESUME_PATH } from '../src/lib/about';
 import { SITE } from '../src/lib/site';
 
 const escapeHtml = (text: string) => text.replaceAll('&', '&amp;').replaceAll("'", '&#39;');
+
+/** Whether the cleaned resume is in public/: the button shows only then. */
+const hasResume = existsSync(new URL(`../public${RESUME_PATH}`, import.meta.url));
 
 /** The bio's paragraphs, from the one file the page imports. */
 const paragraphs = readFileSync(new URL('../src/content/bio.md', import.meta.url), 'utf8')
@@ -50,14 +53,25 @@ describe('about page', () => {
 		expect(main).toContain(`<p class="text-lg text-muted">${escapeHtml(ABOUT.lead)}</p>`);
 	});
 
-	it('offers the resume as a secondary button that downloads the PDF, in the intro', () => {
-		const intro = main.slice(main.indexOf('<div class="pt-12'), main.indexOf('<div class="prose'));
-		const resume = intro.match(new RegExp(`<a href="${RESUME_PATH}"[^>]*>`))?.[0] ?? '';
+	it.runIf(hasResume)(
+		'offers the resume as a secondary button that downloads the PDF, in the intro',
+		() => {
+			const intro = main.slice(
+				main.indexOf('<div class="pt-12'),
+				main.indexOf('<div class="prose'),
+			);
+			const resume = intro.match(new RegExp(`<a href="${RESUME_PATH}"[^>]*>`))?.[0] ?? '';
 
-		expect(resume).toMatch(/\bdownload\b/);
-		expect(resume).toContain('border-line');
-		expect(resume).not.toContain('bg-accent');
-		expect(intro).toContain(`>${escapeHtml(ABOUT.resumeLabel)}</a>`);
+			expect(resume).toMatch(/\bdownload\b/);
+			expect(resume).toContain('border-line');
+			expect(resume).not.toContain('bg-accent');
+			expect(intro).toContain(`>${escapeHtml(ABOUT.resumeLabel)}</a>`);
+		},
+	);
+
+	it.runIf(!hasResume)('hides the resume button while the PDF is not in public/', () => {
+		expect(html).not.toContain(RESUME_PATH);
+		expect(html).not.toContain(escapeHtml(ABOUT.resumeLabel));
 	});
 
 	it('tells the whole story from bio.md through Prose, one paragraph each', () => {
