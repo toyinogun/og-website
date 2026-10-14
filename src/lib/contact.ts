@@ -484,9 +484,9 @@ export const TURNSTILE_TEST_SITE_KEY = '1x00000000000000000000AA';
 
 /**
  * The production Turnstile widget's site key, public by design. The board
- * supplies the real value when it creates the widget (JSM-52).
+ * created the widget on JSM-52.
  */
-export const TURNSTILE_SITE_KEY = 'board-supplies-the-turnstile-site-key';
+export const TURNSTILE_SITE_KEY = '0x4AAAAAAFWuC1DcdrkncDB1';
 
 /**
  * The Turnstile site key for this build: `PUBLIC_TURNSTILE_SITE_KEY` when set
