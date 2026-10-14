@@ -133,9 +133,10 @@ describe('home testimonials (spec 0009, AC-11)', () => {
 	it('shows the testimonials section with the committed quotes', () => {
 		expect(home).toContain('id="testimonials"');
 		expect(home).toContain(HOME.testimonialsHeading);
-		expect(main.match(/<blockquote/g)).toHaveLength(2);
+		expect(main.match(/<blockquote/g)).toHaveLength(3);
 		expect(main).toContain('Raymond van Bergen');
 		expect(main).toContain('Chris Badgett');
+		expect(main).toContain('Kurt Von Ahnen');
 	});
 
 	// covers: AC-11
