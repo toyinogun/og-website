@@ -130,15 +130,18 @@ describe('home scripts (AC-17, restated by AC-14 of spec 0007)', () => {
 
 describe('home testimonials (spec 0009, AC-11)', () => {
 	// covers: AC-11
-	it('shows no testimonials section while there are no quotes', () => {
-		expect(home).not.toContain('id="testimonials"');
-		expect(main).not.toContain('<blockquote');
-		expect(home).not.toContain(HOME.testimonialsHeading);
+	it('shows the testimonials section with the committed quotes', () => {
+		expect(home).toContain('id="testimonials"');
+		expect(home).toContain(HOME.testimonialsHeading);
+		expect(main.match(/<blockquote/g)).toHaveLength(3);
+		expect(main).toContain('Raymond van Bergen');
+		expect(main).toContain('Chris Badgett');
+		expect(main).toContain('Kurt Von Ahnen');
 	});
 
 	// covers: AC-11
 	it('keeps the sections in their order', () => {
 		const ids = [...main.matchAll(/<section id="([^"]+)"/g)].map((m) => m[1]);
-		expect(ids).toEqual(['selected-work', 'about', 'contact']);
+		expect(ids).toEqual(['selected-work', 'testimonials', 'about', 'contact']);
 	});
 });
