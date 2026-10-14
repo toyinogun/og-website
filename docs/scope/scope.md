@@ -25,7 +25,7 @@ _These are recommendations to keep your build orderly, not requirements. Skip an
 | 8 | Work listing | Release 1 | done |
 | 9 | Project detail page | Release 1 | done |
 | 10 | About page | Release 1 | done |
-| 11 | Contact form | Release 1 | planned |
+| 11 | Contact form | Release 1 | in-progress |
 | 12 | Search metadata & share cards | Release 1 | planned |
 | 13 | Services & how you work | Release 2 | planned |
 | 14 | Testimonials | Release 2 | planned |
@@ -151,12 +151,21 @@ From spec 0004: add a "More about me" link to the home About section, and the `A
 
 no spec of its own: built on spec [0004](../specs/0004-home-page/index.md) (`PageIntro`, `CallToAction`, `BaseLayout` share tags) and `design.md` · code in `src/pages/about.astro`, `src/lib/about.ts`, `src/components/Button.astro` (`download`), `src/lib/site.ts` (nav), `src/pages/index.astro` (More about me), `tests/about-page.test.ts`, `tests/build/about-build.test.ts`, `e2e/about.spec.ts`
 
-### 11. Contact form · needs a decision · Beta
+### 11. Contact form · Beta · in-progress
 The point of the whole site. A visitor sends you a message without leaving the page. Tagged for extra rigor because it is the one feature that can fail silently: a broken form loses you work and says nothing, and it is also the only place the site handles someone else's personal data.
 **Done when:** a submitted message reliably reaches you, the sender sees a clear success or failure, bad input and spam are handled, the form is usable by keyboard, and a delivery failure is visible rather than silent.
 From spec 0004: change `SITE.contact` to `/contact` with a new label, and revisit `HOME.closingText`.
 From spec 0005: revisit `WORK.closingText` alongside `HOME.closingText`.
-- [ ] Design it (spec): `/architect contact form`
+From spec 0006: the deferred Privacy note and Error monitoring ship with this feature; before the build merges, you set up Email Routing, the Turnstile widget, the `CONTACT_OUTBOX` KV namespace and secrets, and a Healthchecks.io check (the spec's Follow-up).
+- [x] Design it (spec): `/architect contact form`
+- [ ] Build it: `/develop contact form`
+  - [ ] A message reaches you, with a 30 day copy: `src/lib/contact.ts` (words, validation, outcomes, email text), the Worker for `/api/*` (exit table, KV copy, `send_email`, Turnstile, rate limit, one log line), `wrangler.jsonc` and the contract test, the Worker tooling in `build`, the `/contact` page and form, `SITE.contact` and the Contact nav link (AC-1 to AC-20, AC-22, AC-24)
+  - [ ] You hear when it breaks: the Monday self check, the Turnstile secret probe, the week's message list and the Healthchecks.io pings (AC-21)
+  - [ ] The checks and the design record: `design.md` form rows and the style guide, page and build tests, the browser tests with stubbed endpoint and Turnstile, the generated types check in CI (AC-1 to AC-3, AC-6 to AC-8, AC-11, AC-19, AC-20, AC-23, AC-24)
+- [ ] Verify it: `/check verify contact form` (includes the local `wrangler dev` proof and the real Turnstile challenge by keyboard)
+- [ ] Test it: `/test contact form`
+
+spec [0006](../specs/0006-contact-form/index.md) · decided: `/contact` posts in place to a Worker script that runs only for `/api/*` (no adapter, pages stay free), a 30 day KV copy then a free `send_email` to your verified inbox, Turnstile and 3 sends a minute, honest sent, not sent and uncertain messages that keep the text, an inline privacy note, a Monday self check plus a Healthchecks.io alarm, "Send me a message" to `/contact` and a Contact nav link
 
 ### 12. Search metadata & share cards · needs a decision
 So your name finds your site, and so a pasted link looks deliberate rather than broken. You will share this link a lot, in applications and in messages, and the preview is often the first thing anyone sees of your work.
