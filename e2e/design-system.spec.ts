@@ -343,7 +343,13 @@ test.describe('layout (AC-13)', () => {
 	// covers: AC-13
 	test('never scrolls sideways and no box exceeds 72rem', async ({ page }, testInfo) => {
 		test.skip(testInfo.project.name !== 'desktop', 'the sweep sets its own widths');
-		for (const path of ['/', '/projects', '/no-such-page']) {
+		for (const path of [
+			'/',
+			'/projects',
+			'/projects/hetzner-talos-cluster',
+			'/projects/deployer',
+			'/no-such-page',
+		]) {
 			for (const width of WIDTHS) {
 				await page.setViewportSize({ width, height: 800 });
 				await page.goto(path);
@@ -471,7 +477,13 @@ test.describe('accessibility, WCAG 2.2 AA (AC-20)', () => {
 			.analyze();
 
 	for (const scheme of ['light', 'dark'] as const) {
-		for (const path of ['/', '/projects', '/no-such-page']) {
+		for (const path of [
+			'/',
+			'/projects',
+			'/projects/hetzner-talos-cluster',
+			'/projects/deployer',
+			'/no-such-page',
+		]) {
 			// covers: AC-20
 			test(`finds no violations on ${path} in ${scheme}`, async ({ page }) => {
 				await page.emulateMedia({ colorScheme: scheme });
@@ -494,7 +506,13 @@ test.describe('accessibility, WCAG 2.2 AA (AC-20)', () => {
 	test('gives every header, footer and button target at least 24 by 24 pixels', async ({
 		page,
 	}) => {
-		for (const path of ['/', '/projects', '/no-such-page']) {
+		for (const path of [
+			'/',
+			'/projects',
+			'/projects/hetzner-talos-cluster',
+			'/projects/deployer',
+			'/no-such-page',
+		]) {
 			await page.goto(path);
 			const targets = page.locator(
 				'header a, header button, footer a, footer button, main a.inline-flex, main article a, main button',

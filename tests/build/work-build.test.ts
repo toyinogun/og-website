@@ -53,7 +53,9 @@ describe('work listing cards (AC-3, AC-6, AC-14)', () => {
 
 	// covers: AC-3
 	it('shows every published project in order, featured or not, with an h2 title', () => {
-		const titles = cards.map((card) => card.match(/<h2 class="text-xl">([^<]+)<\/h2>/)?.[1]);
+		const titles = cards.map(
+			(card) => card.match(/<h2 class="text-xl"><a [^>]*>([^<]+)<\/a><\/h2>/)?.[1],
+		);
 
 		expect(titles).toEqual([
 			'Production Kubernetes on Hetzner Cloud',
