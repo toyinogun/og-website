@@ -147,7 +147,7 @@ From spec 0004: add a "More about me" link to the home About section, and the `A
   - [x] Reaching it: the `About` nav link in `SITE.nav`, and "More about me" in the home About section
   - [x] The checks: unit tests for the words, the page and the nav; the build test; browser tests for content, download, phone layout, headings and requests, with `/about` added to the shared width, axe and target size lists
   - [x] The resume button hides itself while `public/toyin-ogunseinde-cv.pdf` is missing (board decision, 2026-10-14: ship without it); dropping the cleaned PDF in brings it back with no code change, and the build and browser checks cover both states (the file: JSM-44)
-- [ ] Verify it: `/check verify about page`
+- [x] Verify it: `/check verify about page`
 
 no spec of its own: built on spec [0004](../specs/0004-home-page/index.md) (`PageIntro`, `CallToAction`, `BaseLayout` share tags) and `design.md` · code in `src/pages/about.astro`, `src/lib/about.ts`, `src/components/Button.astro` (`download`), `src/lib/site.ts` (nav), `src/pages/index.astro` (More about me), `tests/about-page.test.ts`, `tests/build/about-build.test.ts`, `e2e/about.spec.ts`
 
